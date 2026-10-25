@@ -137,53 +137,53 @@
       updateUI();
     }
 
-       function renderBracelet() {
+           function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
       
       const total = userCharms.length;
       document.getElementById('count-text').innerText = total;
 
-      // Đặt các khoảng cách góc động dựa trên số lượng charm đang có
-      const angleStep = 0.38; // Khoảng cách giữa các charm (radian)
-      const baseCenterAngle = Math.PI / 2; // Vị trí đáy vòng (90 độ)
+      // Khoảng cách góc giữa các charm
+      const angleStep = 0.35; 
+      const baseCenterAngle = Math.PI / 2; // Đáy vòng (90 độ)
       const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
 
       userCharms.forEach((charm, index) => {
-        // 1. Tính góc đặt charm trên đường tròn
         const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
 
-        // 2. Tính tọa độ X, Y theo bán kính dây vòng (Radius = 95px, Tâm vòng = [144, 138])
-        const radius = 95; 
-        const charmSize = 44; // Kích thước khung charm
+        // 1. TĂNG BÁN KÍNH RA ĐÚNG ĐƯỜNG DÂY VÒNG (đổi từ 95 lên 118)
+        const radius = 118; 
+        const charmSize = 32; // 2. Thu nhỏ kích thước charm từ 44 xuống 32 cho vừa vặn
+        
         const x = 144 + radius * Math.cos(angle) - charmSize / 2; 
         const y = 138 + radius * Math.sin(angle) - charmSize / 2;
 
-        // 3. Tính góc xoay (Rotation) vuông góc với đường cong bán kính
-        const rotationDeg = (angle + Math.PI / 2) * (180 / Math.PI);
+        // 3. ĐẢO CHIỀU GÓC XOAY ĐỂ CHARM ĐỨNG THẲNG / HƯỚNG ĐẦU LÊN TRÊN
+        // Dùng dấu trừ (-) để xoay ngược lại hướng bị lật ngược lúc nãy
+        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         const isSelected = selectedIndexToSwap === index;
 
         const charmEl = document.createElement('div');
         charmEl.className = `absolute pointer-events-auto cursor-pointer transition-all duration-300 ${isSelected ? 'scale-125 z-40' : 'z-20'}`;
         
-        // Đặt vị trí & xoay charm theo góc đường cong
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
         charmEl.style.transform = `rotate(${rotationDeg}deg)`;
         charmEl.onclick = () => handleCharmClick(index);
 
         charmEl.innerHTML = `
-          <div class="relative flex flex-col items-center justify-center w-[44px] h-[44px]">
-            <!-- Ảnh Charm -->
-            <img src="${charm.img}" class="w-full h-full object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.35)] ${isSelected ? 'animate-bounce' : ''}" />
+          <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
+            <!-- Ảnh Charm đã được thu nhỏ -->
+            <img src="${charm.img}" class="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] ${isSelected ? 'animate-bounce' : ''}" />
             
-            <!-- Xoay ngược số thứ tự và nút xóa để chữ luôn thẳng đứng -->
+            <!-- Xoay ngược badge số và nút xóa để luôn hiển thị thẳng đứng, dễ nhìn -->
             <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <span class="absolute -bottom-2 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">
+              <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">
                 ${index + 1}
               </span>
-              <button onclick="removeCharm(event, ${index})" class="absolute -top-2 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">
+              <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">
                 ✕
               </button>
             </div>
@@ -192,6 +192,7 @@
         container.appendChild(charmEl);
       });
     }
+
 
 
     function renderTabs() {
