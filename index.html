@@ -9,7 +9,6 @@
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     
-    /* Hiệu ứng phép thuật Bling Bling */
     @keyframes magicBling {
       0% { transform: scale(0.5); opacity: 0; filter: brightness(1); }
       50% { transform: scale(1.4); opacity: 1; filter: brightness(2) drop-shadow(0 0 15px gold); }
@@ -29,17 +28,17 @@
       <p class="text-xs text-gray-400">Tự tay thiết kế vòng tay độc bản</p>
     </header>
 
-    <!-- KHUNG VÒNG TAY VÀ HIỆU ỨNG PHÉP THUẬT -->
+    <!-- KHUNG VÒNG TAY (ĐÃ DỊCH CHUYỂN VÒNG VÀ TÂM CHARM LÊN TRÊN) -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6] relative">
       <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
         
-        <!-- Ảnh vòng nền thực tế -->
-        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-2" />
+        <!-- Ảnh vòng nền dịch chuyển nhích lên trên (object-position hoặc padding) -->
+        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
 
-        <!-- CÁC HẠT CHARM XỎ XUYÊN DÂY -->
+        <!-- CÁC HẠT CHARM KHỚP CHUẨN VÀO DÂY VÒNG -->
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-        <!-- HIỆU ỨNG BUBBLE PHÉP THUẬT BLING BLING NGAY TÂM KHI THÊM CHARM -->
+        <!-- HIỆU ỨNG PHÉP THUẬT BLING BLING -->
         <div id="magic-sparkle" class="absolute pointer-events-none inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0">
           <span class="text-3xl animate-ping">✨</span>
         </div>
@@ -96,17 +95,14 @@
 
     let userCharms = []; 
     let currentTab = CHARM_CATEGORIES[0].category;
-    let selectedIndexToSwap = null; // Hỗ trợ đổi vị trí charm
+    let selectedIndexToSwap = null;
 
-    // Thêm charm kèm hiệu ứng phép thuật Bling Bling
     function addCharm(charm) {
       if (userCharms.length >= 7) {
         alert("Vòng đã đạt tối đa số lượng charm!");
         return;
       }
       userCharms.push(charm);
-      
-      // Kích hoạt hiệu ứng phép thuật bling bling 1 giây
       triggerMagicEffect();
       updateUI();
     }
@@ -121,13 +117,11 @@
       }, 800);
     }
 
-    // Xử lý đổi vị trí hoặc gỡ charm
     function handleCharmClick(index) {
       if (selectedIndexToSwap === null) {
-        selectedIndexToSwap = index; // Chọn charm đầu tiên để đổi
+        selectedIndexToSwap = index;
         updateUI();
       } else {
-        // Đổi chỗ 2 charm cho nhau
         let temp = userCharms[selectedIndexToSwap];
         userCharms[selectedIndexToSwap] = userCharms[index];
         userCharms[index] = temp;
@@ -143,7 +137,6 @@
       updateUI();
     }
 
-    // Hiển thị vòng và hạt charm xỏ xuyên dây
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
@@ -152,13 +145,14 @@
       document.getElementById('count-text').innerText = total;
 
       userCharms.forEach((charm, index) => {
-        const angleStep = 0.42; 
+        const angleStep = 0.40; 
         const startAngle = Math.PI / 2 - (total * angleStep) / 2;
         const angle = startAngle + index * angleStep;
 
-        const radius = 90; 
-        const x = 144 + radius * Math.cos(angle) - 20; 
-        const y = 144 + radius * Math.sin(angle) - 20;
+        // Căn chỉnh tâm toạ độ dịch chuyển đồng bộ lên trên theo vòng (tâm Y trừ bớt 6px)
+        const radius = 95; 
+        const x = 144 + radius * Math.cos(angle) - 22; 
+        const y = 138 + radius * Math.sin(angle) - 22;
 
         const isSelected = selectedIndexToSwap === index;
 
@@ -169,12 +163,10 @@
         charmEl.onclick = () => handleCharmClick(index);
 
         charmEl.innerHTML = `
-          <div class="relative flex items-center justify-center ${isSelected ? 'animate-bounce' : ''}">
-            <!-- Khoen xỏ dây vòng chân thật -->
-            <div class="absolute -top-1 w-3 h-3 border-2 border-amber-400 rounded-full bg-amber-100/60 z-0"></div>
-            <img src="${charm.img}" class="w-11 h-11 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.35)] relative z-10 bling-effect" />
-            <span class="absolute -bottom-2 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center z-30">${index + 1}</span>
-            <button onclick="removeCharm(event, ${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30">✕</button>
+          <div class="relative flex flex-col items-center justify-center ${isSelected ? 'animate-bounce' : ''}">
+            <img src="${charm.img}" class="w-12 h-12 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)] relative z-10 bling-effect" />
+            <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30">${index + 1}</span>
+            <button onclick="removeCharm(event, ${index})" class="absolute -top-1 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30">✕</button>
           </div>
         `;
         container.appendChild(charmEl);
