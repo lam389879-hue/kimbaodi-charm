@@ -8,9 +8,19 @@
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Hiệu ứng phép thuật Bling Bling */
+    @keyframes magicBling {
+      0% { transform: scale(0.5); opacity: 0; filter: brightness(1); }
+      50% { transform: scale(1.4); opacity: 1; filter: brightness(2) drop-shadow(0 0 15px gold); }
+      100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+    }
+    .bling-effect {
+      animation: magicBling 0.8s ease-in-out;
+    }
   </style>
 </head>
-<body class="bg-[#FFF5F6] text-gray-700 min-h-screen font-sans">
+<body class="bg-[#FFF5F6] text-gray-700 min-h-screen font-sans select-none">
   <div class="max-w-md mx-auto min-h-screen flex flex-col bg-white shadow-2xl relative">
     
     <!-- HEADER -->
@@ -19,19 +29,24 @@
       <p class="text-xs text-gray-400">Tự tay thiết kế vòng tay độc bản</p>
     </header>
 
-    <!-- KHUNG VÒNG TAY VÀ CHARM XỎ TRÊN VÒNG -->
-    <div class="p-4 flex flex-col items-center bg-[#FFF5F6]">
+    <!-- KHUNG VÒNG TAY VÀ HIỆU ỨNG PHÉP THUẬT -->
+    <div class="p-4 flex flex-col items-center bg-[#FFF5F6] relative">
       <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
         
         <!-- Ảnh vòng nền thực tế -->
         <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-2" />
 
-        <!-- CÁC HẠT CHARM KHÔNG NỀN, ÔM SÁT VÒNG -->
+        <!-- CÁC HẠT CHARM XỎ XUYÊN DÂY -->
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
+
+        <!-- HIỆU ỨNG BUBBLE PHÉP THUẬT BLING BLING NGAY TÂM KHI THÊM CHARM -->
+        <div id="magic-sparkle" class="absolute pointer-events-none inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0">
+          <span class="text-3xl animate-ping">✨</span>
+        </div>
       </div>
 
       <p class="text-xs text-gray-400 mt-3 text-center">
-        Đã chọn <span id="count-text" class="font-bold text-pink-500">0</span> charm (Chạm vào `✕` trên hạt để gỡ)
+        Đã chọn <span id="count-text" class="font-bold text-pink-500">0</span> charm | Chạm vào số thứ tự để đổi chỗ
       </p>
     </div>
 
@@ -57,11 +72,9 @@
   </div>
 
   <script>
-    // 1. THÔNG TIN TIỆM
     const ZALO_PHONE = "0775812305"; 
-    const braceletPrice = 119000;    // Giá dây vòng
+    const braceletPrice = 119000;
 
-    // 2. DANH SÁCH SẢN PHẨM THẬT
     const CHARM_CATEGORIES = [
       {
         category: "Hello Kitty",
@@ -73,7 +86,7 @@
         ]
       },
       {
-        category: "dễ thương",
+        category: "Biểu Tượng",
         items: [
           { id: "spoon", name: "Muỗng Vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png" },
           { id: "balloon", name: "Kitty Bong Bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png" }
@@ -83,22 +96,54 @@
 
     let userCharms = []; 
     let currentTab = CHARM_CATEGORIES[0].category;
+    let selectedIndexToSwap = null; // Hỗ trợ đổi vị trí charm
 
+    // Thêm charm kèm hiệu ứng phép thuật Bling Bling
     function addCharm(charm) {
-      if (userCharms.length >= 8) {
+      if (userCharms.length >= 7) {
         alert("Vòng đã đạt tối đa số lượng charm!");
         return;
       }
-      userCharms.length === 0 ? userCharms.push(charm) : userCharms.splice(Math.floor(userCharms.length / 2) + 1, 0, charm);
+      userCharms.push(charm);
+      
+      // Kích hoạt hiệu ứng phép thuật bling bling 1 giây
+      triggerMagicEffect();
       updateUI();
     }
 
-    function removeCharm(index) {
+    function triggerMagicEffect() {
+      const sparkle = document.getElementById('magic-sparkle');
+      sparkle.classList.remove('opacity-0');
+      sparkle.classList.add('opacity-100', 'bling-effect');
+      setTimeout(() => {
+        sparkle.classList.remove('opacity-100', 'bling-effect');
+        sparkle.classList.add('opacity-0');
+      }, 800);
+    }
+
+    // Xử lý đổi vị trí hoặc gỡ charm
+    function handleCharmClick(index) {
+      if (selectedIndexToSwap === null) {
+        selectedIndexToSwap = index; // Chọn charm đầu tiên để đổi
+        updateUI();
+      } else {
+        // Đổi chỗ 2 charm cho nhau
+        let temp = userCharms[selectedIndexToSwap];
+        userCharms[selectedIndexToSwap] = userCharms[index];
+        userCharms[index] = temp;
+        selectedIndexToSwap = null;
+        updateUI();
+      }
+    }
+
+    function removeCharm(event, index) {
+      event.stopPropagation();
       userCharms.splice(index, 1);
+      selectedIndexToSwap = null;
       updateUI();
     }
 
-    // Hiển thị charm hoàn toàn không nền, đính chuẩn xác vào sợi dây vòng
+    // Hiển thị vòng và hạt charm xỏ xuyên dây
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
@@ -107,23 +152,29 @@
       document.getElementById('count-text').innerText = total;
 
       userCharms.forEach((charm, index) => {
-        const angleStep = 0.48; 
+        const angleStep = 0.42; 
         const startAngle = Math.PI / 2 - (total * angleStep) / 2;
         const angle = startAngle + index * angleStep;
 
-        const radius = 98; // Bán kính chuẩn khớp chính xác đường dây vòng
-        const x = 144 + radius * Math.cos(angle) - 22; 
-        const y = 144 + radius * Math.sin(angle) - 22;
+        const radius = 90; 
+        const x = 144 + radius * Math.cos(angle) - 20; 
+        const y = 144 + radius * Math.sin(angle) - 20;
+
+        const isSelected = selectedIndexToSwap === index;
 
         const charmEl = document.createElement('div');
-        charmEl.className = 'absolute pointer-events-auto cursor-pointer transition-all hover:scale-110';
+        charmEl.className = `absolute pointer-events-auto cursor-pointer transition-all transform hover:scale-110 ${isSelected ? 'scale-125 ring-2 ring-gold rounded-full' : ''}`;
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
-        // Đã bỏ hoàn toàn nền trắng, thêm hiệu ứng nổi khối drop-shadow chân thật
+        charmEl.onclick = () => handleCharmClick(index);
+
         charmEl.innerHTML = `
-          <div class="relative">
-            <img src="${charm.img}" class="w-11 h-11 object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" />
-            <button onclick="removeCharm(${index})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow">✕</button>
+          <div class="relative flex items-center justify-center ${isSelected ? 'animate-bounce' : ''}">
+            <!-- Khoen xỏ dây vòng chân thật -->
+            <div class="absolute -top-1 w-3 h-3 border-2 border-amber-400 rounded-full bg-amber-100/60 z-0"></div>
+            <img src="${charm.img}" class="w-11 h-11 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.35)] relative z-10 bling-effect" />
+            <span class="absolute -bottom-2 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center z-30">${index + 1}</span>
+            <button onclick="removeCharm(event, ${index})" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30">✕</button>
           </div>
         `;
         container.appendChild(charmEl);
@@ -185,7 +236,7 @@
       let msg = `✨ ĐƠN THIẾT KẾ VÒNG KIM BẢO DI ✨\n--------------------------\n`;
       msg += `1. Dây vòng bạc: ${braceletPrice.toLocaleString()}đ\n2. Danh sách charm đính kèm:\n`;
       userCharms.forEach((item, idx) => {
-        msg += `  • Charm ${idx + 1}: ${item.name} (${item.price.toLocaleString()}đ)\n`;
+        msg += `  • Vị trí ${idx + 1}: ${item.name} (${item.price.toLocaleString()}đ)\n`;
       });
       msg += `--------------------------\n💰 TỔNG TIỀN: ${calculateTotal().toLocaleString()} VNĐ\n\nShop tư vấn và chốt đơn giúp mình nhé!`;
       
@@ -196,4 +247,3 @@
   </script>
 </body>
 </html>
-
