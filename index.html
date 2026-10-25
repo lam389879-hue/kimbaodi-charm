@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hanis Jewelry - Charm Studio</title>
+  <title>Kim Bảo Di - Charm Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -11,19 +11,19 @@
   </style>
 </head>
 <body class="bg-[#FFF5F6] text-gray-700 min-h-screen font-sans">
-  <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col bg-white shadow-2xl relative">
+  <div class="max-w-md mx-auto min-h-screen flex flex-col bg-white shadow-2xl relative">
     
     <!-- HEADER -->
     <header class="p-4 text-center bg-white border-b border-pink-100 sticky top-0 z-20">
-      <h1 class="text-xl font-bold text-pink-500 tracking-wider uppercase">kimbaodi Jewelry</h1>
+      <h1 class="text-xl font-bold text-pink-500 tracking-wider uppercase">KIMBAODI JEWELRY</h1>
       <p class="text-xs text-gray-400">Tự tay phối charm theo phong cách của bạn</p>
     </header>
 
     <!-- KHUNG XEM THỬ VÒNG -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6]">
       <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
-        <!-- Ảnh vòng nền -->
-        <img id="https://i.postimg.cc/bwCVgSFv/IMG-0844.jpg" src="https://via.placeholder.com/400/F0F0F0/000000?text=Vong+Bac" alt="Vòng" class="absolute w-full h-full object-contain pointer-events-none p-4" />
+        <!-- Ảnh vòng nền (Bạn có thể thay link ảnh vòng thật của tiệm vào chỗ này) -->
+        <img id="bracelet-img" src="https://via.placeholder.com/400/F0F0F0/000000?text=Vong+Bac" alt="Vòng" class="absolute w-full h-full object-contain pointer-events-none p-4" />
 
         <!-- Các vị trí đính charm -->
         <div id="slots-container" class="absolute inset-0 flex items-center justify-center gap-2 px-6"></div>
@@ -56,24 +56,27 @@
   </div>
 
   <script>
-    // DATA CỦA SHOP (Có thể chỉnh sửa giá và link ảnh sau)
-    const ZALO_PHONE = "0775812305";
-    const braceletPrice = 119000;
-    
+    // 1. SỐ ĐIỆN THOẠI ZALO NHẬN ĐƠN CỦA TIỆM
+    const ZALO_PHONE = "0901234567"; // Thay SĐT Zalo của bạn ở đây
+    const braceletPrice = 180000;    // Giá dây vòng
+
+    // 2. DANH SÁCH CHARM VÀ LINK ẢNH THẬT
+    // Bạn chỉ cần thay đoạn link trong ngoặc kép img: "..." bằng link từ Postimages (đuôi .png)
     const CHARM_CATEGORIES = [
       {
-        category: "hello kitty",
+        category: "Hello Kitty",
         items: [
-          { id: "a", name: "hello kitty", price: 238000, img:"https://i.postimg.cc/YS7BcWzJ/IMG-0746.png  },
-          { id: "b", name: "hello kitty", price: 238000, img:" https://i.postimg.cc/s2zCFh4b/IMG-0747.png },
-          { id: "c", name: "hello kitty", price: 238000, img:" https://postimg.cc/Wd5HgtKw }
+          { id: "kitty-1", name: "Kitty Đầu Vương Miện", price: 238000, img: "https://i.postimg.cc/YS7BcWzJ/IMG-0746.png" },
+          { id: "kitty-2", name: "Kitty Nơ Đỏ", price: 238000, img: "https://i.postimg.cc/s2zCFh4b/IMG-0747.png" },
+          { id: "kitty-3", name: "Kitty Thỏi Vàng", price: 238000, img: "https://i.postimg.cc/vmywRVtk/IMG-0748.png" },
+          { id: "kitty-4", name: "Nơ Đỏ Thắt", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png" }
         ]
       },
       {
-        category: " dễ thương ",
+        category: "Biểu Tượng",
         items: [
-          { id: "heart", name: "dễ thương", price: 238000, img: "https://i.postimg.cc/d0FcMyjN/IMG-0751.png },
-          { id: "star", name: "dễ thương", price: 238000, img:"https://i.postimg.cc/Bv3fWKBV/IMG-0752.png }
+          { id: "heart", name: "muỗng vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png },
+          { id: "star", name: "kitty bong bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png" }
         ]
       }
     ];
@@ -162,7 +165,7 @@
     }
 
     function sendOrderZalo() {
-      let msg = `✨ ĐƠN HÀNG THIẾT KẾ CHARM ✨\n--------------------------\n`;
+      let msg = `✨ ĐƠN HÀNG THIẾT KẾ CHARM KIM BẢO DI ✨\n--------------------------\n`;
       msg += `1. Dây vòng bạc: ${braceletPrice.toLocaleString()}đ\n2. Charm đính kèm:\n`;
       let hasCharm = false;
       slots.forEach((item, idx) => {
