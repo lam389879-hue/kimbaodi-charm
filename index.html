@@ -199,7 +199,8 @@
         zaloMsgCharms: "Danh sách charm:",
         zaloMsgTotal: "💰 TỔNG TIỀN:",
         zaloMsgNote: "Shop chốt đơn giúp mình nhé!",
-        alertZaloGuide: "✨ Đã lưu ảnh Bill & Copy sẵn nội dung đơn!\n\n👉 Khi Zalo mở ra:\n1. Chọn ảnh Bill vừa lưu trong thư viện 🖼️\n2. Giữ khung chat và bấm Dán (Paste) nội dung đơn hàng rồi gửi là xong nhé!",
+        alertZaloGuide: "✨ ĐÃ LƯU ẢNH VÀO MÁY & COPY SẴN NỘI DUNG!\n\n👉 Hướng dẫn khách gửi đơn:\n1. Chọn ảnh Bill vừa tải về trong thư viện ảnh 🖼️\n2. Giữ vào khung chat Zalo và bấm Dán (Paste) nội dung đơn hàng rồi gửi là xong nhé!",
+        alertDownloadSuccess: "✅ Đã tải ảnh Bill về máy thành công!",
         categories: [
           {
             categoryVi: "Hello Kitty",
@@ -256,7 +257,8 @@
         zaloMsgCharms: "Charm List:",
         zaloMsgTotal: "💰 TOTAL:",
         zaloMsgNote: "Please confirm my order!",
-        alertZaloGuide: "✨ Bill saved & order copied!\n\n👉 In Zalo:\n1. Attach the saved Bill image 🖼️\n2. Long press chat box and Paste order text!",
+        alertZaloGuide: "✨ Bill saved & order text copied!\n\n👉 In Zalo:\n1. Attach the saved Bill image 🖼️\n2. Long press chat box and Paste order text!",
+        alertDownloadSuccess: "✅ Bill image downloaded successfully!",
         categories: [
           {
             categoryVi: "Hello Kitty",
@@ -310,7 +312,7 @@
       }, 800);
     }
 
-    // HIỆU ỨNG PHÁO HOA FULL TOÀN MÀN HÌNH
+    // Hiệu ứng pháo hoa toàn màn hình
     function triggerFullFullscreenConfetti() {
       var duration = 2.5 * 1000;
       var animationEnd = Date.now() + duration;
@@ -318,16 +320,16 @@
 
       (function frame() {
         confetti({
-          particleCount: 5,
+          particleCount: 6,
           angle: 60,
-          spread: 55,
+          spread: 60,
           origin: { x: 0, y: 0.7 },
           colors: colors
         });
         confetti({
-          particleCount: 5,
+          particleCount: 6,
           angle: 120,
-          spread: 55,
+          spread: 60,
           origin: { x: 1, y: 0.7 },
           colors: colors
         });
@@ -572,7 +574,7 @@
       document.getElementById('b-total').innerText = calculateTotal().toLocaleString() + (currentLang === 'vi' ? ' đ' : ' VND');
       document.getElementById('bill-modal').classList.remove('hidden');
 
-      // Bật pháo hoa full toàn màn hình
+      // Bật pháo hoa toàn màn hình
       triggerFullFullscreenConfetti();
     }
 
@@ -581,12 +583,14 @@
     }
 
     function downloadBillImage() {
+      const t = translations[currentLang];
       const billElement = document.getElementById('bill-content');
       html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Bill-VongTay-${Date.now()}.png`;
+        link.download = `Bill-KimBaoDi-${Date.now()}.png`;
         link.href = canvas.toDataURL('image/png');
         link.click();
+        alert(t.alertDownloadSuccess);
       });
     }
 
@@ -615,8 +619,16 @@
 
     function sendBillZalo() {
       const t = translations[currentLang];
-      
-      // 1. Tự động lưu ảnh bill vào máy
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+
+      if (!name || !phone || !address) {
+        alert(t.alertFillInfo);
+        return;
+      }
+
+      // 1. Tự động tải ảnh Bill về máy
       const billElement = document.getElementById('bill-content');
       html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
         const link = document.createElement('a');
@@ -625,14 +637,14 @@
         link.click();
       });
 
-      // 2. Copy sẵn nội dung đơn hàng vào clipboard
+      // 2. Copy nội dung đơn hàng vào bộ nhớ tạm
       const msg = generateOrderMessage();
       navigator.clipboard.writeText(msg).catch(err => console.log(err));
 
-      // 3. Thông báo hướng dẫn mở chat Zalo trực tiếp
+      // 3. Thông báo hướng dẫn rõ ràng cho khách dán (paste)
       alert(t.alertZaloGuide);
       
-      // Sử dụng link chat Zalo chuẩn (chat.zalo.me) để mở thẳng vào hộp thoại nhắn tin thay vì trang cá nhân
+      // 4. Mở thẳng hộp thoại chat Zalo với shop
       window.open(`https://chat.zalo.me/?phone=${ZALO_PHONE}`, '_blank');
     }
 
