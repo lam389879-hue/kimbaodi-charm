@@ -22,8 +22,8 @@
     <!-- KHUNG XEM THỬ VÒNG -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6]">
       <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
-        <!-- Ảnh vòng nền (Bạn có thể thay link ảnh vòng thật của tiệm vào chỗ này) -->
-        <img id="bracelet-img" src="https://via.placeholder.com/400/F0F0F0/000000?text=Vong+Bac" alt="Vòng" class="absolute w-full h-full object-contain pointer-events-none p-4" />
+        <!-- Ảnh vòng nền -->
+        <img id="bracelet-img" src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="chưa có charm chọn bên dưới" class="absolute w-full h-full object-contain pointer-events-none p-4" />
 
         <!-- Các vị trí đính charm -->
         <div id="slots-container" class="absolute inset-0 flex items-center justify-center gap-2 px-6"></div>
@@ -56,12 +56,11 @@
   </div>
 
   <script>
-    // 1. SỐ ĐIỆN THOẠI ZALO NHẬN ĐƠN CỦA TIỆM
-    const ZALO_PHONE = "0901234567"; // Thay SĐT Zalo của bạn ở đây
-    const braceletPrice = 180000;    // Giá dây vòng
+    // 1. SỐ ĐIỆN THOẠI ZALO CHÍNH XÁC CỦA TIỆM
+    const ZALO_PHONE = "0775812305"; 
+    const braceletPrice = 119000;    // Giá dây vòng
 
     // 2. DANH SÁCH CHARM VÀ LINK ẢNH THẬT
-    // Bạn chỉ cần thay đoạn link trong ngoặc kép img: "..." bằng link từ Postimages (đuôi .png)
     const CHARM_CATEGORIES = [
       {
         category: "Hello Kitty",
@@ -75,7 +74,7 @@
       {
         category: "Biểu Tượng",
         items: [
-          { id: "heart", name: "muỗng vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png },
+          { id: "heart", name: "muỗng vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png" },
           { id: "star", name: "kitty bong bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png" }
         ]
       }
