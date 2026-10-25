@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kim Bảo Di - Charm Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Thư viện html2canvas để chụp bill thành ảnh -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -28,25 +30,37 @@
       <p class="text-xs text-gray-400">Tự tay thiết kế vòng tay độc bản</p>
     </header>
 
-    <!-- KHUNG VÒNG TAY (ĐÃ DỊCH CHUYỂN VÒNG VÀ TÂM CHARM LÊN TRÊN) -->
+    <!-- KHUNG VÒNG TAY -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6] relative">
-      <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
+      <div id="bracelet-capture-area" class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
         
-        <!-- Ảnh vòng nền dịch chuyển nhích lên trên (object-position hoặc padding) -->
+        <!-- Ảnh vòng nền -->
         <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
 
-        <!-- CÁC HẠT CHARM KHỚP CHUẨN VÀO DÂY VÒNG -->
+        <!-- CÁC HẠT CHARM -->
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
 
-        <!-- HIỆU ỨNG PHÉP THUẬT BLING BLING -->
+        <!-- HIỆU ỨNG PHÉP THUẬT -->
         <div id="magic-sparkle" class="absolute pointer-events-none inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0">
           <span class="text-3xl animate-ping">✨</span>
         </div>
       </div>
 
       <p class="text-xs text-gray-400 mt-3 text-center">
-        Đã chọn <span id="count-text" class="font-bold text-pink-500">0</span> charm | Chạm vào số thứ tự để đổi chỗ
+        Đã chọn <span id="count-text" class="font-bold text-pink-500">0</span> charm | Chạm số thứ tự để đổi chỗ
       </p>
+    </div>
+
+    <!-- FORM NHẬP THÔNG TIN KHÁCH HÀNG -->
+    <div class="px-4 py-2 bg-white border-t border-pink-100">
+      <p class="text-xs font-bold text-pink-500 mb-1 uppercase">Thông tin người nhận:</p>
+      <div class="space-y-2">
+        <input type="text" id="cust-name" placeholder="Họ và tên người nhận" class="w-full text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
+        <div class="flex gap-2">
+          <input type="tel" id="cust-phone" placeholder="Số điện thoại" class="w-1/2 text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
+          <input type="text" id="cust-address" placeholder="Địa chỉ nhận hàng" class="w-1/2 text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
+        </div>
+      </div>
     </div>
 
     <!-- MENU CHỌN CHARM -->
@@ -55,18 +69,77 @@
       <div id="tabs-container" class="flex gap-2 border-b border-gray-100 pb-2 mb-3 overflow-x-auto no-scrollbar"></div>
 
       <!-- LƯỚI CHARM -->
-      <div id="charms-grid" class="grid grid-cols-4 gap-3 overflow-y-auto max-h-56 p-1"></div>
+      <div id="charms-grid" class="grid grid-cols-4 gap-3 overflow-y-auto max-h-40 p-1"></div>
 
-      <!-- THANH TỔNG TIỀN & CHỐT ĐƠN -->
-      <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
+      <!-- THANH TỔNG TIỀN & NÚT TẠO BILL -->
+      <div class="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
         <div>
-          <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Tổng tiền (Vòng + Charm)</p>
-          <p id="total-price" class="text-lg font-extrabold text-pink-600">119,000 đ</p>
+          <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Tổng tiền</p>
+          <p id="total-price" class="text-base font-extrabold text-pink-600">119,000 đ</p>
         </div>
-        <button onclick="sendOrderZalo()" class="bg-pink-500 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-pink-200 active:scale-95 transition">
-          Chốt Đơn Zalo 💬
+        <div class="flex gap-2">
+          <button onclick="openBillModal()" class="bg-pink-500 text-white px-4 py-2.5 rounded-2xl font-bold text-xs shadow-md shadow-pink-200 active:scale-95 transition">
+            Xem Bill 🧾
+          </button>
+          <button onclick="sendOrderZalo()" class="bg-green-500 text-white px-4 py-2.5 rounded-2xl font-bold text-xs shadow-md shadow-green-200 active:scale-95 transition">
+            Zalo 💬
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL XEM VÀ LƯU BILL -->
+  <div id="bill-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+      
+      <!-- NỘI DUNG BILL (Phần này sẽ được chụp lại làm ảnh) -->
+      <div id="bill-content" class="p-6 bg-white overflow-y-auto space-y-4">
+        <div class="text-center border-b border-dashed border-pink-200 pb-3">
+          <h2 class="text-lg font-bold text-pink-500 uppercase">KIMBAODI JEWELRY</h2>
+          <p class="text-[10px] text-gray-400">Hóa Đơn Thiết Kế Vòng Độc Bản</p>
+          <p id="bill-date" class="text-[10px] text-gray-500 mt-1"></p>
+        </div>
+
+        <!-- Thông tin khách -->
+        <div class="text-xs bg-pink-50/50 p-3 rounded-xl border border-pink-100 space-y-1">
+          <p><b>Khách hàng:</b> <span id="b-name">Chưa nhập</span></p>
+          <p><b>Số điện thoại:</b> <span id="b-phone">Chưa nhập</span></p>
+          <p><b>Địa chỉ:</b> <span id="b-address">Chưa nhập</span></p>
+        </div>
+
+        <!-- Ảnh vòng đã thiết kế -->
+        <div class="flex justify-center">
+          <div id="bill-bracelet-preview" class="w-48 h-48 relative border border-pink-100 rounded-2xl bg-[#FFF5F6] flex items-center justify-center overflow-hidden">
+            <!-- Ảnh vòng bản nhỏ trong bill sẽ được clone vào đây -->
+          </div>
+        </div>
+
+        <!-- Danh sách chi tiết -->
+        <div class="border-t border-dashed border-pink-200 pt-3">
+          <p class="text-xs font-bold text-gray-700 mb-2">Chi tiết sản phẩm:</p>
+          <div id="bill-items-list" class="space-y-1.5 text-xs text-gray-600">
+            <!-- Danh sách charm -->
+          </div>
+        </div>
+
+        <!-- Tổng tiền -->
+        <div class="border-t border-pink-200 pt-3 flex justify-between items-center">
+          <span class="text-xs font-bold text-gray-500">TỔNG THANH TOÁN:</span>
+          <span id="b-total" class="text-base font-extrabold text-pink-600">0 đ</span>
+        </div>
+      </div>
+
+      <!-- NÚT THao tác trong Modal -->
+      <div class="p-4 bg-gray-50 border-t border-gray-100 flex gap-2">
+        <button onclick="downloadBillImage()" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-pink-600 transition">
+          Lưu Ảnh Bill 📥
+        </button>
+        <button onclick="closeBillModal()" class="px-4 py-2.5 bg-gray-200 text-gray-700 rounded-xl font-bold text-xs hover:bg-gray-300 transition">
+          Đóng ✕
         </button>
       </div>
+
     </div>
   </div>
 
@@ -85,10 +158,10 @@
         ]
       },
       {
-        category: " dễ thương",
+        category: "Biểu Tượng",
         items: [
-          { id: "spoon", name: "Muỗng Vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png",isDangling: true },
-          { id: "balloon", name: "Kitty Bong Bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png",isDangling: true }
+          { id: "spoon", name: "Muỗng Vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png", isDangling: true },
+          { id: "balloon", name: "Kitty Bong Bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png", isDangling: true }
         ]
       }
     ];
@@ -137,7 +210,7 @@
       updateUI();
     }
 
-               function renderBracelet() {
+    function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
       
@@ -145,7 +218,7 @@
       document.getElementById('count-text').innerText = total;
 
       const angleStep = 0.35; 
-      const baseCenterAngle = Math.PI / 2; // Đáy vòng (90 độ)
+      const baseCenterAngle = Math.PI / 2; 
       const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
 
       userCharms.forEach((charm, index) => {
@@ -165,40 +238,23 @@
         charmEl.style.top = `${y}px`;
 
         if (charm.isDangling) {
-          // --- XỬ LÝ RIÊNG CHO CHARM TÒN TENG ---
-          // Không xoay theo đường cong mà để đứng thẳng tự nhiên (hoặc lắc lư nhẹ), 
-          // điểm neo bám vào đúng đỉnh đầu khoen charm.
-          charmEl.style.transform = `translate(0, 0)`; // Đính đúng vị trí dây
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-center w-[32px] h-[44px]">
-              <!-- Ảnh charm tòn teng dài hơn một chút xuống dưới -->
-              <img src="${charm.img}" class="w-8 h-12 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.4)] ${isSelected ? 'animate-bounce' : ''}" style="transform-origin: top center;" />
-              
-              <!-- Badge số và nút xóa nằm gọn gàng bên cạnh -->
-              <span class="absolute -bottom-2 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">
-                ${index + 1}
-              </span>
-              <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">
-                ✕
-              </button>
+            <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]" style="transform: translateY(4px);">
+              <img src="${charm.img}" class="w-9 h-14 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)] ${isSelected ? 'animate-bounce' : ''}" style="transform-origin: top center;" />
+              <span class="absolute -bottom-4 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+              <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
             </div>
           `;
         } else {
-          // --- CHARM THƯỜNG (XOAY THEO VÒNG) ---
           const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
           charmEl.style.transform = `rotate(${rotationDeg}deg)`;
 
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
               <img src="${charm.img}" class="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] ${isSelected ? 'animate-bounce' : ''}" />
-              
               <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">
-                  ${index + 1}
-                </span>
-                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">
-                  ✕
-                </button>
+                <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
               </div>
             </div>
           `;
@@ -208,8 +264,6 @@
         container.appendChild(charmEl);
       });
     }
-
-
 
     function renderTabs() {
       const container = document.getElementById('tabs-container');
@@ -247,28 +301,104 @@
 
     function calculateTotal() {
       const charmTotal = userCharms.reduce((acc, item) => acc + item.price, 0);
-      const total = braceletPrice + charmTotal;
-      document.getElementById('total-price').innerText = total.toLocaleString() + ' đ';
-      return total;
+      return braceletPrice + charmTotal;
     }
 
     function updateUI() {
       renderBracelet();
       renderCharms();
-      calculateTotal();
+      document.getElementById('total-price').innerText = calculateTotal().toLocaleString() + ' đ';
     }
 
-    function sendOrderZalo() {
+    // --- XỬ LÝ BILL & LƯU ẢNH ---
+    function openBillModal() {
       if (userCharms.length === 0) {
         alert("Bạn chưa chọn charm nào lên vòng!");
         return;
       }
-      let msg = `✨ ĐƠN THIẾT KẾ VÒNG KIM BẢO DI ✨\n--------------------------\n`;
-      msg += `1. Dây vòng bạc: ${braceletPrice.toLocaleString()}đ\n2. Danh sách charm đính kèm:\n`;
+
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+
+      if (!name || !phone || !address) {
+        alert("Vui lòng điền đầy đủ Họ tên, Số điện thoại và Địa chỉ nhận hàng!");
+        return;
+      }
+
+      // Điền thông tin vào Bill
+      document.getElementById('b-name').innerText = name;
+      document.getElementById('b-phone').innerText = phone;
+      document.getElementById('b-address').innerText = address;
+      
+      const now = new Date();
+      document.getElementById('bill-date').innerText = `Ngày: ${now.toLocaleDateString('vi-VN')} - ${now.toLocaleTimeString('vi-VN')}`;
+
+      // Clone khung vòng hiện tại bỏ vào Bill
+      const previewContainer = document.getElementById('bill-bracelet-preview');
+      previewContainer.innerHTML = '';
+      const braceletElement = document.getElementById('bracelet-capture-area').cloneNode(true);
+      // Xóa các nút số thứ tự / xóa trên ảnh bill cho gọn nếu muốn, hoặc giữ nguyên
+      previewContainer.appendChild(braceletElement);
+
+      // Đổ danh sách sản phẩm
+      const itemsList = document.getElementById('bill-items-list');
+      itemsList.innerHTML = `
+        <div class="flex justify-between"><span>• Dây vòng bạc</span> <b>${braceletPrice.toLocaleString()}đ</b></div>
+      `;
+      userCharms.forEach((item, idx) => {
+        itemsList.innerHTML += `
+          <div class="flex justify-between"><span>• Vị trí ${idx+1}: ${item.name}</span> <b>${item.price.toLocaleString()}đ</b></div>
+        `;
+      });
+
+      document.getElementById('b-total').innerText = calculateTotal().toLocaleString() + ' đ';
+
+      // Hiện Modal
+      document.getElementById('bill-modal').classList.remove('hidden');
+    }
+
+    function closeBillModal() {
+      document.getElementById('bill-modal').classList.add('hidden');
+    }
+
+    function downloadBillImage() {
+      const billElement = document.getElementById('bill-content');
+      html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Bill-VongTay-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    function sendOrderZalo() {
+      const name = document.getElementById('cust-name').value.trim();
+      const phone = document.getElementById('cust-phone').value.trim();
+      const address = document.getElementById('cust-address').value.trim();
+
+      if (userCharms.length === 0) {
+        alert("Bạn chưa chọn charm nào lên vòng!");
+        return;
+      }
+      if (!name || !phone || !address) {
+        alert("Vui lòng điền đầy đủ Họ tên, Số điện thoại và Địa chỉ trước khi gửi đơn!");
+        return;
+      }
+
+      let msg = `✨ ĐƠN THIẾT KẾ VÒNG KIM BẢO DI ✨\n`;
+      msg += `--------------------------\n`;
+      msg += `👤 Khách hàng: ${name}\n`;
+      msg += `📞 SĐT: ${phone}\n`;
+      msg += `🏠 Địa chỉ: ${address}\n`;
+      msg += `--------------------------\n`;
+      msg += `1. Dây vòng bạc: ${braceletPrice.toLocaleString()}đ\n`;
+      msg += `2. Danh sách charm:\n`;
       userCharms.forEach((item, idx) => {
         msg += `  • Vị trí ${idx + 1}: ${item.name} (${item.price.toLocaleString()}đ)\n`;
       });
-      msg += `--------------------------\n💰 TỔNG TIỀN: ${calculateTotal().toLocaleString()} VNĐ\n\nShop tư vấn và chốt đơn giúp mình nhé!`;
+      msg += `--------------------------\n`;
+      msg += `💰 TỔNG TIỀN: ${calculateTotal().toLocaleString()} VNĐ\n\nShop chốt đơn giúp mình nhé!`;
       
       window.open(`https://zalo.me/${ZALO_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
     }
