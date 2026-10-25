@@ -16,21 +16,22 @@
     <!-- HEADER -->
     <header class="p-4 text-center bg-white border-b border-pink-100 sticky top-0 z-20">
       <h1 class="text-xl font-bold text-pink-500 tracking-wider uppercase">KIMBAODI JEWELRY</h1>
-      <p class="text-xs text-gray-400">Tự tay phối charm theo phong cách của bạn</p>
+      <p class="text-xs text-gray-400">Tự tay thiết kế vòng tay độc bản</p>
     </header>
 
-    <!-- KHUNG XEM THỬ VÒNG -->
+    <!-- KHUNG VÒNG TAY VÀ CHARM BÁM TRÊN VÒNG -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6]">
       <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
-        <!-- Ảnh vòng nền -->
-        <img id="bracelet-img" src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="chưa có charm chọn bên dưới" class="absolute w-full h-full object-contain pointer-events-none p-4" />
+        
+        <!-- Ảnh vòng nền thực tế của tiệm -->
+        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-4" />
 
-        <!-- Các vị trí đính charm -->
-        <div id="slots-container" class="absolute inset-0 flex items-center justify-center gap-2 px-6"></div>
+        <!-- KHUNG CHỨA CHARM TỰ ĐỘNG TOẢ TRÒN THEO VÒNG -->
+        <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
       </div>
 
-      <p class="text-xs text-gray-400 mt-3">
-        Đang đính vào <span id="active-slot-text" class="font-bold text-pink-500">Vị trí 1</span> (Chạm vào số để đổi vị trí)
+      <p class="text-xs text-gray-400 mt-3 text-center">
+        Đã chọn <span id="count-text" class="font-bold text-pink-500">0</span> charm (Chạm vào `✕` trên hạt để gỡ)
       </p>
     </div>
 
@@ -45,8 +46,8 @@
       <!-- THANH TỔNG TIỀN & CHỐT ĐƠN -->
       <div class="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
         <div>
-          <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Tạm tính</p>
-          <p id="total-price" class="text-lg font-extrabold text-pink-600">180,000 đ</p>
+          <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider">Tổng tiền (Vòng + Charm)</p>
+          <p id="total-price" class="text-lg font-extrabold text-pink-600">119,000 đ</p>
         </div>
         <button onclick="sendOrderZalo()" class="bg-pink-500 text-white px-6 py-3 rounded-2xl font-bold text-sm shadow-lg shadow-pink-200 active:scale-95 transition">
           Chốt Đơn Zalo 💬
@@ -56,11 +57,11 @@
   </div>
 
   <script>
-    // 1. SỐ ĐIỆN THOẠI ZALO CHÍNH XÁC CỦA TIỆM
+    // 1. THÔNG TIN TIỆM
     const ZALO_PHONE = "0775812305"; 
-    const braceletPrice = 119000;    // Giá dây vòng
+    const braceletPrice = 119000;    // Giá dây vòng cơ bản
 
-    // 2. DANH SÁCH CHARM VÀ LINK ẢNH THẬT
+    // 2. DANH SÁCH SẢN PHẨM THẬT
     const CHARM_CATEGORIES = [
       {
         category: "Hello Kitty",
@@ -74,37 +75,61 @@
       {
         category: "Biểu Tượng",
         items: [
-          { id: "heart", name: "muỗng vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png" },
-          { id: "star", name: "kitty bong bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png" }
+          { id: "spoon", name: "Muỗng Vàng", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png" },
+          { id: "balloon", name: "Kitty Bong Bóng", price: 238000, img: "https://i.postimg.cc/5tJWcCSs/IMG-0750.png" }
         ]
       }
     ];
 
-    let slots = [null, null, null, null, null];
-    let activeSlot = 0;
+    let userCharms = []; // Danh sách charm khách chọn
     let currentTab = CHARM_CATEGORIES[0].category;
 
-    function renderSlots() {
-      const container = document.getElementById('slots-container');
-      container.innerHTML = '';
-      slots.forEach((charm, idx) => {
-        const btn = document.createElement('button');
-        btn.className = `w-11 h-11 rounded-full border-2 flex items-center justify-center transition-all relative ${
-          activeSlot === idx ? 'border-pink-500 bg-pink-50 scale-110 shadow-md ring-2 ring-pink-200' : 'border-dashed border-gray-300 bg-white/80'
-        }`;
-        btn.onclick = () => { activeSlot = idx; updateUI(); };
-
-        if (charm) {
-          btn.innerHTML = `<img src="${charm.img}" class="w-8 h-8 object-contain" />
-            <span onclick="event.stopPropagation(); removeCharm(${idx})" class="absolute -top-1 -right-1 bg-red-400 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center">✕</span>`;
-        } else {
-          btn.innerHTML = `<span class="text-[10px] text-gray-400 font-bold">${idx + 1}</span>`;
-        }
-        container.appendChild(btn);
-      });
-      document.getElementById('active-slot-text').innerText = `Vị trí ${activeSlot + 1}`;
+    // Thêm charm vào vòng (tối đa 8 charm)
+    function addCharm(charm) {
+      if (userCharms.length >= 8) {
+        alert("Vòng đã đạt tối đa số lượng charm!");
+        return;
+      }
+      userCharms.push(charm);
+      updateUI();
     }
 
+    // Gỡ charm ra khỏi vòng
+    function removeCharm(index) {
+      userCharms.splice(index, 1);
+      updateUI();
+    }
+
+    // Tự động sắp xếp các charm bám theo vòng tròn
+    function renderBracelet() {
+      const container = document.getElementById('bracelet-ring');
+      container.innerHTML = '';
+      
+      const total = userCharms.length;
+      document.getElementById('count-text').innerText = total;
+
+      userCharms.forEach((charm, index) => {
+        // Tính góc toả tròn đều trên vòng
+        const angle = (index / Math.max(total, 1)) * 2 * Math.PI - Math.PI / 2;
+        const radius = 85; // Khoảng cách bám theo đường kính vòng
+        const x = 144 + radius * Math.cos(angle) - 20; // 144 là tâm khung (288px / 2)
+        const y = 144 + radius * Math.sin(angle) - 20;
+
+        const charmEl = document.createElement('div');
+        charmEl.className = 'absolute pointer-events-auto cursor-pointer transition-all hover:scale-110';
+        charmEl.style.left = `${x}px`;
+        charmEl.style.top = `${y}px`;
+        charmEl.innerHTML = `
+          <div class="relative">
+            <img src="${charm.img}" class="w-10 h-10 object-contain drop-shadow bg-white/90 rounded-full p-0.5 border border-pink-200" />
+            <button onclick="removeCharm(${index})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow">✕</button>
+          </div>
+        `;
+        container.appendChild(charmEl);
+      });
+    }
+
+    // Hiển thị thanh danh mục tab
     function renderTabs() {
       const container = document.getElementById('tabs-container');
       container.innerHTML = '';
@@ -114,12 +139,14 @@
           currentTab === cat.category ? 'bg-pink-500 text-white shadow-sm' : 'bg-gray-100 text-gray-500'
         }`;
         btn.innerText = cat.category;
-        btn.onclick = () => { currentTab = cat.category; updateUI(); };
+        btn.onclick = () => { currentTab = cat.category; renderCharms(); };
         container.appendChild(btn);
       });
     }
 
+    // Hiển thị danh sách charm để khách chọn
     function renderCharms() {
+      renderTabs();
       const container = document.getElementById('charms-grid');
       container.innerHTML = '';
       const catData = CHARM_CATEGORIES.find(c => c.category === currentTab);
@@ -128,7 +155,7 @@
       catData.items.forEach(charm => {
         const btn = document.createElement('button');
         btn.className = 'flex flex-col items-center bg-pink-50/40 p-2 rounded-xl border border-pink-100 hover:bg-pink-100 transition active:scale-95';
-        btn.onclick = () => selectCharm(charm);
+        btn.onclick = () => addCharm(charm);
         btn.innerHTML = `
           <img src="${charm.img}" class="w-10 h-10 object-contain mb-1" />
           <span class="text-[10px] font-medium text-gray-600 truncate w-full text-center">${charm.name}</span>
@@ -138,48 +165,39 @@
       });
     }
 
-    function selectCharm(charm) {
-      slots[activeSlot] = charm;
-      if (activeSlot < slots.length - 1) activeSlot++;
-      updateUI();
-    }
-
-    function removeCharm(idx) {
-      slots[idx] = null;
-      updateUI();
-    }
-
+    // Tự động tính tổng tiền (Giá vòng + Tổng giá charm đã chọn)
     function calculateTotal() {
-      const charmTotal = slots.reduce((acc, item) => acc + (item ? item.price : 0), 0);
+      const charmTotal = userCharms.reduce((acc, item) => acc + item.price, 0);
       const total = braceletPrice + charmTotal;
       document.getElementById('total-price').innerText = total.toLocaleString() + ' đ';
       return total;
     }
 
     function updateUI() {
-      renderSlots();
-      renderTabs();
+      renderBracelet();
       renderCharms();
       calculateTotal();
     }
 
+    // Gửi thông tin đơn hàng qua Zalo
     function sendOrderZalo() {
-      let msg = `✨ ĐƠN HÀNG THIẾT KẾ CHARM KIM BẢO DI ✨\n--------------------------\n`;
-      msg += `1. Dây vòng bạc: ${braceletPrice.toLocaleString()}đ\n2. Charm đính kèm:\n`;
-      let hasCharm = false;
-      slots.forEach((item, idx) => {
-        if (item) {
-          hasCharm = true;
-          msg += `  • Vị trí ${idx + 1}: ${item.name} (${item.price.toLocaleString()}đ)\n`;
-        }
+      if (userCharms.length === 0) {
+        alert("Bạn chưa chọn charm nào lên vòng!");
+        return;
+      }
+      let msg = `✨ ĐƠN THIẾT KẾ VÒNG KIM BẢO DI ✨\n--------------------------\n`;
+      msg += `1. Dây vòng bạc: ${braceletPrice.toLocaleString()}đ\n2. Danh sách charm đính kèm:\n`;
+      userCharms.forEach((item, idx) => {
+        msg += `  • Charm ${idx + 1}: ${item.name} (${item.price.toLocaleString()}đ)\n`;
       });
-      if (!hasCharm) msg += `  (Chưa chọn charm)\n`;
-      msg += `--------------------------\n💰 TỔNG TIỀN: ${calculateTotal().toLocaleString()} VNĐ`;
+      msg += `--------------------------\n💰 TỔNG TIỀN: ${calculateTotal().toLocaleString()} VNĐ\n\nShop tư vấn và chốt đơn giúp mình nhé!`;
+      
       window.open(`https://zalo.me/${ZALO_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    // Khởi chạy giao diện
+    // Khởi chạy khi mở trang
     updateUI();
   </script>
 </body>
 </html>
+
