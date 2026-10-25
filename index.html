@@ -19,14 +19,14 @@
       <p class="text-xs text-gray-400">Tự tay thiết kế vòng tay độc bản</p>
     </header>
 
-    <!-- KHUNG VÒNG TAY VÀ CHARM BÁM TRÊN VÒNG -->
+    <!-- KHUNG VÒNG TAY VÀ CHARM XỎ TRÊN VÒNG -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6]">
       <div class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
         
         <!-- Ảnh vòng nền thực tế của tiệm -->
-        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-4" />
+        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-2" />
 
-        <!-- KHUNG CHỨA CHARM TỰ ĐỘNG TOẢ TRÒN THEO VÒNG -->
+        <!-- CÁC HẠT CHARM XỎ CHUẨN TRÊN ĐƯỜNG VIỀN VÒNG -->
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
       </div>
 
@@ -61,12 +61,12 @@
     const ZALO_PHONE = "0775812305"; 
     const braceletPrice = 119000;    // Giá dây vòng cơ bản
 
-    // 2. DANH SÁCH SẢN PHẨM THẬT
+    // 2. DANH SÁCH SẢN PHẨM THẬT CỦA TIỆM
     const CHARM_CATEGORIES = [
       {
         category: "Hello Kitty",
         items: [
-          { id: "kitty-1", name: "Kitty Đầu Vương Miện", price: 238000, img: "https://i.postimg.cc/YS7BcWzJ/IMG-0746.png" },
+          { id: "kitty-1", name: "Kitty Vương Miện", price: 238000, img: "https://i.postimg.cc/YS7BcWzJ/IMG-0746.png" },
           { id: "kitty-2", name: "Kitty Nơ Đỏ", price: 238000, img: "https://i.postimg.cc/s2zCFh4b/IMG-0747.png" },
           { id: "kitty-3", name: "Kitty Thỏi Vàng", price: 238000, img: "https://i.postimg.cc/vmywRVtk/IMG-0748.png" },
           { id: "kitty-4", name: "Nơ Đỏ Thắt", price: 238000, img: "https://i.postimg.cc/SK4b0Mf5/IMG-0749.png" }
@@ -81,7 +81,7 @@
       }
     ];
 
-    let userCharms = []; // Danh sách charm khách chọn
+    let userCharms = []; 
     let currentTab = CHARM_CATEGORIES[0].category;
 
     // Thêm charm vào vòng (tối đa 8 charm)
@@ -90,7 +90,7 @@
         alert("Vòng đã đạt tối đa số lượng charm!");
         return;
       }
-      userCharms.push(charm);
+      userCharms.length === 0 ? userCharms.push(charm) : userCharms.splice(Math.floor(userCharms.length / 2) + 1, 0, charm);
       updateUI();
     }
 
@@ -100,7 +100,7 @@
       updateUI();
     }
 
-    // Tự động sắp xếp các charm bám theo vòng tròn
+    // Sắp xếp các charm ôm sát và bám đều quanh vòng tròn (tập trung nửa dưới giống ảnh mẫu)
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
@@ -109,10 +109,13 @@
       document.getElementById('count-text').innerText = total;
 
       userCharms.forEach((charm, index) => {
-        // Tính góc toả tròn đều trên vòng
-        const angle = (index / Math.max(total, 1)) * 2 * Math.PI - Math.PI / 2;
-        const radius = 85; // Khoảng cách bám theo đường kính vòng
-        const x = 144 + radius * Math.cos(angle) - 20; // 144 là tâm khung (288px / 2)
+        // Phân bổ các charm tập trung chủ yếu ở phần dưới của vòng (từ góc phải qua trái giống ảnh mẫu)
+        const angleStep = 0.55; 
+        const startAngle = Math.PI / 2 - (total * angleStep) / 2;
+        const angle = startAngle + index * angleStep;
+
+        const radius = 94; // Bán kính chuẩn khớp khít với vòng trên ảnh
+        const x = 144 + radius * Math.cos(angle) - 20; 
         const y = 144 + radius * Math.sin(angle) - 20;
 
         const charmEl = document.createElement('div');
@@ -121,7 +124,7 @@
         charmEl.style.top = `${y}px`;
         charmEl.innerHTML = `
           <div class="relative">
-            <img src="${charm.img}" class="w-10 h-10 object-contain drop-shadow bg-white/90 rounded-full p-0.5 border border-pink-200" />
+            <img src="${charm.img}" class="w-11 h-11 object-contain drop-shadow-md bg-white/60 rounded-full p-0.5" />
             <button onclick="removeCharm(${index})" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow">✕</button>
           </div>
         `;
@@ -129,7 +132,7 @@
       });
     }
 
-    // Hiển thị thanh danh mục tab
+    // Hiển thị danh mục tab
     function renderTabs() {
       const container = document.getElementById('tabs-container');
       container.innerHTML = '';
@@ -195,9 +198,7 @@
       window.open(`https://zalo.me/${ZALO_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
     }
 
-    // Khởi chạy khi mở trang
     updateUI();
   </script>
 </body>
 </html>
-
