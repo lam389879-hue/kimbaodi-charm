@@ -108,10 +108,11 @@
           <p><b>Địa chỉ:</b> <span id="b-address">Chưa nhập</span></p>
         </div>
 
-        <!-- Ảnh vòng đã thiết kế -->
+        <!-- Ảnh vòng đã thiết kế sạch sẽ (Không số thứ tự, không nút xóa) -->
         <div class="flex justify-center">
-          <div id="bill-bracelet-preview" class="w-48 h-48 relative border border-pink-100 rounded-2xl bg-[#FFF5F6] flex items-center justify-center overflow-hidden">
-            <!-- Ảnh vòng bản nhỏ trong bill sẽ được clone vào đây -->
+          <div class="w-48 h-48 relative border border-pink-100 rounded-2xl bg-[#FFF5F6] flex items-center justify-center overflow-hidden">
+            <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
+            <div id="bill-bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
           </div>
         </div>
 
@@ -130,7 +131,7 @@
         </div>
       </div>
 
-      <!-- NÚT THao tác trong Modal -->
+      <!-- NÚT Thao tác trong Modal -->
       <div class="p-4 bg-gray-50 border-t border-gray-100 flex gap-2">
         <button onclick="downloadBillImage()" class="flex-1 bg-pink-500 text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-pink-600 transition">
           Lưu Ảnh Bill 📥
@@ -265,6 +266,52 @@
       });
     }
 
+    // Render vòng thu nhỏ sạch sẽ cho Bill (Không có số thứ tự, không có nút xóa)
+    function renderBillBracelet() {
+      const container = document.getElementById('bill-bracelet-ring');
+      container.innerHTML = '';
+      
+      const total = userCharms.length;
+      if (total === 0) return;
+
+      const angleStep = 0.35; 
+      const baseCenterAngle = Math.PI / 2; 
+      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
+
+      userCharms.forEach((charm, index) => {
+        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
+
+        const radius = 80; // Bán kính thu nhỏ vừa khung bill
+        const charmSize = 26; 
+        
+        const x = 96 + radius * Math.cos(angle) - charmSize / 2; 
+        const y = 96 + radius * Math.sin(angle) - charmSize / 2;
+
+        const charmEl = document.createElement('div');
+        charmEl.className = `absolute pointer-events-none z-20`;
+        charmEl.style.left = `${x}px`;
+        charmEl.style.top = `${y}px`;
+
+        if (charm.isDangling) {
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-center w-[26px] h-[26px]" style="transform: translateY(3px);">
+              <img src="${charm.img}" class="w-7 h-11 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.4)]" style="transform-origin: top center;" />
+            </div>
+          `;
+        } else {
+          const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
+          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
+
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-center w-[26px] h-[26px]">
+              <img src="${charm.img}" class="w-full h-full object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]" />
+            </div>
+          `;
+        }
+        container.appendChild(charmEl);
+      });
+    }
+
     function renderTabs() {
       const container = document.getElementById('tabs-container');
       container.innerHTML = '';
@@ -334,12 +381,8 @@
       const now = new Date();
       document.getElementById('bill-date').innerText = `Ngày: ${now.toLocaleDateString('vi-VN')} - ${now.toLocaleTimeString('vi-VN')}`;
 
-      // Clone khung vòng hiện tại bỏ vào Bill
-      const previewContainer = document.getElementById('bill-bracelet-preview');
-      previewContainer.innerHTML = '';
-      const braceletElement = document.getElementById('bracelet-capture-area').cloneNode(true);
-      // Xóa các nút số thứ tự / xóa trên ảnh bill cho gọn nếu muốn, hoặc giữ nguyên
-      previewContainer.appendChild(braceletElement);
+      // Render vòng sạch sẽ lên bill
+      renderBillBracelet();
 
       // Đổ danh sách sản phẩm
       const itemsList = document.getElementById('bill-items-list');
@@ -400,7 +443,15 @@
       msg += `--------------------------\n`;
       msg += `💰 TỔNG TIỀN: ${calculateTotal().toLocaleString()} VNĐ\n\nShop chốt đơn giúp mình nhé!`;
       
-      window.open(`https://zalo.me/${ZALO_PHONE}?text=${encodeURIComponent(msg)}`, '_blank');
+      // Copy nội dung vào clipboard
+      navigator.clipboard.writeText(msg).then(() => {
+        alert("Đã copy nội dung đơn hàng! Ứng dụng Zalo sẽ mở ra, bạn hãy dán (Paste) nội dung vừa copy và gửi ảnh bill cho Shop nhé!");
+      }).catch(err => {
+        console.log('Không thể copy tự động', err);
+      });
+
+      // Mở chat Zalo trực tiếp qua số điện thoại chính xác
+      window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
     }
 
     updateUI();
