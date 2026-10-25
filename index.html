@@ -159,9 +159,8 @@
   <script>
     const ZALO_PHONE = "0775812305"; 
     const braceletPrice = 119000;
-    let currentLang = 'vi'; // Mặc định là Tiếng Việt
+    let currentLang = 'vi';
 
-    // BỘ TỪ ĐIỂN ĐA NGÔN NGỮ
     const translations = {
       vi: {
         langBtn: "🇻🇳 VN",
@@ -355,9 +354,10 @@
         charmEl.style.top = `${y}px`;
 
         if (charm.isDangling) {
+          // Đã xóa bỏ hoàn toàn bóng đen (drop-shadow) gây lem màu
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]" style="transform: translateY(4px);">
-              <img src="${charm.img}" class="w-9 h-14 object-contain drop-shadow-[0_4px_6px_rgba(0,0,0,0.4)] ${isSelected ? 'animate-bounce' : ''}" style="transform-origin: top center;" />
+              <img src="${charm.img}" class="w-9 h-14 object-contain ${isSelected ? 'animate-bounce' : ''}" style="transform-origin: top center;" />
               <span class="absolute -bottom-4 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
               <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
             </div>
@@ -368,7 +368,7 @@
 
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
-              <img src="${charm.img}" class="w-full h-full object-contain drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] ${isSelected ? 'animate-bounce' : ''}" />
+              <img src="${charm.img}" class="w-full h-full object-contain ${isSelected ? 'animate-bounce' : ''}" />
               <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
                 <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
                 <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
@@ -407,9 +407,10 @@
         charmEl.style.top = `${y}px`;
 
         if (charm.isDangling) {
+          // Bill cũng được làm sạch bóng đen để ảnh xuất ra hoàn hảo nhất
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]" style="transform: translateY(3px);">
-              <img src="${charm.img}" class="w-8 h-12 object-contain drop-shadow-[0_3px_5px_rgba(0,0,0,0.4)]" style="transform-origin: top center;" />
+              <img src="${charm.img}" class="w-8 h-12 object-contain" style="transform-origin: top center;" />
             </div>
           `;
         } else {
@@ -418,7 +419,7 @@
 
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
-              <img src="${charm.img}" class="w-full h-full object-contain drop-shadow-[0_2px_3px_rgba(0,0,0,0.4)]" />
+              <img src="${charm.img}" class="w-full h-full object-contain" />
             </div>
           `;
         }
@@ -473,7 +474,6 @@
     function updateUI() {
       const t = translations[currentLang];
 
-      // Cập nhật text giao diện theo ngôn ngữ
       document.getElementById('lang-btn').innerText = t.langBtn;
       document.getElementById('txt-subtitle').innerText = t.subtitle;
       document.getElementById('txt-selected-label').innerText = t.selectedLabel;
@@ -489,7 +489,6 @@
       document.getElementById('btn-view-bill').innerText = t.viewBill;
       document.getElementById('btn-zalo').innerText = t.zalo;
 
-      // Modal Bill texts
       document.getElementById('txt-bill-subtitle').innerText = t.billSubtitle;
       document.getElementById('txt-b-name').innerText = t.bName;
       document.getElementById('txt-b-phone').innerText = t.bPhone;
