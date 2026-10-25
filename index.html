@@ -7,6 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Thư viện html2canvas để chụp bill thành ảnh -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <!-- Thư viện canvas-confetti để làm hiệu ứng pháo hoa pastel -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -197,7 +199,7 @@
         zaloMsgCharms: "Danh sách charm:",
         zaloMsgTotal: "💰 TỔNG TIỀN:",
         zaloMsgNote: "Shop chốt đơn giúp mình nhé!",
-        alertZaloGuide: "✅ Đã lưu ảnh Bill & Copy nội dung đơn hàng!\n\nKhi Zalo mở ra, bạn chỉ cần:\n1. Bấm vào nút gửi ảnh 🖼️ (ảnh Bill vừa nằm sẵn ở đầu thư viện).\n2. Giữ khung chat và Dán (Paste) nội dung đơn hàng rồi gửi là xong!",
+        alertZaloGuide: "✨ Đã lưu ảnh Bill & Copy sẵn nội dung đơn!\n\n👉 Khi mở Zalo, bạn chỉ cần:\n1. Chọn ảnh Bill vừa tải về trong thư viện 🖼️\n2. Giữ khung chat và bấm Dán (Paste) nội dung đơn hàng rồi gửi là xong!",
         categories: [
           {
             categoryVi: "Hello Kitty",
@@ -254,6 +256,7 @@
         zaloMsgCharms: "Charm List:",
         zaloMsgTotal: "💰 TOTAL:",
         zaloMsgNote: "Please confirm my order!",
+        alertZaloGuide: "✨ Bill saved & order copied!\n\n👉 In Zalo:\n1. Attach the saved Bill image 🖼️\n2. Long press chat box and Paste order text!",
         categories: [
           {
             categoryVi: "Hello Kitty",
@@ -307,6 +310,16 @@
       }, 800);
     }
 
+    // HIỆU ỨNG PHÁO HOA MÀU PASTEL CHÚC MỪNG
+    function triggerPastelConfetti() {
+      confetti({
+        particleCount: 80,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ffb6c1', '#ffc0cb', '#ffe4e1', '#ffd1dc', '#fff0f5', '#ff9eaa']
+      });
+    }
+
     function handleCharmClick(index) {
       if (selectedIndexToSwap === null) {
         selectedIndexToSwap = index;
@@ -354,7 +367,6 @@
         charmEl.style.top = `${y}px`;
 
         if (charm.isDangling) {
-          // Đã xóa bỏ hoàn toàn bóng đen (drop-shadow) gây lem màu
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]" style="transform: translateY(4px);">
               <img src="${charm.img}" class="w-9 h-14 object-contain ${isSelected ? 'animate-bounce' : ''}" style="transform-origin: top center;" />
@@ -407,7 +419,6 @@
         charmEl.style.top = `${y}px`;
 
         if (charm.isDangling) {
-          // Bill cũng được làm sạch bóng đen để ảnh xuất ra hoàn hảo nhất
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]" style="transform: translateY(3px);">
               <img src="${charm.img}" class="w-8 h-12 object-contain" style="transform-origin: top center;" />
@@ -542,6 +553,9 @@
 
       document.getElementById('b-total').innerText = calculateTotal().toLocaleString() + (currentLang === 'vi' ? ' đ' : ' VND');
       document.getElementById('bill-modal').classList.remove('hidden');
+
+      // Bật pháo hoa màu pastel khi khách mở Bill thành công
+      triggerPastelConfetti();
     }
 
     function closeBillModal() {
@@ -558,19 +572,12 @@
       });
     }
 
-    function sendBillZalo() {
+    // TẠO NỘI DUNG ĐƠN HÀNG CHUẨN
+    function generateOrderMessage() {
       const t = translations[currentLang];
       const name = document.getElementById('cust-name').value.trim();
       const phone = document.getElementById('cust-phone').value.trim();
       const address = document.getElementById('cust-address').value.trim();
-
-      const billElement = document.getElementById('bill-content');
-      html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `Bill-KimBaoDi-${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
 
       let msg = `${t.zaloMsgHeader}\n`;
       msg += `--------------------------\n`;
@@ -586,9 +593,26 @@
       });
       msg += `--------------------------\n`;
       msg += `${t.zaloMsgTotal} ${calculateTotal().toLocaleString()} VNĐ\n\n${t.zaloMsgNote}`;
+      return msg;
+    }
 
+    function sendBillZalo() {
+      const t = translations[currentLang];
+      
+      // 1. Tự động lưu ảnh bill ngay lập tức vào máy
+      const billElement = document.getElementById('bill-content');
+      html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Bill-KimBaoDi-${Date.now()}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+
+      // 2. Copy nội dung đơn hàng vào bộ nhớ tạm
+      const msg = generateOrderMessage();
       navigator.clipboard.writeText(msg).catch(err => console.log(err));
 
+      // 3. Thông báo hướng dẫn rõ ràng cho khách và mở đúng chat Zalo (dùng chat.zalo.me hoặc zalo.me với sdt)
       alert(t.alertZaloGuide);
       window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
     }
@@ -608,22 +632,22 @@
         return;
       }
 
-      let msg = `${t.zaloMsgHeader}\n`;
-      msg += `--------------------------\n`;
-      msg += `${t.zaloMsgCustomer} ${name}\n`;
-      msg += `${t.zaloMsgPhone} ${phone}\n`;
-      msg += `${t.zaloMsgAddress} ${address}\n`;
-      msg += `--------------------------\n`;
-      msg += `1. ${t.zaloMsgBracelet} ${braceletPrice.toLocaleString()}đ\n`;
-      msg += `2. ${t.zaloMsgCharms}\n`;
-      userCharms.forEach((item, idx) => {
-        const itemName = currentLang === 'vi' ? item.nameVi : item.nameEn;
-        msg += `  • ${t.posText} ${idx + 1}: ${itemName} (${item.price.toLocaleString()}đ)\n`;
-      });
-      msg += `--------------------------\n`;
-      msg += `${t.zaloMsgTotal} ${calculateTotal().toLocaleString()} VNĐ\n\n${t.zaloMsgNote}`;
-      
+      // 1. Tự động chụp và lưu ảnh bill luôn cả ở nút Zalo ngoài màn hình chính cho tiện
+      const billElement = document.getElementById('bill-content');
+      if(billElement) {
+        html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = `Bill-KimBaoDi-${Date.now()}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        });
+      }
+
+      // 2. Copy nội dung và mở Zalo
+      const msg = generateOrderMessage();
       navigator.clipboard.writeText(msg).catch(err => console.log(err));
+
+      alert(t.alertZaloGuide);
       window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
     }
 
