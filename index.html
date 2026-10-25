@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Thư viện html2canvas để chụp bill thành ảnh -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <!-- Thư viện canvas-confetti để làm hiệu ứng pháo hoa pastel -->
+  <!-- Thư viện canvas-confetti để làm hiệu ứng pháo hoa toàn màn hình -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -58,14 +58,14 @@
       </p>
     </div>
 
-    <!-- FORM NHẬP THÔNG TIN KHÁCH HÀNG -->
+    <!-- FORM NHẬP THÔNG TIN KHÁCH HÀNG (Hỗ trợ Autofill gợi ý sẵn từ máy/Shopee/TikTok) -->
     <div class="px-4 py-2 bg-white border-t border-pink-100">
       <p id="txt-receiver-info" class="text-xs font-bold text-pink-500 mb-1 uppercase">Thông tin người nhận:</p>
       <div class="space-y-2">
-        <input type="text" id="cust-name" placeholder="Họ và tên người nhận" class="w-full text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
+        <input type="text" id="cust-name" autocomplete="name" placeholder="Họ và tên người nhận" class="w-full text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
         <div class="flex gap-2">
-          <input type="tel" id="cust-phone" placeholder="Số điện thoại" class="w-1/2 text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
-          <input type="text" id="cust-address" placeholder="Địa chỉ nhận hàng" class="w-1/2 text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
+          <input type="tel" id="cust-phone" autocomplete="tel" placeholder="Số điện thoại" class="w-1/2 text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
+          <input type="text" id="cust-address" autocomplete="street-address" placeholder="Địa chỉ nhận hàng" class="w-1/2 text-xs px-3 py-2 rounded-xl border border-pink-200 focus:outline-none focus:border-pink-500" />
         </div>
       </div>
     </div>
@@ -199,7 +199,7 @@
         zaloMsgCharms: "Danh sách charm:",
         zaloMsgTotal: "💰 TỔNG TIỀN:",
         zaloMsgNote: "Shop chốt đơn giúp mình nhé!",
-        alertZaloGuide: "✨ Đã lưu ảnh Bill & Copy sẵn nội dung đơn!\n\n👉 Khi mở Zalo, bạn chỉ cần:\n1. Chọn ảnh Bill vừa tải về trong thư viện 🖼️\n2. Giữ khung chat và bấm Dán (Paste) nội dung đơn hàng rồi gửi là xong!",
+        alertZaloGuide: "✨ Đã lưu ảnh Bill & Copy sẵn nội dung đơn!\n\n👉 Khi Zalo mở ra:\n1. Chọn ảnh Bill vừa lưu trong thư viện 🖼️\n2. Giữ khung chat và bấm Dán (Paste) nội dung đơn hàng rồi gửi là xong nhé!",
         categories: [
           {
             categoryVi: "Hello Kitty",
@@ -310,14 +310,32 @@
       }, 800);
     }
 
-    // HIỆU ỨNG PHÁO HOA MÀU PASTEL CHÚC MỪNG
-    function triggerPastelConfetti() {
-      confetti({
-        particleCount: 80,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#ffb6c1', '#ffc0cb', '#ffe4e1', '#ffd1dc', '#fff0f5', '#ff9eaa']
-      });
+    // HIỆU ỨNG PHÁO HOA FULL TOÀN MÀN HÌNH
+    function triggerFullFullscreenConfetti() {
+      var duration = 2.5 * 1000;
+      var animationEnd = Date.now() + duration;
+      var colors = ['#ffb6c1', '#ffc0cb', '#ffe4e1', '#ffd1dc', '#fff0f5', '#ff9eaa', '#ff69b4'];
+
+      (function frame() {
+        confetti({
+          particleCount: 5,
+          angle: 60,
+          spread: 55,
+          origin: { x: 0, y: 0.7 },
+          colors: colors
+        });
+        confetti({
+          particleCount: 5,
+          angle: 120,
+          spread: 55,
+          origin: { x: 1, y: 0.7 },
+          colors: colors
+        });
+
+        if (Date.now() < animationEnd) {
+          requestAnimationFrame(frame);
+        }
+      }());
     }
 
     function handleCharmClick(index) {
@@ -554,8 +572,8 @@
       document.getElementById('b-total').innerText = calculateTotal().toLocaleString() + (currentLang === 'vi' ? ' đ' : ' VND');
       document.getElementById('bill-modal').classList.remove('hidden');
 
-      // Bật pháo hoa màu pastel khi khách mở Bill thành công
-      triggerPastelConfetti();
+      // Bật pháo hoa full toàn màn hình
+      triggerFullFullscreenConfetti();
     }
 
     function closeBillModal() {
@@ -572,7 +590,6 @@
       });
     }
 
-    // TẠO NỘI DUNG ĐƠN HÀNG CHUẨN
     function generateOrderMessage() {
       const t = translations[currentLang];
       const name = document.getElementById('cust-name').value.trim();
@@ -599,7 +616,7 @@
     function sendBillZalo() {
       const t = translations[currentLang];
       
-      // 1. Tự động lưu ảnh bill ngay lập tức vào máy
+      // 1. Tự động lưu ảnh bill vào máy
       const billElement = document.getElementById('bill-content');
       html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
         const link = document.createElement('a');
@@ -608,13 +625,15 @@
         link.click();
       });
 
-      // 2. Copy nội dung đơn hàng vào bộ nhớ tạm
+      // 2. Copy sẵn nội dung đơn hàng vào clipboard
       const msg = generateOrderMessage();
       navigator.clipboard.writeText(msg).catch(err => console.log(err));
 
-      // 3. Thông báo hướng dẫn rõ ràng cho khách và mở đúng chat Zalo (dùng chat.zalo.me hoặc zalo.me với sdt)
+      // 3. Thông báo hướng dẫn mở chat Zalo trực tiếp
       alert(t.alertZaloGuide);
-      window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
+      
+      // Sử dụng link chat Zalo chuẩn (chat.zalo.me) để mở thẳng vào hộp thoại nhắn tin thay vì trang cá nhân
+      window.open(`https://chat.zalo.me/?phone=${ZALO_PHONE}`, '_blank');
     }
 
     function sendOrderZalo() {
@@ -632,7 +651,6 @@
         return;
       }
 
-      // 1. Tự động chụp và lưu ảnh bill luôn cả ở nút Zalo ngoài màn hình chính cho tiện
       const billElement = document.getElementById('bill-content');
       if(billElement) {
         html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
@@ -643,12 +661,11 @@
         });
       }
 
-      // 2. Copy nội dung và mở Zalo
       const msg = generateOrderMessage();
       navigator.clipboard.writeText(msg).catch(err => console.log(err));
 
       alert(t.alertZaloGuide);
-      window.open(`https://zalo.me/${ZALO_PHONE}`, '_blank');
+      window.open(`https://chat.zalo.me/?phone=${ZALO_PHONE}`, '_blank');
     }
 
     updateUI();
