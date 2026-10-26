@@ -408,7 +408,7 @@
       updateUI();
     }
 
-    // ĐIỀU CHỈNH ĐỈNH ĐẦU KHOEN CHARM TÒN TEN XỎ CHÍNH XÁC VÀO VÒNG TAY
+    // ĐÍNH ĐỈNH ĐẦU KHOEN CHARM TÒN TEN LÊN VÒNG VÀ RŨ THÕNG XUỐNG DƯỚI
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
@@ -435,13 +435,13 @@
         const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         if (charm.isDangling) {
-          // Đỉnh khoen charm tòn ten được canh chỉnh xỏ chuẩn vào tâm vòng
+          // Đỉnh khoen bám đúng dây vòng, thân charm rũ thẳng xuống dưới
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(-12px);">
+            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(2px);">
               <img src="${charm.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
               <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute top-2 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-                <button onclick="removeCharm(event, ${index})" class="absolute -top-1 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+                <span class="absolute top-6 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+                <button onclick="removeCharm(event, ${index})" class="absolute top-1 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
               </div>
             </div>
           `;
@@ -488,7 +488,7 @@
 
         if (charm.isDangling) {
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(-10px);">
+            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(2px);">
               <img src="${charm.img}" class="w-8 h-14 object-contain origin-top" />
             </div>`;
         } else {
