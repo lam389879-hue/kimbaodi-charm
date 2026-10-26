@@ -435,7 +435,100 @@ function drawTonTenCharms(ctx, charms, cx, cy, radius) {
     
     ctx.restore();
   });
-}
+}    // HIỂN THỊ VÒNG TAY (CHỈ CHARM TÒN TEN MỚI RŨ LƠ LỬNG XUỐNG DƯỚI)
+    function renderBracelet() {
+      const container = document.getElementById('bracelet-ring');
+      container.innerHTML = '';
+      const total = userCharms.length;
+      document.getElementById('count-text').innerText = total;
+
+      const angleStep = 0.30; 
+      const baseCenterAngle = Math.PI / 2; 
+      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
+
+      userCharms.forEach((charm, index) => {
+        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
+        const radius = 118; 
+        const charmSize = 32; 
+        const x = 144 + radius * Math.cos(angle) - charmSize / 2; 
+        const y = 138 + radius * Math.sin(angle) - charmSize / 2;
+
+        const isSelected = selectedIndexToSwap === index;
+        const charmEl = document.createElement('div');
+        charmEl.className = `absolute pointer-events-auto cursor-pointer transition-all duration-300 ${isSelected ? 'scale-125 z-40' : 'z-20'}`;
+        charmEl.style.left = `${x}px`;
+        charmEl.style.top = `${y}px`;
+
+        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
+
+        if (charm.isDangling) {
+          // Charm thuộc nhóm tòn ten sẽ rũ lơ lửng tự nhiên
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(-2px);">
+              <img src="${charm.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
+              <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <span class="absolute -bottom-1 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+              </div>
+            </div>
+          `;
+        } else {
+          // Charm thường nằm ôm sát vòng
+          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
+              <img src="${charm.img}" class="w-full h-full object-contain ${isSelected ? 'animate-bounce' : ''}" />
+              <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+              </div>
+            </div>
+          `;
+        }
+        charmEl.onclick = () => handleCharmClick(index);
+        container.appendChild(charmEl);
+      });
+    }
+
+    function renderBillBracelet() {
+      const container = document.getElementById('bill-bracelet-ring');
+      container.innerHTML = '';
+      const total = userCharms.length;
+      if (total === 0) return;
+
+      const angleStep = 0.30; 
+      const baseCenterAngle = Math.PI / 2; 
+      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
+
+      userCharms.forEach((charm, index) => {
+        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
+        const radius = 92; 
+        const charmSize = 28; 
+        const x = 112 + radius * Math.cos(angle) - charmSize / 2; 
+        const y = 108 + radius * Math.sin(angle) - charmSize / 2;
+
+        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
+
+        const charmEl = document.createElement('div');
+        charmEl.className = `absolute pointer-events-none z-20`;
+        charmEl.style.left = `${x}px`;
+        charmEl.style.top = `${y}px`;
+
+        if (charm.isDangling) {
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(-2px);">
+              <img src="${charm.img}" class="w-8 h-14 object-contain origin-top" />
+            </div>`;
+        } else {
+          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
+              <img src="${charm.img}" class="w-full h-full object-contain" />
+            </div>`;
+        }
+        container.appendChild(charmEl);
+      });
+    }
 
 
     function renderBillBracelet() {
