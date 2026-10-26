@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Kim Bảo Di - Charm Studio</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Thư viện html2canvas để chụp bill thành ảnh -->
@@ -10,6 +10,14 @@
   <!-- Thư viện canvas-confetti hiệu ứng pháo hoa -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
+    * {
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     @keyframes magicBling {
@@ -20,8 +28,8 @@
     .bling-effect { animation: magicBling 0.8s ease-in-out; }
   </style>
 </head>
-<body class="bg-[#FFF5F6] text-gray-700 min-h-screen font-sans select-none">
-  <div class="max-w-md mx-auto min-h-screen flex flex-col bg-white shadow-2xl relative">
+<body class="bg-[#FFF5F6] text-gray-700 min-h-[100dvh] font-sans select-none">
+  <div class="max-w-md mx-auto min-h-[100dvh] flex flex-col bg-white shadow-2xl relative">
     
     <!-- HEADER -->
     <header class="p-4 text-center bg-white border-b border-pink-100 sticky top-0 z-20 relative">
@@ -35,7 +43,7 @@
     <!-- KHUNG VÒNG TAY -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6] relative">
       <div id="bracelet-capture-area" class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
-        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
+        <img src="https://i.postimg.cc/PqTCKKN1/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
         <div id="magic-sparkle" class="absolute pointer-events-none inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0">
           <span class="text-3xl animate-ping">✨</span>
