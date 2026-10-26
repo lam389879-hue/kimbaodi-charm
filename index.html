@@ -408,165 +408,158 @@
       updateUI();
     }
 
-   // Ví dụ tính vị trí cho danh sách charm tòn ten nằm ở đáy vòng
-function drawTonTenCharms(ctx, charms, cx, cy, radius) {
-  const totalCharms = charms.length;
-  // Khoảng cách góc giữa các charm ở đáy (ví dụ spread trong khoảng góc 60 độ quanh đáy)
-  const angleStep = 8; // mỗi charm cách nhau 8 độ
-  const startAngle = 90 - ((totalCharms - 1) * angleStep) / 2; // Căn giữa đáy
-
-  charms.forEach((charm, index) => {
-    const currentAngle = (startAngle + index * angleStep) * (Math.PI / 180);
-    
-    // Tọa độ điểm khoen treo nằm trên dây vòng
-    const hookX = cx + radius * Math.cos(currentAngle);
-    const hookY = cy + radius * Math.sin(currentAngle);
-
-    ctx.save();
-    // Di chuyển gốc tọa độ đến điểm khoen treo
-    ctx.translate(hookX, hookY);
-    
-    // Xoay charm nhẹ theo hướng cong của dây (tùy chọn)
-    // ctx.rotate(currentAngle - Math.PI / 2);
-
-    // Vẽ charm tòn ten sao cho khoen móc trùng đúng (hookX, hookY)
-    // drawImage(img, dx, dy): dx = -width/2 để căn giữa ngang, dy = 0 để rủ xuống dưới
-    ctx.drawImage(charm.img, -charm.width / 2, 0, charm.width, charm.height);
-    
-    ctx.restore();
-  });
-}    // HIỂN THỊ VÒNG TAY (CHỈ CHARM TÒN TEN MỚI RŨ LƠ LỬNG XUỐNG DƯỚI)
+    // HIỂN THỊ VÒNG TAY (CHARM THƯỜNG TRẢI ĐỀU, TÒN TEN TỤM DƯỚI ĐÁY Y HỆT ẢNH MẪU)
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
       const total = userCharms.length;
       document.getElementById('count-text').innerText = total;
+      if (total === 0) return;
 
-      const angleStep = 0.30; 
-      const baseCenterAngle = Math.PI / 2; 
-      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
+      // Phân loại charm thành 2 nhóm: Thường và Tòn ten
+      let normalCharms = [];
+      let danglingCharms = [];
 
-      userCharms.forEach((charm, index) => {
-        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
-        const radius = 118; 
-        const charmSize = 32; 
-        const x = 144 + radius * Math.cos(angle) - charmSize / 2; 
+      userCharms.forEach((charm, originalIndex) => {
+        if (charm.isDangling) {
+          danglingCharms.push({ ...charm, originalIndex });
+        } else {
+          normalCharms.push({ ...charm, originalIndex });
+        }
+      });
+
+      // 1. Rải đều charm thường trên vòng tròn
+      const normalTotal = normalCharms.length;
+      const normalAngleStep = 0.32;
+      const baseCenterAngle = Math.PI / 2;
+      const normalStartAngle = baseCenterAngle - ((normalTotal - 1) * normalAngleStep) / 2;
+
+      normalCharms.forEach((item, i) => {
+        const angle = normalTotal === 1 ? baseCenterAngle : normalStartAngle + i * normalAngleStep;
+        const radius = 118;
+        const charmSize = 32;
+        const x = 144 + radius * Math.cos(angle) - charmSize / 2;
         const y = 138 + radius * Math.sin(angle) - charmSize / 2;
 
-        const isSelected = selectedIndexToSwap === index;
+        const isSelected = selectedIndexToSwap === item.originalIndex;
+        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
+
+        const charmEl = document.createElement('div');
+        charmEl.className = `absolute pointer-events-auto cursor-pointer transition-all duration-300 ${isSelected ? 'scale-125 z-40' : 'z-20'}`;
+        charmEl.style.left = `${x}px`;
+        charmEl.style.top = `${y}px`;
+        charmEl.style.transform = `rotate(${rotationDeg}deg)`;
+
+        charmEl.innerHTML = `
+          <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
+            <img src="${item.img}" class="w-full h-full object-contain ${isSelected ? 'animate-bounce' : ''}" />
+            <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${item.originalIndex + 1}</span>
+              <button onclick="removeCharm(event, ${item.originalIndex})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+            </div>
+          </div>
+        `;
+        charmEl.onclick = () => handleCharmClick(item.originalIndex);
+        container.appendChild(charmEl);
+      });
+
+      // 2. Gom các charm tòn ten tụm sát nhau ở đúng phần đáy vòng (Góc 90 độ - chính giữa dưới cùng)
+      const dangTotal = danglingCharms.length;
+      const dangAngleStep = 0.07; // Khoảng cách rất hẹp để tụm lại thành chùm
+      const dangStartAngle = baseCenterAngle - ((dangTotal - 1) * dangAngleStep) / 2;
+
+      danglingCharms.forEach((item, i) => {
+        const angle = dangTotal === 1 ? baseCenterAngle : dangStartAngle + i * dangAngleStep;
+        const radius = 118;
+        const charmSize = 32;
+        const x = 144 + radius * Math.cos(angle) - charmSize / 2;
+        const y = 138 + radius * Math.sin(angle) - charmSize / 2;
+
+        const isSelected = selectedIndexToSwap === item.originalIndex;
+
         const charmEl = document.createElement('div');
         charmEl.className = `absolute pointer-events-auto cursor-pointer transition-all duration-300 ${isSelected ? 'scale-125 z-40' : 'z-20'}`;
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
 
-        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
-
-        if (charm.isDangling) {
-          // Charm thuộc nhóm tòn ten sẽ rũ lơ lửng tự nhiên
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(-2px);">
-              <img src="${charm.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
-              <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute -bottom-1 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
-              </div>
+        charmEl.innerHTML = `
+          <div class="relative flex flex-col items-center justify-start w-[32px] h-[48px]" style="transform: translateY(-2px);">
+            <img src="${item.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
+            <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+              <span class="absolute -bottom-1 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${item.originalIndex + 1}</span>
+              <button onclick="removeCharm(event, ${item.originalIndex})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
             </div>
-          `;
-        } else {
-          // Charm thường nằm ôm sát vòng
-          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
-              <img src="${charm.img}" class="w-full h-full object-contain ${isSelected ? 'animate-bounce' : ''}" />
-              <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
-              </div>
-            </div>
-          `;
-        }
-        charmEl.onclick = () => handleCharmClick(index);
+          </div>
+        `;
+        charmEl.onclick = () => handleCharmClick(item.originalIndex);
         container.appendChild(charmEl);
       });
     }
 
+    // HIỂN THỊ TRONG BILL (ĐỒNG BỘ TƯƠNG TỰ)
     function renderBillBracelet() {
       const container = document.getElementById('bill-bracelet-ring');
       container.innerHTML = '';
       const total = userCharms.length;
       if (total === 0) return;
 
-      const angleStep = 0.30; 
-      const baseCenterAngle = Math.PI / 2; 
-      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
+      let normalCharms = [];
+      let danglingCharms = [];
 
-      userCharms.forEach((charm, index) => {
-        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
-        const radius = 92; 
-        const charmSize = 28; 
-        const x = 112 + radius * Math.cos(angle) - charmSize / 2; 
+      userCharms.forEach((charm, originalIndex) => {
+        if (charm.isDangling) {
+          danglingCharms.push({ ...charm, originalIndex });
+        } else {
+          normalCharms.push({ ...charm, originalIndex });
+        }
+      });
+
+      const normalTotal = normalCharms.length;
+      const normalAngleStep = 0.32;
+      const baseCenterAngle = Math.PI / 2;
+      const normalStartAngle = baseCenterAngle - ((normalTotal - 1) * normalAngleStep) / 2;
+
+      normalCharms.forEach((item, i) => {
+        const angle = normalTotal === 1 ? baseCenterAngle : normalStartAngle + i * normalAngleStep;
+        const radius = 92;
+        const charmSize = 28;
+        const x = 112 + radius * Math.cos(angle) - charmSize / 2;
         const y = 108 + radius * Math.sin(angle) - charmSize / 2;
-
         const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         const charmEl = document.createElement('div');
         charmEl.className = `absolute pointer-events-none z-20`;
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
+        charmEl.style.transform = `rotate(${rotationDeg}deg)`;
 
-        if (charm.isDangling) {
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(-2px);">
-              <img src="${charm.img}" class="w-8 h-14 object-contain origin-top" />
-            </div>`;
-        } else {
-          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
-              <img src="${charm.img}" class="w-full h-full object-contain" />
-            </div>`;
-        }
+        charmEl.innerHTML = `
+          <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
+            <img src="${item.img}" class="w-full h-full object-contain" />
+          </div>`;
         container.appendChild(charmEl);
       });
-    }
 
+      const dangTotal = danglingCharms.length;
+      const dangAngleStep = 0.07;
+      const dangStartAngle = baseCenterAngle - ((dangTotal - 1) * dangAngleStep) / 2;
 
-    function renderBillBracelet() {
-      const container = document.getElementById('bill-bracelet-ring');
-      container.innerHTML = '';
-      const total = userCharms.length;
-      if (total === 0) return;
-
-      const angleStep = 0.30; 
-      const baseCenterAngle = Math.PI / 2; 
-      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
-
-      userCharms.forEach((charm, index) => {
-        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
-        const radius = 92; 
-        const charmSize = 28; 
-        const x = 112 + radius * Math.cos(angle) - charmSize / 2; 
+      danglingCharms.forEach((item, i) => {
+        const angle = dangTotal === 1 ? baseCenterAngle : dangStartAngle + i * dangAngleStep;
+        const radius = 92;
+        const charmSize = 28;
+        const x = 112 + radius * Math.cos(angle) - charmSize / 2;
         const y = 108 + radius * Math.sin(angle) - charmSize / 2;
-
-        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         const charmEl = document.createElement('div');
         charmEl.className = `absolute pointer-events-none z-20`;
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
 
-        if (charm.isDangling) {
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(2px);">
-              <img src="${charm.img}" class="w-8 h-14 object-contain origin-top" />
-            </div>`;
-        } else {
-          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
-              <img src="${charm.img}" class="w-full h-full object-contain" />
-            </div>`;
-        }
+        charmEl.innerHTML = `
+          <div class="relative flex flex-col items-center justify-start w-[28px] h-[36px]" style="transform: translateY(2px);">
+            <img src="${item.img}" class="w-8 h-14 object-contain origin-top" />
+          </div>`;
         container.appendChild(charmEl);
       });
     }
