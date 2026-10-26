@@ -43,7 +43,7 @@
     <!-- KHUNG VÒNG TAY -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6] relative">
       <div id="bracelet-capture-area" class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
-        <img src="https://i.postimg.cc/PqTCKKN1/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
+        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
         <div id="magic-sparkle" class="absolute pointer-events-none inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0">
           <span class="text-3xl animate-ping">✨</span>
@@ -149,7 +149,15 @@
     const braceletPrice = 119000;
     let currentLang = 'vi';
 
+    // DANH SÁCH CÁC MÃ CHARM TÒN TEN CHÍNH XÁC THEO YÊU CẦU CỦA CHỊ
+    const DANGLING_IDS = [
+      "0751", "0753", "0754", "0755", "0756", "0758", "0759", "0762", 
+      "0763", "0765", "0766", "0770", "0771", "0776", "0777", "0778", 
+      "0779", "0780", "0783", "0788", "0789", "0793", "0801", "0804"
+    ];
+
     const RAW_CHARM_DATA = [
+      // 🌟 NHÓM 1: HELLO KITTY
       { img: "https://i.postimg.cc/YS7BcWzJ/IMG-0746.png", price: 238000, category: "Hello Kitty" },
       { img: "https://i.postimg.cc/s2zCFh4b/IMG-0747.png", price: 238000, category: "Hello Kitty" },
       { img: "https://i.postimg.cc/vmywRVtk/IMG-0748.png", price: 238000, category: "Hello Kitty" },
@@ -160,60 +168,79 @@
       { img: "https://i.postimg.cc/yYwzP5Jb/IMG-0797.png", price: 238000, category: "Hello Kitty" },
       { img: "https://i.postimg.cc/9FvjpS4N/IMG-0798.png", price: 238000, category: "Hello Kitty" },
 
-      { img: "https://i.postimg.cc/d0FcMyjN/IMG-0751.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/Bv3fWKBV/IMG-0752.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/PqHnGwQ6/IMG-0753.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/rpT26rNg/IMG-0754.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/6QKxsvf0/IMG-0755.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/8CGg86mm/IMG-0756.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/yNKCqZyZ/IMG-0759.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/jjTYV74f/IMG-0760.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/VNwPyCWb/IMG-0761.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/x1MVFRMP/IMG-0762.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/YCYBy3Yz/IMG-0763.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/wjLYbVLX/IMG-0765.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/52LWk3LL/IMG-0766.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/Qd1Znb1M/IMG-0777.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/T3gvH9gy/IMG-0774.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/L8LF0TLh/IMG-0775.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/YCYBy3Yt/IMG-0783.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/7Z0rQV0Z/IMG-0779.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/P5YnF4YJ/IMG-0778.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/T3gvH9gd/IMG-0782.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/gkfPD5Xc/IMG-0790.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/tCLH5f12/IMG-0800.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/fT3NYZb6/IMG-0801.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/yYJH0BNt/IMG-0802.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/WbDv0j4y/IMG-0803.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/Yq4HQkSs/IMG-0804.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/026s7xNH/IMG-0805.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/jdWbyKjZ/IMG-0806.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/5NHV81tg/IMG-0807.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/qMtT207L/IMG-0808.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/kXVmW95F/IMG-0809.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/pX9HKxdn/IMG-0812.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/026s7xNK/IMG-0813.png", price: 238000, category: "đáng iu", isDangling: true },
-      { img: "https://i.postimg.cc/kXVmW95B/IMG-0814.png", price: 238000, category: "đáng iu", isDangling: true },
+      // 🌟 NHÓM 2: ĐÁNG IU
+      { img: "https://i.postimg.cc/d0FcMyjN/IMG-0751.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/Bv3fWKBV/IMG-0752.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/PqHnGwQ6/IMG-0753.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/rpT26rNg/IMG-0754.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/6QKxsvf0/IMG-0755.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/8CGg86mm/IMG-0756.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/yNKCqZyZ/IMG-0759.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/jjTYV74f/IMG-0760.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/VNwPyCWb/IMG-0761.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/x1MVFRMP/IMG-0762.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/YCYBy3Yz/IMG-0763.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/wjLYbVLX/IMG-0765.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/52LWk3LL/IMG-0766.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/Qd1Znb1M/IMG-0777.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/T3gvH9gy/IMG-0774.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/L8LF0TLh/IMG-0775.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/YCYBy3Yt/IMG-0783.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/7Z0rQV0Z/IMG-0779.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/P5YnF4YJ/IMG-0778.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/T3gvH9gd/IMG-0782.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/gkfPD5Xc/IMG-0790.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/tCLH5f12/IMG-0800.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/fT3NYZb6/IMG-0801.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/yYJH0BNt/IMG-0802.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/WbDv0j4y/IMG-0803.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/Yq4HQkSs/IMG-0804.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/026s7xNH/IMG-0805.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/jdWbyKjZ/IMG-0806.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/5NHV81tg/IMG-0807.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/qMtT207L/IMG-0808.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/kXVmW95F/IMG-0809.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/pX9HKxdn/IMG-0812.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/026s7xNK/IMG-0813.png", price: 238000, category: "đáng iu" },
+      { img: "https://i.postimg.cc/kXVmW95B/IMG-0814.png", price: 238000, category: "đáng iu" },
 
-      { img: "https://i.postimg.cc/gkfPD5Xc/IMG-0790.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/wTSdVPyH/IMG-0791.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/65DN0S2K/IMG-0792.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/NfWw4VyN/IMG-0799.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/657XCwQd/IMG-0810.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/ZK9S6ZqN/IMG-0811.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/fWqs3kMc/IMG-0815.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/pVcv9yPK/IMG-0816.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/fWqs3kM9/IMG-0818.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/FFCvf1hJ/IMG-0819.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/2j9Yq3Cb/IMG-0820.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/pVcv9yP9/IMG-0821.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/XN1WZXnp/IMG-0822.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/PfVHLNdJ/IMG-0823.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/MZ3wcXz6/IMG-0824.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/WpYVDtss/IMG-0825.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/59KJHjfN/IMG-0826.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/pVcv9yP2/IMG-0827.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/ZYsm904G/IMG-0828.png", price: 238000, category: "xấu mà có duyên", isDangling: true }
+      // 🌟 NHÓM 3: XẤU MÀ CÓ DUYÊN
+      { img: "https://i.postimg.cc/gkfPD5Xc/IMG-0790.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/wTSdVPyH/IMG-0791.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/65DN0S2K/IMG-0792.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/NfWw4VyN/IMG-0799.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/657XCwQd/IMG-0810.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/ZK9S6ZqN/IMG-0811.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/fWqs3kMc/IMG-0815.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/pVcv9yPK/IMG-0816.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/fWqs3kM9/IMG-0818.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/FFCvf1hJ/IMG-0819.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/2j9Yq3Cb/IMG-0820.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/pVcv9yP9/IMG-0821.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/XN1WZXnp/IMG-0822.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/PfVHLNdJ/IMG-0823.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/MZ3wcXz6/IMG-0824.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/WpYVDtss/IMG-0825.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/59KJHjfN/IMG-0826.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/pVcv9yP2/IMG-0827.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/ZYsm904G/IMG-0828.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/QxRrbP9h/IMG-0789.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/KvdyNVkz/IMG-0787.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/VL3cRTrL/IMG-0788.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/Qd1Znb1D/IMG-0785.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/zGKYPjK8/IMG-0784.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/HkX1P2Xs/IMG-0781.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/VknPHRns/IMG-0780.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/MpVJrDVM/IMG-0772.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/13w1YHw8/IMG-0773.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/mgCW6wC1/IMG-0771.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/HkX1P2X7/IMG-0770.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/htTR3rTd/IMG-0769.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/T3gvH9gb/IMG-0768.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/T3gvH9gr/IMG-0767.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/t4WGm5Wt/IMG-0764.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/6QKxsvfc/IMG-0757.png", price: 238000, category: "xấu mà có duyên" },
+      { img: "https://i.postimg.cc/vZfwSzfB/IMG-0776.png", price: 238000, category: "xấu mà có duyên" }
     ];
 
     function autoFormatCharmName(filename) {
@@ -223,18 +250,37 @@
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    const categoriesList = [...new Set(RAW_CHARM_DATA.map(c => c.category))];
-    const CHARM_CATEGORIES = categoriesList.map(cat => ({
-      category: cat,
-      items: RAW_CHARM_DATA.filter(c => c.category === cat).map(c => ({
-        id: c.img,
-        nameVi: autoFormatCharmName(c.img),
-        nameEn: autoFormatCharmName(c.img),
-        price: c.price,
-        img: c.img,
-        isDangling: c.isDangling || c.img.includes('treo') || c.img.includes('dangling')
-      }))
-    }));
+    // Tự động kiểm tra xem ảnh có thuộc danh sách mã tòn ten hay không
+    function checkIsDangling(imgUrl) {
+      return DANGLING_IDS.some(id => imgUrl.includes(id));
+    }
+
+    // Xây dựng danh mục, tự động tách riêng nhóm "tòn ten" theo yêu cầu
+    const baseCategories = [...new Set(RAW_CHARM_DATA.map(c => c.category))];
+    const CHARM_CATEGORIES = [
+      {
+        category: "tòn ten",
+        items: RAW_CHARM_DATA.filter(c => checkIsDangling(c.img)).map(c => ({
+          id: c.img,
+          nameVi: autoFormatCharmName(c.img),
+          nameEn: autoFormatCharmName(c.img),
+          price: c.price,
+          img: c.img,
+          isDangling: true
+        }))
+      },
+      ...baseCategories.map(cat => ({
+        category: cat,
+        items: RAW_CHARM_DATA.filter(c => c.category === cat && !checkIsDangling(c.img)).map(c => ({
+          id: c.img,
+          nameVi: autoFormatCharmName(c.img),
+          nameEn: autoFormatCharmName(c.img),
+          price: c.price,
+          img: c.img,
+          isDangling: false
+        }))
+      })).filter(group => group.items.length > 0)
+    ];
 
     const translations = {
       vi: {
@@ -364,14 +410,14 @@
       updateUI();
     }
 
-    // XỬ LÝ HIỂN THỊ VÒNG TAY (Đã chuẩn hóa charm treo ôm sát đường dây)
+    // HIỂN THỊ VÒNG TAY (CHỈ CHARM TÒN TEN MỚI RŨ LƠ LỬNG XUỐNG DƯỚI)
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
       const total = userCharms.length;
       document.getElementById('count-text').innerText = total;
 
-      const angleStep = 0.32; 
+      const angleStep = 0.30; 
       const baseCenterAngle = Math.PI / 2; 
       const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
 
@@ -391,17 +437,18 @@
         const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         if (charm.isDangling) {
-          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
+          // Charm thuộc nhóm tòn ten sẽ rũ lơ lửng tự nhiên
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[32px] h-[36px]" style="transform: translateY(-8px);">
-              <img src="${charm.img}" class="w-10 h-14 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
-              <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute -bottom-4 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(-2px);">
+              <img src="${charm.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
+              <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <span class="absolute -bottom-1 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
                 <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
               </div>
             </div>
           `;
         } else {
+          // Charm thường nằm ôm sát vòng
           charmEl.style.transform = `rotate(${rotationDeg}deg)`;
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
@@ -424,7 +471,7 @@
       const total = userCharms.length;
       if (total === 0) return;
 
-      const angleStep = 0.32; 
+      const angleStep = 0.30; 
       const baseCenterAngle = Math.PI / 2; 
       const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
 
@@ -441,14 +488,14 @@
         charmEl.className = `absolute pointer-events-none z-20`;
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
-        charmEl.style.transform = `rotate(${rotationDeg}deg)`;
 
         if (charm.isDangling) {
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[28px] h-[32px]" style="transform: translateY(-6px);">
-              <img src="${charm.img}" class="w-8 h-12 object-contain origin-top" />
+            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(-2px);">
+              <img src="${charm.img}" class="w-8 h-14 object-contain origin-top" />
             </div>`;
         } else {
+          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
               <img src="${charm.img}" class="w-full h-full object-contain" />
@@ -498,7 +545,6 @@
       return braceletPrice + charmTotal;
     }
 
-    // TÍNH NĂNG LƯU MẪU THIẾT KẾ VÀO BỘ NHỚ MÁY (LOCALSTORAGE)
     function saveDesignPreset() {
       const t = translations[currentLang];
       if (userCharms.length === 0) {
