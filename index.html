@@ -408,7 +408,7 @@
       updateUI();
     }
 
-    // HIỂN THỊ VÒNG TAY (CHARM THƯỜNG TRẢI ĐỀU, TÒN TEN TỤM DƯỚI ĐÁY Y HỆT ẢNH MẪU)
+    // HIỂN THỊ VÒNG TAY (CHARM THƯỜNG TRẢI ĐỀU, TÒN TEN TRẢI ĐỀU Ở KHU VỰC DƯỚI ĐÁY VÒNG)
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
@@ -416,7 +416,6 @@
       document.getElementById('count-text').innerText = total;
       if (total === 0) return;
 
-      // Phân loại charm thành 2 nhóm: Thường và Tòn ten
       let normalCharms = [];
       let danglingCharms = [];
 
@@ -428,14 +427,13 @@
         }
       });
 
-      // 1. Rải đều charm thường trên vòng tròn
+      // 1. Phân bổ charm thường trên nửa trên vòng tay
       const normalTotal = normalCharms.length;
-      const normalAngleStep = 0.32;
-      const baseCenterAngle = Math.PI / 2;
-      const normalStartAngle = baseCenterAngle - ((normalTotal - 1) * normalAngleStep) / 2;
+      const normalAngleStep = 0.35;
+      const normalStartAngle = Math.PI * 0.15 - ((normalTotal - 1) * normalAngleStep) / 2;
 
       normalCharms.forEach((item, i) => {
-        const angle = normalTotal === 1 ? baseCenterAngle : normalStartAngle + i * normalAngleStep;
+        const angle = normalTotal === 1 ? Math.PI * 0.15 : normalStartAngle + i * normalAngleStep;
         const radius = 118;
         const charmSize = 32;
         const x = 144 + radius * Math.cos(angle) - charmSize / 2;
@@ -463,13 +461,14 @@
         container.appendChild(charmEl);
       });
 
-      // 2. Gom các charm tòn ten tụm sát nhau ở đúng phần đáy vòng (Góc 90 độ - chính giữa dưới cùng)
+      // 2. Phân bổ charm tòn ten trải đều vừa vặn ở khu vực đáy vòng (khoảng góc từ 70 độ đến 110 độ)
       const dangTotal = danglingCharms.length;
-      const dangAngleStep = 0.07; // Khoảng cách rất hẹp để tụm lại thành chùm
-      const dangStartAngle = baseCenterAngle - ((dangTotal - 1) * dangAngleStep) / 2;
+      const dangAngleStep = 0.22; // Khoảng cách giãn vừa phải để không bị chụm đè lên nhau
+      const baseBottomAngle = Math.PI / 2; // Góc thẳng đứng chính giữa đáy
+      const dangStartAngle = baseBottomAngle - ((dangTotal - 1) * dangAngleStep) / 2;
 
       danglingCharms.forEach((item, i) => {
-        const angle = dangTotal === 1 ? baseCenterAngle : dangStartAngle + i * dangAngleStep;
+        const angle = dangTotal === 1 ? baseBottomAngle : dangStartAngle + i * dangAngleStep;
         const radius = 118;
         const charmSize = 32;
         const x = 144 + radius * Math.cos(angle) - charmSize / 2;
@@ -496,7 +495,7 @@
       });
     }
 
-    // HIỂN THỊ TRONG BILL (ĐỒNG BỘ TƯƠNG TỰ)
+    // HIỂN THỊ TRONG BILL
     function renderBillBracelet() {
       const container = document.getElementById('bill-bracelet-ring');
       container.innerHTML = '';
@@ -515,12 +514,11 @@
       });
 
       const normalTotal = normalCharms.length;
-      const normalAngleStep = 0.32;
-      const baseCenterAngle = Math.PI / 2;
-      const normalStartAngle = baseCenterAngle - ((normalTotal - 1) * normalAngleStep) / 2;
+      const normalAngleStep = 0.35;
+      const normalStartAngle = Math.PI * 0.15 - ((normalTotal - 1) * normalAngleStep) / 2;
 
       normalCharms.forEach((item, i) => {
-        const angle = normalTotal === 1 ? baseCenterAngle : normalStartAngle + i * normalAngleStep;
+        const angle = normalTotal === 1 ? Math.PI * 0.15 : normalStartAngle + i * normalAngleStep;
         const radius = 92;
         const charmSize = 28;
         const x = 112 + radius * Math.cos(angle) - charmSize / 2;
@@ -541,11 +539,12 @@
       });
 
       const dangTotal = danglingCharms.length;
-      const dangAngleStep = 0.07;
-      const dangStartAngle = baseCenterAngle - ((dangTotal - 1) * dangAngleStep) / 2;
+      const dangAngleStep = 0.22;
+      const baseBottomAngle = Math.PI / 2;
+      const dangStartAngle = baseBottomAngle - ((dangTotal - 1) * dangAngleStep) / 2;
 
       danglingCharms.forEach((item, i) => {
-        const angle = dangTotal === 1 ? baseCenterAngle : dangStartAngle + i * dangAngleStep;
+        const angle = dangTotal === 1 ? baseBottomAngle : dangStartAngle + i * dangAngleStep;
         const radius = 92;
         const charmSize = 28;
         const x = 112 + radius * Math.cos(angle) - charmSize / 2;
