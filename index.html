@@ -408,59 +408,35 @@
       updateUI();
     }
 
-    // ĐÍNH ĐỈNH ĐẦU KHOEN CHARM TÒN TEN LÊN VÒNG VÀ RŨ THÕNG XUỐNG DƯỚI
-    function renderBracelet() {
-      const container = document.getElementById('bracelet-ring');
-      container.innerHTML = '';
-      const total = userCharms.length;
-      document.getElementById('count-text').innerText = total;
+   // Ví dụ tính vị trí cho danh sách charm tòn ten nằm ở đáy vòng
+function drawTonTenCharms(ctx, charms, cx, cy, radius) {
+  const totalCharms = charms.length;
+  // Khoảng cách góc giữa các charm ở đáy (ví dụ spread trong khoảng góc 60 độ quanh đáy)
+  const angleStep = 8; // mỗi charm cách nhau 8 độ
+  const startAngle = 90 - ((totalCharms - 1) * angleStep) / 2; // Căn giữa đáy
 
-      const angleStep = 0.30; 
-      const baseCenterAngle = Math.PI / 2; 
-      const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
+  charms.forEach((charm, index) => {
+    const currentAngle = (startAngle + index * angleStep) * (Math.PI / 180);
+    
+    // Tọa độ điểm khoen treo nằm trên dây vòng
+    const hookX = cx + radius * Math.cos(currentAngle);
+    const hookY = cy + radius * Math.sin(currentAngle);
 
-      userCharms.forEach((charm, index) => {
-        const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
-        const radius = 118; 
-        const charmSize = 32; 
-        const x = 144 + radius * Math.cos(angle) - charmSize / 2; 
-        const y = 138 + radius * Math.sin(angle) - charmSize / 2;
+    ctx.save();
+    // Di chuyển gốc tọa độ đến điểm khoen treo
+    ctx.translate(hookX, hookY);
+    
+    // Xoay charm nhẹ theo hướng cong của dây (tùy chọn)
+    // ctx.rotate(currentAngle - Math.PI / 2);
 
-        const isSelected = selectedIndexToSwap === index;
-        const charmEl = document.createElement('div');
-        charmEl.className = `absolute pointer-events-auto cursor-pointer transition-all duration-300 ${isSelected ? 'scale-125 z-40' : 'z-20'}`;
-        charmEl.style.left = `${x}px`;
-        charmEl.style.top = `${y}px`;
+    // Vẽ charm tòn ten sao cho khoen móc trùng đúng (hookX, hookY)
+    // drawImage(img, dx, dy): dx = -width/2 để căn giữa ngang, dy = 0 để rủ xuống dưới
+    ctx.drawImage(charm.img, -charm.width / 2, 0, charm.width, charm.height);
+    
+    ctx.restore();
+  });
+}
 
-        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
-
-        if (charm.isDangling) {
-          // Đỉnh khoen bám đúng dây vòng, thân charm rũ thẳng xuống dưới
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(2px);">
-              <img src="${charm.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
-              <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute top-6 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-                <button onclick="removeCharm(event, ${index})" class="absolute top-1 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
-              </div>
-            </div>
-          `;
-        } else {
-          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
-          charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
-              <img src="${charm.img}" class="w-full h-full object-contain ${isSelected ? 'animate-bounce' : ''}" />
-              <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute -bottom-3 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
-              </div>
-            </div>
-          `;
-        }
-        charmEl.onclick = () => handleCharmClick(index);
-        container.appendChild(charmEl);
-      });
-    }
 
     function renderBillBracelet() {
       const container = document.getElementById('bill-bracelet-ring');
