@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
@@ -29,7 +29,7 @@
         🇻🇳 VN
       </button>
       <h1 class="text-xl font-bold text-pink-500 tracking-wider uppercase">KIMBAODI JEWELRY</h1>
-      <p id="txt-subtitle" class="text-xs text-gray-400">Tự tay thiết kế vòng tay độc bản</p>
+      <p id="txt-subtitle" class="text-xs text-gray-400">Tự thiết kế vòng tay độc bản</p>
     </header>
 
     <!-- KHUNG VÒNG TAY -->
@@ -41,12 +41,22 @@
           <span class="text-3xl animate-ping">✨</span>
         </div>
       </div>
-      <p class="text-xs text-gray-400 mt-3 text-center">
+      <p class="text-xs text-gray-400 mt-2 text-center">
         <span id="txt-selected-label">Đã chọn</span> <span id="count-text" class="font-bold text-pink-500">0</span> <span id="txt-charm-unit">charm</span> | <span id="txt-swap-instruction">Chạm số thứ tự để đổi chỗ</span>
       </p>
+
+      <!-- NÚT LƯU & MỞ MẪU THIẾT KẾ RIÊNG (ALBUM) -->
+      <div class="flex gap-2 mt-2 w-full px-2">
+        <button onclick="saveDesignPreset()" class="flex-1 bg-pink-100 text-pink-600 border border-pink-200 py-1.5 rounded-xl font-bold text-[11px] hover:bg-pink-200 transition shadow-sm">
+          💾 <span id="txt-save-preset">Lưu mẫu của tôi</span>
+        </button>
+        <button onclick="openPresetsModal()" class="flex-1 bg-white text-gray-600 border border-pink-200 py-1.5 rounded-xl font-bold text-[11px] hover:bg-pink-50 transition shadow-sm">
+          📂 <span id="txt-load-preset">Mẫu đã lưu (<span id="saved-count">0</span>)</span>
+        </button>
+      </div>
     </div>
 
-    <!-- FORM THÔNG TIN KHÁCH (Hỗ trợ gợi ý sẵn từ máy/Shopee/TikTok) -->
+    <!-- FORM THÔNG TIN KHÁCH -->
     <div class="px-4 py-2 bg-white border-t border-pink-100">
       <p id="txt-receiver-info" class="text-xs font-bold text-pink-500 mb-1 uppercase">Thông tin người nhận:</p>
       <div class="space-y-2">
@@ -69,8 +79,7 @@
           <p id="total-price" class="text-base font-extrabold text-pink-600">119,000 đ</p>
         </div>
         <div class="flex gap-2">
-          <button id="btn-view-bill" onclick="openBillModal()" class="bg-pink-500 text-white px-4 py-2.5 rounded-2xl font-bold text-xs shadow-md shadow-pink-200 active:scale-95 transition">Xem Bill 🧾</button>
-          <button id="btn-zalo" onclick="sendOrderZalo()" class="bg-green-500 text-white px-4 py-2.5 rounded-2xl font-bold text-xs shadow-md shadow-green-200 active:scale-95 transition">Zalo 💬</button>
+          <button id="btn-view-bill" onclick="openBillModal()" class="bg-pink-500 text-white px-5 py-2.5 rounded-2xl font-bold text-xs shadow-md shadow-pink-200 active:scale-95 transition">Xem Bill 🧾</button>
         </div>
       </div>
     </div>
@@ -108,27 +117,31 @@
           <span id="b-total" class="text-base font-extrabold text-pink-600">0 đ</span>
         </div>
       </div>
-      <div class="p-4 bg-gray-50 border-t border-gray-100 grid grid-cols-3 gap-2">
+      <div class="p-4 bg-gray-50 border-t border-gray-100 grid grid-cols-2 gap-2">
         <button id="btn-download" onclick="downloadBillImage()" class="bg-pink-500 text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-pink-600 transition">Lưu Ảnh 📥</button>
-        <button id="btn-send-zalo" onclick="sendBillZalo()" class="bg-green-500 text-white py-2.5 rounded-xl font-bold text-xs shadow hover:bg-green-600 transition">Gửi Zalo 💬</button>
         <button id="btn-close" onclick="closeBillModal()" class="bg-gray-200 text-gray-700 rounded-xl font-bold text-xs hover:bg-gray-300 transition">Đóng ✕</button>
       </div>
     </div>
   </div>
 
+  <!-- MODAL DANH SÁCH MẪU ĐÃ LƯU (ALBUM) -->
+  <div id="presets-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[80vh]">
+      <div class="p-4 border-b border-pink-100 flex justify-between items-center bg-pink-50">
+        <h3 id="txt-modal-presets-title" class="text-xs font-bold text-pink-600 uppercase">📂 Mẫu vòng đã lưu của bạn</h3>
+        <button onclick="closePresetsModal()" class="text-gray-500 font-bold text-sm">✕</button>
+      </div>
+      <div id="presets-list" class="p-4 overflow-y-auto space-y-2 flex-1">
+        <!-- Danh sách mẫu lưu sẽ hiển thị ở đây -->
+      </div>
+    </div>
+  </div>
+
   <script>
-    const ZALO_PHONE = "0775812305"; 
     const braceletPrice = 119000;
     let currentLang = 'vi';
 
-    // =========================================================================
-    // 💡 CÁCH ĐƯA 50 ẢNH TỪ POSTIMAGES VÀO ĐÂY:
-    // Chị chỉ cần dán link ảnh Postimages vào mục 'img', điền giá vào 'price'.
-    // Mẹo đặt tên file ảnh trên Postimages: Ví dụ `kitty-vuong-mien.png`, web sẽ 
-    // tự dịch thành chữ "Kitty vuong mien" cho khách chọn mà không cần gõ lại tên!
-    // =========================================================================
     const RAW_CHARM_DATA = [
-      // 🌟 NHÓM 1: HELLO KITTY🎀
       { img: "https://i.postimg.cc/YS7BcWzJ/IMG-0746.png", price: 238000, category: "Hello Kitty" },
       { img: "https://i.postimg.cc/s2zCFh4b/IMG-0747.png", price: 238000, category: "Hello Kitty" },
       { img: "https://i.postimg.cc/vmywRVtk/IMG-0748.png", price: 238000, category: "Hello Kitty" },
@@ -139,7 +152,6 @@
       { img: "https://i.postimg.cc/yYwzP5Jb/IMG-0797.png", price: 238000, category: "Hello Kitty" },
       { img: "https://i.postimg.cc/9FvjpS4N/IMG-0798.png", price: 238000, category: "Hello Kitty" },
 
-      // 🌟 NHÓM 2: ĐÁNG YÊU (Nếu là charm treo lắc lư, chị thêm chữ `treo` vào link ảnh hoặc thêm `isDangling: true`)
       { img: "https://i.postimg.cc/d0FcMyjN/IMG-0751.png", price: 238000, category: "đáng iu", isDangling: true },
       { img: "https://i.postimg.cc/Bv3fWKBV/IMG-0752.png", price: 238000, category: "đáng iu", isDangling: true },
       { img: "https://i.postimg.cc/PqHnGwQ6/IMG-0753.png", price: 238000, category: "đáng iu", isDangling: true },
@@ -175,7 +187,6 @@
       { img: "https://i.postimg.cc/026s7xNK/IMG-0813.png", price: 238000, category: "đáng iu", isDangling: true },
       { img: "https://i.postimg.cc/kXVmW95B/IMG-0814.png", price: 238000, category: "đáng iu", isDangling: true },
 
-      // 🌟 NHÓM 3: XẤU MÀ CÓ DUYÊN (Nếu là charm treo lắc lư, chị thêm chữ `treo` vào link ảnh hoặc thêm `isDangling: true`)
       { img: "https://i.postimg.cc/gkfPD5Xc/IMG-0790.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
       { img: "https://i.postimg.cc/wTSdVPyH/IMG-0791.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
       { img: "https://i.postimg.cc/65DN0S2K/IMG-0792.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
@@ -194,38 +205,9 @@
       { img: "https://i.postimg.cc/WpYVDtss/IMG-0825.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
       { img: "https://i.postimg.cc/59KJHjfN/IMG-0826.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
       { img: "https://i.postimg.cc/pVcv9yP2/IMG-0827.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/ZYsm904G/IMG-0828.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/QxRrbP9h/IMG-0789.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/KvdyNVkz/IMG-0787.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/VL3cRTrL/IMG-0788.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/Qd1Znb1D/IMG-0785.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/Qd1Znb1D/IMG-0785.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/zGKYPjK8/IMG-0784.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/HkX1P2Xs/IMG-0781.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/VknPHRns/IMG-0780.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/QxRrbP9h/IMG-0789.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/KvdyNVkz/IMG-0787.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/VL3cRTrL/IMG-0788.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/Qd1Znb1D/IMG-0785.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/MpVJrDVM/IMG-0772.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/13w1YHw8/IMG-0773.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/mgCW6wC1/IMG-0771.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/HkX1P2X7/IMG-0770.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/htTR3rTd/IMG-0769.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/T3gvH9gb/IMG-0768.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/T3gvH9gr/IMG-0767.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/t4WGm5Wt/IMG-0764.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/jjTYV74f/IMG-0760.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/VNwPyCWb/IMG-0761.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/6QKxsvfc/IMG-0757.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-      { img: "https://i.postimg.cc/vZfwSzfB/IMG-0776.png", price: 238000, category: "xấu mà có duyên", isDangling: true },
-     
-     
-      
-      // -> Chị cứ tiếp tục copy paste thêm link 50 ảnh vào đây theo đúng định dạng này là xong!
+      { img: "https://i.postimg.cc/ZYsm904G/IMG-0828.png", price: 238000, category: "xấu mà có duyên", isDangling: true }
     ];
 
-    // Hàm tự động đổi tên file ảnh thành tên hiển thị
     function autoFormatCharmName(filename) {
       let name = filename.substring(filename.lastIndexOf('/') + 1);
       if(name.indexOf('.') !== -1) name = name.substring(0, name.lastIndexOf('.'));
@@ -233,7 +215,6 @@
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    // Tự động phân loại danh mục
     const categoriesList = [...new Set(RAW_CHARM_DATA.map(c => c.category))];
     const CHARM_CATEGORIES = categoriesList.map(cat => ({
       category: cat,
@@ -250,7 +231,7 @@
     const translations = {
       vi: {
         langBtn: "🇻🇳 VN",
-        subtitle: "Tự tay thiết kế vòng tay độc bản",
+        subtitle: "Tự thiết kế vòng tay độc bản",
         selectedLabel: "Đã chọn",
         charmUnit: "charm",
         swapInstruction: "Chạm số thứ tự để đổi chỗ",
@@ -260,7 +241,6 @@
         addressPlaceholder: "Địa chỉ nhận hàng",
         totalLabel: "Tổng tiền",
         viewBill: "Xem Bill 🧾",
-        zalo: "Zalo 💬",
         billSubtitle: "Hóa Đơn Thiết Kế Vòng Độc Bản",
         bName: "Khách hàng:",
         bPhone: "Số điện thoại:",
@@ -268,23 +248,18 @@
         billDetails: "Chi tiết sản phẩm:",
         bTotalLabel: "TỔNG THANH TOÁN:",
         download: "Lưu Ảnh 📥",
-        sendZaloModal: "Gửi Zalo 💬",
         close: "Đóng ✕",
         alertMax: "Vòng đã đạt tối đa số lượng charm!",
         alertSelectCharm: "Bạn chưa chọn charm nào lên vòng!",
         alertFillInfo: "Vui lòng điền đầy đủ Họ tên, Số điện thoại và Địa chỉ nhận hàng!",
         braceletSilver: "Dây vòng bạc",
         posText: "Vị trí",
-        zaloMsgHeader: "✨ ĐƠN THIẾT KẾ VÒNG KIM BẢO DI ✨",
-        zaloMsgCustomer: "👤 Khách hàng:",
-        zaloMsgPhone: "📞 SĐT:",
-        zaloMsgAddress: "🏠 Địa chỉ:",
-        zaloMsgBracelet: "Dây vòng bạc:",
-        zaloMsgCharms: "Danh sách charm:",
-        zaloMsgTotal: "💰 TỔNG TIỀN:",
-        zaloMsgNote: "Shop chốt đơn giúp mình nhé!",
-        alertZaloGuide: "✨ ĐÃ LƯU ẢNH VÀO MÁY & COPY SẴN NỘI DUNG!\n\n👉 Hướng dẫn:\n1. Chọn ảnh Bill vừa tải về trong thư viện ảnh 🖼️\n2. Giữ vào khung chat Zalo và bấm Dán (Paste) nội dung đơn hàng rồi gửi là xong nhé!",
-        alertDownloadSuccess: "✅ Đã tải ảnh Bill về máy thành công!"
+        alertDownloadSuccess: "✅ Đã tải ảnh Bill về máy thành công!",
+        savePreset: "Lưu mẫu của tôi",
+        loadPreset: "Mẫu đã lưu",
+        alertSavedPreset: "✅ Đã lưu mẫu thiết kế thành công vào máy!",
+        alertNoPreset: "Chưa có mẫu thiết kế nào được lưu!",
+        presetsModalTitle: "📂 Mẫu vòng đã lưu của bạn"
       },
       en: {
         langBtn: "🇬🇧 EN",
@@ -298,7 +273,6 @@
         addressPlaceholder: "Shipping Address",
         totalLabel: "Total Price",
         viewBill: "View Bill 🧾",
-        zalo: "Zalo 💬",
         billSubtitle: "Custom Bracelet Invoice",
         bName: "Customer:",
         bPhone: "Phone:",
@@ -306,23 +280,18 @@
         billDetails: "Product Details:",
         bTotalLabel: "TOTAL PAYMENT:",
         download: "Save Image 📥",
-        sendZaloModal: "Send Zalo 💬",
         close: "Close ✕",
         alertMax: "The bracelet has reached the maximum number of charms!",
         alertSelectCharm: "You haven't selected any charms yet!",
         alertFillInfo: "Please fill in your Full Name, Phone Number, and Shipping Address!",
         braceletSilver: "Silver Bracelet Chain",
         posText: "Position",
-        zaloMsgHeader: "✨ KIMBAODI CUSTOM BRACELET ORDER ✨",
-        zaloMsgCustomer: "👤 Customer:",
-        zaloMsgPhone: "📞 Phone:",
-        zaloMsgAddress: "🏠 Address:",
-        zaloMsgBracelet: "Silver Chain:",
-        zaloMsgCharms: "Charm List:",
-        zaloMsgTotal: "💰 TOTAL:",
-        zaloMsgNote: "Please confirm my order!",
-        alertZaloGuide: "✨ Bill saved & order text copied!\n\n👉 In Zalo:\n1. Attach the saved Bill image 🖼️\n2. Long press chat box and Paste order text!",
-        alertDownloadSuccess: "✅ Bill image downloaded successfully!"
+        alertDownloadSuccess: "✅ Bill image downloaded successfully!",
+        savePreset: "Save my design",
+        loadPreset: "Saved designs",
+        alertSavedPreset: "✅ Design saved successfully!",
+        alertNoPreset: "No saved designs found!",
+        presetsModalTitle: "📂 Your Saved Bracelet Designs"
       }
     };
 
@@ -387,19 +356,21 @@
       updateUI();
     }
 
+    // XỬ LÝ HIỂN THỊ VÒNG TAY (Đã chuẩn hóa charm treo ôm sát đường dây)
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
       const total = userCharms.length;
       document.getElementById('count-text').innerText = total;
 
-      const angleStep = 0.35; 
+      const angleStep = 0.32; 
       const baseCenterAngle = Math.PI / 2; 
       const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
 
       userCharms.forEach((charm, index) => {
         const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
-        const radius = 118; const charmSize = 32; 
+        const radius = 118; 
+        const charmSize = 32; 
         const x = 144 + radius * Math.cos(angle) - charmSize / 2; 
         const y = 138 + radius * Math.sin(angle) - charmSize / 2;
 
@@ -409,16 +380,20 @@
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
 
+        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
+
         if (charm.isDangling) {
+          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]" style="transform: translateY(4px);">
-              <img src="${charm.img}" class="w-9 h-14 object-contain ${isSelected ? 'animate-bounce' : ''}" style="transform-origin: top center;" />
-              <span class="absolute -bottom-4 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-              <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-3 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+            <div class="relative flex flex-col items-center justify-start w-[32px] h-[36px]" style="transform: translateY(-8px);">
+              <img src="${charm.img}" class="w-10 h-14 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
+              <div style="transform: rotate(${-rotationDeg}deg)" class="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <span class="absolute -bottom-4 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+              </div>
             </div>
           `;
         } else {
-          const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
           charmEl.style.transform = `rotate(${rotationDeg}deg)`;
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
@@ -441,27 +416,35 @@
       const total = userCharms.length;
       if (total === 0) return;
 
-      const angleStep = 0.35; 
+      const angleStep = 0.32; 
       const baseCenterAngle = Math.PI / 2; 
       const startAngle = baseCenterAngle - ((total - 1) * angleStep) / 2;
 
       userCharms.forEach((charm, index) => {
         const angle = total === 1 ? baseCenterAngle : startAngle + index * angleStep;
-        const radius = 92; const charmSize = 28; 
+        const radius = 92; 
+        const charmSize = 28; 
         const x = 112 + radius * Math.cos(angle) - charmSize / 2; 
         const y = 108 + radius * Math.sin(angle) - charmSize / 2;
+
+        const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         const charmEl = document.createElement('div');
         charmEl.className = `absolute pointer-events-none z-20`;
         charmEl.style.left = `${x}px`;
         charmEl.style.top = `${y}px`;
+        charmEl.style.transform = `rotate(${rotationDeg}deg)`;
 
         if (charm.isDangling) {
-          charmEl.innerHTML = `<div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]" style="transform: translateY(3px);"><img src="${charm.img}" class="w-8 h-12 object-contain" style="transform-origin: top center;" /></div>`;
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-start w-[28px] h-[32px]" style="transform: translateY(-6px);">
+              <img src="${charm.img}" class="w-8 h-12 object-contain origin-top" />
+            </div>`;
         } else {
-          const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
-          charmEl.style.transform = `rotate(${rotationDeg}deg)`;
-          charmEl.innerHTML = `<div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]"><img src="${charm.img}" class="w-full h-full object-contain" /></div>`;
+          charmEl.innerHTML = `
+            <div class="relative flex flex-col items-center justify-center w-[28px] h-[28px]">
+              <img src="${charm.img}" class="w-full h-full object-contain" />
+            </div>`;
         }
         container.appendChild(charmEl);
       });
@@ -507,6 +490,79 @@
       return braceletPrice + charmTotal;
     }
 
+    // TÍNH NĂNG LƯU MẪU THIẾT KẾ VÀO BỘ NHỚ MÁY (LOCALSTORAGE)
+    function saveDesignPreset() {
+      const t = translations[currentLang];
+      if (userCharms.length === 0) {
+        alert(t.alertSelectCharm);
+        return;
+      }
+      let presets = JSON.parse(localStorage.getItem('kimbaodi_presets') || '[]');
+      const newPreset = {
+        id: Date.now(),
+        date: new Date().toLocaleDateString(),
+        charms: [...userCharms]
+      };
+      presets.unshift(newPreset);
+      localStorage.setItem('kimbaodi_presets', JSON.stringify(presets));
+      updateSavedCount();
+      alert(t.alertSavedPreset);
+    }
+
+    function updateSavedCount() {
+      let presets = JSON.parse(localStorage.getItem('kimbaodi_presets') || '[]');
+      document.getElementById('saved-count').innerText = presets.length;
+    }
+
+    function openPresetsModal() {
+      const t = translations[currentLang];
+      let presets = JSON.parse(localStorage.getItem('kimbaodi_presets') || '[]');
+      const listContainer = document.getElementById('presets-list');
+      listContainer.innerHTML = '';
+
+      if (presets.length === 0) {
+        listContainer.innerHTML = `<p class="text-xs text-center text-gray-400 py-6">${t.alertNoPreset}</p>`;
+      } else {
+        presets.forEach((p, idx) => {
+          let row = document.createElement('div');
+          row.className = 'flex items-center justify-between p-2.5 bg-pink-50/60 border border-pink-100 rounded-2xl';
+          
+          let imgPreviews = p.charms.map(c => `<img src="${c.img}" class="w-7 h-7 object-contain bg-white rounded-lg p-0.5 border border-pink-100" />`).join('');
+          
+          row.innerHTML = `
+            <div class="flex flex-col gap-1">
+              <span class="text-[10px] font-bold text-gray-500">Mẫu #${presets.length - idx} (${p.date})</span>
+              <div class="flex gap-1 overflow-x-auto max-w-[180px]">${imgPreviews}</div>
+            </div>
+            <div class="flex gap-1">
+              <button onclick="loadPreset(${p.id})" class="bg-pink-500 text-white px-3 py-1.5 rounded-xl text-[10px] font-bold shadow hover:bg-pink-600 transition">Chọn ✨</button>
+              <button onclick="deletePreset(${p.id})" class="bg-gray-200 text-gray-600 px-2.5 py-1.5 rounded-xl text-[10px] font-bold hover:bg-red-500 hover:text-white transition">✕</button>
+            </div>
+          `;
+          listContainer.appendChild(row);
+        });
+      }
+      document.getElementById('presets-modal').classList.remove('hidden');
+    }
+
+    function loadPreset(id) {
+      let presets = JSON.parse(localStorage.getItem('kimbaodi_presets') || '[]');
+      let preset = presets.find(p => p.id === id);
+      if (preset) {
+        userCharms = [...preset.charms];
+        updateUI();
+        closePresetsModal();
+      }
+    }
+
+    function deletePreset(id) {
+      let presets = JSON.parse(localStorage.getItem('kimbaodi_presets') || '[]');
+      presets = presets.filter(p => p.id !== id);
+      localStorage.setItem('kimbaodi_presets', JSON.stringify(presets));
+      updateSavedCount();
+      openPresetsModal();
+    }
+
     function updateUI() {
       const t = translations[currentLang];
       document.getElementById('lang-btn').innerText = t.langBtn;
@@ -522,7 +578,6 @@
 
       document.getElementById('txt-total-label').innerText = t.totalLabel;
       document.getElementById('btn-view-bill').innerText = t.viewBill;
-      document.getElementById('btn-zalo').innerText = t.zalo;
 
       document.getElementById('txt-bill-subtitle').innerText = t.billSubtitle;
       document.getElementById('txt-b-name').innerText = t.bName;
@@ -531,8 +586,11 @@
       document.getElementById('txt-bill-details').innerText = t.billDetails;
       document.getElementById('txt-b-total-label').innerText = t.bTotalLabel;
       document.getElementById('btn-download').innerText = t.download;
-      document.getElementById('btn-send-zalo').innerText = t.sendZaloModal;
       document.getElementById('btn-close').innerText = t.close;
+
+      document.getElementById('txt-save-preset').innerText = t.savePreset;
+      document.getElementById('txt-load-preset').innerText = `${t.loadPreset} (${JSON.parse(localStorage.getItem('kimbaodi_presets') || '[]').length})`;
+      document.getElementById('txt-modal-presets-title').innerText = t.presetsModalTitle;
 
       renderBracelet();
       renderCharms();
@@ -579,6 +637,10 @@
       document.getElementById('bill-modal').classList.add('hidden');
     }
 
+    function closePresetsModal() {
+      document.getElementById('presets-modal').classList.add('hidden');
+    }
+
     function downloadBillImage() {
       const t = translations[currentLang];
       const billElement = document.getElementById('bill-content');
@@ -591,87 +653,7 @@
       });
     }
 
-    function generateOrderMessage() {
-      const t = translations[currentLang];
-      const name = document.getElementById('cust-name').value.trim();
-      const phone = document.getElementById('cust-phone').value.trim();
-      const address = document.getElementById('cust-address').value.trim();
-
-      let msg = `${t.zaloMsgHeader}\n`;
-      msg += `--------------------------\n`;
-      msg += `${t.zaloMsgCustomer} ${name}\n`;
-      msg += `${t.zaloMsgPhone} ${phone}\n`;
-      msg += `${t.zaloMsgAddress} ${address}\n`;
-      msg += `--------------------------\n`;
-      msg += `1. ${t.zaloMsgBracelet} ${braceletPrice.toLocaleString()}đ\n`;
-      msg += `2. ${t.zaloMsgCharms}\n`;
-      userCharms.forEach((item, idx) => {
-        const itemName = currentLang === 'vi' ? item.nameVi : item.nameEn;
-        msg += `  • ${t.posText} ${idx + 1}: ${itemName} (${item.price.toLocaleString()}đ)\n`;
-      });
-      msg += `--------------------------\n`;
-      msg += `${t.zaloMsgTotal} ${calculateTotal().toLocaleString()} VNĐ\n\n${t.zaloMsgNote}`;
-      return msg;
-    }
-
-    function sendBillZalo() {
-      const t = translations[currentLang];
-      const name = document.getElementById('cust-name').value.trim();
-      const phone = document.getElementById('cust-phone').value.trim();
-      const address = document.getElementById('cust-address').value.trim();
-
-      if (!name || !phone || !address) {
-        alert(t.alertFillInfo);
-        return;
-      }
-
-      const billElement = document.getElementById('bill-content');
-      html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `Bill-KimBaoDi-${Date.now()}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-      });
-
-      const msg = generateOrderMessage();
-      navigator.clipboard.writeText(msg).catch(err => console.log(err));
-
-      alert(t.alertZaloGuide);
-      window.open(`https://chat.zalo.me/?phone=${ZALO_PHONE}`, '_blank');
-    }
-
-    function sendOrderZalo() {
-      const t = translations[currentLang];
-      const name = document.getElementById('cust-name').value.trim();
-      const phone = document.getElementById('cust-phone').value.trim();
-      const address = document.getElementById('cust-address').value.trim();
-
-      if (userCharms.length === 0) {
-        alert(t.alertSelectCharm);
-        return;
-      }
-      if (!name || !phone || !address) {
-        alert(t.alertFillInfo);
-        return;
-      }
-
-      const billElement = document.getElementById('bill-content');
-      if(billElement) {
-        html2canvas(billElement, { scale: 2, useCORS: true }).then(canvas => {
-          const link = document.createElement('a');
-          link.download = `Bill-KimBaoDi-${Date.now()}.png`;
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-        });
-      }
-
-      const msg = generateOrderMessage();
-      navigator.clipboard.writeText(msg).catch(err => console.log(err));
-
-      alert(t.alertZaloGuide);
-      window.open(`https://chat.zalo.me/?phone=${ZALO_PHONE}`, '_blank');
-    }
-
+    updateSavedCount();
     updateUI();
   </script>
 </body>
