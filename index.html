@@ -43,7 +43,7 @@
     <!-- KHUNG VÒNG TAY -->
     <div class="p-4 flex flex-col items-center bg-[#FFF5F6] relative">
       <div id="bracelet-capture-area" class="relative w-72 h-72 bg-white rounded-3xl shadow-sm border border-pink-100 flex items-center justify-center overflow-hidden">
-        <img src="https://i.postimg.cc/PqTCKKN1/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
+        <img src="https://i.postimg.cc/hvNZnkTM/IMG-0847.png" alt="Vòng tay Kim Bảo Di" class="absolute w-full h-full object-contain pointer-events-none p-1 -top-2" />
         <div id="bracelet-ring" class="absolute inset-0 w-full h-full pointer-events-none"></div>
         <div id="magic-sparkle" class="absolute pointer-events-none inset-0 flex items-center justify-center transition-opacity duration-300 opacity-0">
           <span class="text-3xl animate-ping">✨</span>
@@ -149,7 +149,7 @@
     const braceletPrice = 119000;
     let currentLang = 'vi';
 
-    // DANH SÁCH CÁC MÃ CHARM TÒN TEN CHÍNH XÁC THEO YÊU CẦU CỦA CHỊ
+    // DANH SÁCH CÁC MÃ CHARM TÒN TEN CHÍNH XÁC THEO YÊU CẦU
     const DANGLING_IDS = [
       "0751", "0753", "0754", "0755", "0756", "0758", "0759", "0762", 
       "0763", "0765", "0766", "0770", "0771", "0776", "0777", "0778", 
@@ -250,12 +250,10 @@
       return name.charAt(0).toUpperCase() + name.slice(1);
     }
 
-    // Tự động kiểm tra xem ảnh có thuộc danh sách mã tòn ten hay không
     function checkIsDangling(imgUrl) {
       return DANGLING_IDS.some(id => imgUrl.includes(id));
     }
 
-    // Xây dựng danh mục, tự động tách riêng nhóm "tòn ten" theo yêu cầu
     const baseCategories = [...new Set(RAW_CHARM_DATA.map(c => c.category))];
     const CHARM_CATEGORIES = [
       {
@@ -410,7 +408,7 @@
       updateUI();
     }
 
-    // HIỂN THỊ VÒNG TAY (CHỈ CHARM TÒN TEN MỚI RŨ LƠ LỬNG XUỐNG DƯỚI)
+    // ĐIỀU CHỈNH ĐỈNH ĐẦU KHOEN CHARM TÒN TEN XỎ CHÍNH XÁC VÀO VÒNG TAY
     function renderBracelet() {
       const container = document.getElementById('bracelet-ring');
       container.innerHTML = '';
@@ -437,18 +435,17 @@
         const rotationDeg = (angle - Math.PI / 2) * (180 / Math.PI);
 
         if (charm.isDangling) {
-          // Charm thuộc nhóm tòn ten sẽ rũ lơ lửng tự nhiên
+          // Đỉnh khoen charm tòn ten được canh chỉnh xỏ chuẩn vào tâm vòng
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(-2px);">
+            <div class="relative flex flex-col items-center justify-start w-[32px] h-[44px]" style="transform: translateY(-12px);">
               <img src="${charm.img}" class="w-10 h-16 object-contain origin-top ${isSelected ? 'animate-bounce' : ''}" />
               <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-                <span class="absolute -bottom-1 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
-                <button onclick="removeCharm(event, ${index})" class="absolute -top-3 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
+                <span class="absolute top-2 bg-pink-500 text-white rounded-full w-4 h-4 text-[9px] font-bold flex items-center justify-center shadow z-30 pointer-events-auto">${index + 1}</span>
+                <button onclick="removeCharm(event, ${index})" class="absolute -top-1 -right-2 bg-red-500 text-white rounded-full w-4 h-4 text-[9px] flex items-center justify-center shadow z-30 pointer-events-auto">✕</button>
               </div>
             </div>
           `;
         } else {
-          // Charm thường nằm ôm sát vòng
           charmEl.style.transform = `rotate(${rotationDeg}deg)`;
           charmEl.innerHTML = `
             <div class="relative flex flex-col items-center justify-center w-[32px] h-[32px]">
@@ -491,7 +488,7 @@
 
         if (charm.isDangling) {
           charmEl.innerHTML = `
-            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(-2px);">
+            <div class="relative flex flex-col items-center justify-start w-[28px] h-[38px]" style="transform: translateY(-10px);">
               <img src="${charm.img}" class="w-8 h-14 object-contain origin-top" />
             </div>`;
         } else {
