@@ -3,80 +3,167 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Phong Điền Market - Mua Sắm & Đi Chợ Hộ</title>
+  <title>Phong Điền - Market</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Quicksand', sans-serif; }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800 pb-10">
+<body class="bg-emerald-50 min-h-screen text-gray-800 pb-12">
 
   <!-- Header -->
-  <header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-10">
+  <header class="bg-emerald-800 text-white p-4 shadow-md sticky top-0 z-20 rounded-b-2xl">
     <div class="max-w-md mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold">🌾 Phong Điền Market</h1>
-      <span class="text-xs bg-emerald-800 px-2 py-1 rounded">Chợ Địa Phương</span>
+      <div>
+        <h1 class="text-xl font-bold tracking-wide">🌿 Phong Điền - Market</h1>
+        <p class="text-xs text-emerald-200">Chợ sạch địa phương tiện lợi</p>
+      </div>
+      <span class="bg-emerald-700 text-emerald-100 text-xs px-3 py-1 rounded-full font-semibold shadow-inner">Phiên bản 1.0</span>
     </div>
   </header>
+
+  <!-- Thanh Chuyển Tab (Người Mua / Người Bán) -->
+  <div class="max-w-md mx-auto px-4 mt-4">
+    <div class="flex bg-white p-1 rounded-2xl shadow-sm border border-emerald-100">
+      <button onclick="switchTab('buyer')" id="btn-buyer" class="flex-1 py-2 text-sm font-bold rounded-xl transition bg-emerald-700 text-white shadow">
+        🛒 Dành Cho Người Mua
+      </button>
+      <button onclick="switchTab('seller')" id="btn-seller" class="flex-1 py-2 text-sm font-bold rounded-xl transition text-emerald-800">
+        🏪 Dành Cho Người Bán
+      </button>
+    </div>
+  </div>
 
   <!-- Main Container -->
   <main class="max-w-md mx-auto p-4 space-y-4">
 
-    <!-- Banner giới thiệu -->
-    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-800">
-      📍 Đặt hàng & đi chợ giao tận nhà tại Phong Điền. Đăng ký bán hàng nhanh chóng, phí hoa hồng cố định chỉ 2.5%!
+    <!-- ================= TAB NGƯỜI MUA ================= -->
+    <div id="tab-buyer" class="space-y-4">
+      
+      <!-- Lọc danh mục nhanh -->
+      <div class="flex gap-2 overflow-x-auto pb-1">
+        <button onclick="filterCategory('all')" class="bg-white px-4 py-2 rounded-full text-xs font-bold text-emerald-800 shadow-sm border border-emerald-200 whitespace-nowrap hover:bg-emerald-700 hover:text-white transition">🌱 Tất cả</button>
+        <button onclick="filterCategory('dicho')" class="bg-white px-4 py-2 rounded-full text-xs font-bold text-emerald-800 shadow-sm border border-emerald-200 whitespace-nowrap hover:bg-emerald-700 hover:text-white transition">🧺 Đi chợ hộ</button>
+        <button onclick="filterCategory('dacsan')" class="bg-white px-4 py-2 rounded-full text-xs font-bold text-emerald-800 shadow-sm border border-emerald-200 whitespace-nowrap hover:bg-emerald-700 hover:text-white transition">🍊 Đặc sản vườn</button>
+        <button onclick="filterCategory('amthuc')" class="bg-white px-4 py-2 rounded-full text-xs font-bold text-emerald-800 shadow-sm border border-emerald-200 whitespace-nowrap hover:bg-emerald-700 hover:text-white transition">🍲 Đồ ăn nhanh</button>
+      </div>
+
+      <!-- Danh sách sản phẩm -->
+      <div>
+        <h2 class="font-bold text-emerald-900 text-base mb-2">✨ Sản Phẩm & Dịch Vụ Nổi Bật</h2>
+        <div id="product-list" class="space-y-3">
+          <!-- Render tự động bằng Javascript -->
+        </div>
+      </div>
+
+      <!-- Hóa đơn / Thông báo đặt hàng -->
+      <div id="order-box" class="bg-white p-4 rounded-2xl shadow-md border border-emerald-100 hidden">
+        <h3 class="font-bold text-emerald-800 text-base mb-2">🧾 Xác Nhận Đơn Hàng</h3>
+        <div id="order-summary" class="text-sm text-gray-600 space-y-1"></div>
+      </div>
+
     </div>
 
-    <!-- Danh sách dịch vụ -->
-    <div class="grid grid-cols-2 gap-3">
-      <button onclick="filterCategory('all')" class="p-3 bg-white shadow rounded-lg text-center font-semibold text-sm hover:bg-emerald-50">
-        🛒 Mua Sắm Đa Ngành
-      </button>
-      <button onclick="filterCategory('dicho')" class="p-3 bg-white shadow rounded-lg text-center font-semibold text-sm hover:bg-emerald-50">
-        🧺 Đi Chợ Hộ
-      </button>
-    </div>
+    <!-- ================= TAB NGƯỜI BÁN ================= -->
+    <div id="tab-seller" class="space-y-4 hidden">
+      <div class="bg-white p-5 rounded-2xl shadow-md border border-emerald-100">
+        <h2 class="font-bold text-emerald-900 text-lg mb-1">📝 Đăng Bán Sản Phẩm Mới</h2>
+        <p class="text-xs text-gray-500 mb-4">Thêm món ăn, rau củ hoặc dịch vụ đi chợ của bạn lên chợ Phong Điền ngay lập tức.</p>
+        
+        <form id="add-product-form" onsubmit="addNewProduct(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Tên sản phẩm / Dịch vụ</label>
+            <input type="text" id="new-name" required placeholder="Ví dụ: Xoài cát Hòa Lộc 1kg" class="w-full p-3 text-sm bg-emerald-50 border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
 
-    <!-- Danh Sách Sản Phẩm -->
-    <h2 class="font-bold text-lg text-gray-700 mt-2">Sản Phẩm & Dịch Vụ Mới</h2>
-    <div id="product-list" class="space-y-3">
-      <!-- Sản phẩm sẽ được render ở đây -->
-    </div>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Giá bán (VNĐ)</label>
+            <input type="number" id="new-price" required placeholder="Ví dụ: 35000" class="w-full p-3 text-sm bg-emerald-50 border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
 
-    <!-- Đơn Hàng Vừa Đặt -->
-    <div class="bg-white p-4 rounded-xl shadow-md border mt-6">
-      <h3 class="font-bold text-emerald-700 text-base mb-2">🧾 Chi Tiết Đơn Hàng</h3>
-      <div id="order-summary" class="text-sm text-gray-600 space-y-1">
-        <p>Chưa có sản phẩm nào được chọn.</p>
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Tên cửa hàng / Người bán</label>
+            <input type="text" id="new-seller" required placeholder="Ví dụ: Vườn Cô Hai Phong Điền" class="w-full p-3 text-sm bg-emerald-50 border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Chọn danh mục</label>
+            <select id="new-category" class="w-full p-3 text-sm bg-emerald-50 border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+              <option value="dicho">🧺 Đi chợ hộ</option>
+              <option value="dacsan">🍊 Đặc sản vườn</option>
+              <option value="amthuc">🍲 Đồ ăn nhanh</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs font-bold text-gray-700 mb-1">Biểu tượng (Emoji)</label>
+            <input type="text" id="new-image" value="🛒" required class="w-full p-3 text-sm bg-emerald-50 border border-emerald-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600">
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold p-3 rounded-xl shadow-md transition text-sm mt-2">
+            🚀 Đăng Sản Phẩm Lên Chợ Ngay
+          </button>
+        </form>
       </div>
     </div>
 
   </main>
 
   <script>
-    // Dữ liệu mẫu sản phẩm tại Phong Điền
-    const products = [
-      { id: 1, name: 'Combo Rau Củ Tươi Sạch (Đi chợ hộ)', price: 85000, category: 'dicho', seller: 'Chợ Phong Điền', rating: 4.9, image: '🥦' },
-      { id: 2, name: 'Bánh Mì Thịt Nướng Đặc Biệt', price: 25000, category: 'all', seller: 'Tiệm Bánh Mì Cô Ba', rating: 4.8, image: '🥖' },
-      { id: 3, name: 'Trái Cây Miệt Vườn (Cam Toàn Phụng)', price: 45000, category: 'all', seller: 'Vườn Trái Cây Đô Thị', rating: 5.0, image: '🍊' }
+    // Dữ liệu ban đầu
+    let products = [
+      { id: 1, name: 'Combo Rau Củ Sạch Đi Chợ Hộ', price: 85000, category: 'dicho', seller: 'Chợ Trung Tâm Phong Điền', rating: 4.9, image: '🧺' },
+      { id: 2, name: 'Cam Sành Miệt Vườn (1kg)', price: 40000, category: 'dacsan', seller: 'Vườn Tư Lộc', rating: 5.0, image: '🍊' },
+      { id: 3, name: 'Hủ Tiếu Sa Đéc Đặc Biệt', price: 30000, category: 'amthuc', seller: 'Quán Ăn Dân Dã', rating: 4.8, image: '🍲' }
     ];
 
     const COMMISSION_RATE = 0.025; // Hoa hồng 2.5%
 
+    // Chuyển đổi giữa tab Người Mua và Người Bán
+    function switchTab(tab) {
+      const buyerTab = document.getElementById('tab-buyer');
+      const sellerTab = document.getElementById('tab-seller');
+      const btnBuyer = document.getElementById('btn-buyer');
+      const btnSeller = document.getElementById('btn-seller');
+
+      if (tab === 'buyer') {
+        buyerTab.classList.remove('hidden');
+        sellerTab.classList.add('hidden');
+        btnBuyer.className = "flex-1 py-2 text-sm font-bold rounded-xl transition bg-emerald-700 text-white shadow";
+        btnSeller.className = "flex-1 py-2 text-sm font-bold rounded-xl transition text-emerald-800";
+        renderProducts(products);
+      } else {
+        buyerTab.classList.add('hidden');
+        sellerTab.classList.remove('hidden');
+        btnSeller.className = "flex-1 py-2 text-sm font-bold rounded-xl transition bg-emerald-700 text-white shadow";
+        btnBuyer.className = "flex-1 py-2 text-sm font-bold rounded-xl transition text-emerald-800";
+      }
+    }
+
+    // Hiển thị danh sách sản phẩm
     function renderProducts(items) {
       const listEl = document.getElementById('product-list');
       listEl.innerHTML = '';
       
+      if (items.length === 0) {
+        listEl.innerHTML = `<p class="text-center text-gray-400 text-sm py-6">Chưa có sản phẩm nào trong danh mục này.</p>`;
+        return;
+      }
+
       items.forEach(p => {
         const itemHtml = `
-          <div class="bg-white p-3 rounded-xl shadow flex justify-between items-center border border-gray-100">
+          <div class="bg-white p-3.5 rounded-2xl shadow-sm flex justify-between items-center border border-emerald-100 hover:shadow-md transition">
             <div class="flex items-center space-x-3">
-              <span class="text-3xl">${p.image}</span>
+              <span class="text-3xl bg-emerald-50 p-2 rounded-xl">${p.image}</span>
               <div>
-                <h4 class="font-semibold text-sm">${p.name}</h4>
-                <p class="text-xs text-gray-500">Bán bởi: ${p.seller} • ⭐ ${p.rating}</p>
-                <p class="text-emerald-600 font-bold text-sm">${p.price.toLocaleString('vi-VN')} đ</p>
+                <h4 class="font-bold text-sm text-gray-800">${p.name}</h4>
+                <p class="text-xs text-gray-400">Shop: ${p.seller} • ⭐ ${p.rating}</p>
+                <p class="text-emerald-700 font-extrabold text-sm mt-0.5">${p.price.toLocaleString('vi-VN')} đ</p>
               </div>
             </div>
-            <button onclick="placeOrder('${p.name}', ${p.price})" class="bg-emerald-600 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-emerald-700">
-              Đặt Ngay
+            <button onclick="placeOrder('${p.name}', ${p.price})" class="bg-emerald-700 hover:bg-emerald-800 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow transition">
+              Mua Ngay
             </button>
           </div>
         `;
@@ -84,29 +171,62 @@
       });
     }
 
-    function placeOrder(name, price) {
-      const commission = Math.round(price * COMMISSION_RATE);
-      const sellerReceive = price - commission;
-
-      const summaryEl = document.getElementById('order-summary');
-      summaryEl.innerHTML = `
-        <div class="bg-emerald-50 p-2 rounded border border-emerald-200 mb-2">
-          <p class="font-bold text-emerald-800">✅ Đã Đặt Đơn Thành Công!</p>
-          <p>Mặt hàng: <b>${name}</b></p>
-        </div>
-        <p>• Giá khách trả: <b>${price.toLocaleString('vi-VN')} đ</b></p>
-        <p>• Chiết khấu App (2.5%): <b class="text-red-500">${commission.toLocaleString('vi-VN')} đ</b></p>
-        <p>• Người bán nhận: <b class="text-green-600">${sellerReceive.toLocaleString('vi-VN')} đ</b></p>
-        <p class="text-xs text-gray-400 mt-2">Trạng thái: Đang tìm tài xế giao hàng tại Phong Điền...</p>
-      `;
-    }
-
+    // Lọc theo danh mục
     function filterCategory(cat) {
       if (cat === 'all') {
         renderProducts(products);
       } else {
         renderProducts(products.filter(p => p.category === cat));
       }
+    }
+
+    // Xử lý nút Mua Ngay và tính chiết khấu 2.5%
+    function placeOrder(name, price) {
+      const commission = Math.round(price * COMMISSION_RATE);
+      const sellerReceive = price - commission;
+
+      const orderBox = document.getElementById('order-box');
+      const summaryEl = document.getElementById('order-summary');
+      
+      orderBox.classList.remove('hidden');
+      summaryEl.innerHTML = `
+        <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-200 mb-2">
+          <p class="font-bold text-emerald-900 text-xs">🎉 ĐẶT HÀNG THÀNH CÔNG!</p>
+          <p class="text-xs text-gray-700 mt-0.5">Sản phẩm: <b>${name}</b></p>
+        </div>
+        <p>• Giá khách thanh toán: <b>${price.toLocaleString('vi-VN')} đ</b></p>
+        <p>• Trừ hoa hồng app (2.5%): <b class="text-red-500">-${commission.toLocaleString('vi-VN')} đ</b></p>
+        <p>• Người bán thực nhận: <b class="text-emerald-700">${sellerReceive.toLocaleString('vi-VN')} đ</b></p>
+        <p class="text-[11px] text-gray-400 mt-2 italic">🛵 Đang tự động kết nối tài xế giao hàng tại Phong Điền...</p>
+      `;
+      orderBox.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Người bán thêm sản phẩm mới tùy thích
+    function addNewProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-name').value;
+      const price = Number(document.getElementById('new-price').value);
+      const seller = document.getElementById('new-seller').value;
+      const category = document.getElementById('new-category').value;
+      const image = document.getElementById('new-image').value || '🛒';
+
+      const newP = {
+        id: products.length + 1,
+        name,
+        price,
+        category,
+        seller,
+        rating: 5.0,
+        image
+      };
+
+      products.unshift(newP); // Thêm lên đầu danh sách
+      alert('🌟 Đăng sản phẩm thành công!');
+      
+      // Reset form và chuyển về tab người mua để xem
+      document.getElementById('add-product-form').reset();
+      switchTab('buyer');
     }
 
     // Khởi chạy ban đầu
