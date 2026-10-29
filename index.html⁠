@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Phong Điền Market - Mua Sắm & Đi Chợ Hộ</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800 pb-10">
+
+  <!-- Header -->
+  <header class="bg-emerald-600 text-white p-4 shadow-md sticky top-0 z-10">
+    <div class="max-w-md mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold">🌾 Phong Điền Market</h1>
+      <span class="text-xs bg-emerald-800 px-2 py-1 rounded">Chợ Địa Phương</span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-md mx-auto p-4 space-y-4">
+
+    <!-- Banner giới thiệu -->
+    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-800">
+      📍 Đặt hàng & đi chợ giao tận nhà tại Phong Điền. Đăng ký bán hàng nhanh chóng, phí hoa hồng cố định chỉ 2.5%!
+    </div>
+
+    <!-- Danh sách dịch vụ -->
+    <div class="grid grid-cols-2 gap-3">
+      <button onclick="filterCategory('all')" class="p-3 bg-white shadow rounded-lg text-center font-semibold text-sm hover:bg-emerald-50">
+        🛒 Mua Sắm Đa Ngành
+      </button>
+      <button onclick="filterCategory('dicho')" class="p-3 bg-white shadow rounded-lg text-center font-semibold text-sm hover:bg-emerald-50">
+        🧺 Đi Chợ Hộ
+      </button>
+    </div>
+
+    <!-- Danh Sách Sản Phẩm -->
+    <h2 class="font-bold text-lg text-gray-700 mt-2">Sản Phẩm & Dịch Vụ Mới</h2>
+    <div id="product-list" class="space-y-3">
+      <!-- Sản phẩm sẽ được render ở đây -->
+    </div>
+
+    <!-- Đơn Hàng Vừa Đặt -->
+    <div class="bg-white p-4 rounded-xl shadow-md border mt-6">
+      <h3 class="font-bold text-emerald-700 text-base mb-2">🧾 Chi Tiết Đơn Hàng</h3>
+      <div id="order-summary" class="text-sm text-gray-600 space-y-1">
+        <p>Chưa có sản phẩm nào được chọn.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Dữ liệu mẫu sản phẩm tại Phong Điền
+    const products = [
+      { id: 1, name: 'Combo Rau Củ Tươi Sạch (Đi chợ hộ)', price: 85000, category: 'dicho', seller: 'Chợ Phong Điền', rating: 4.9, image: '🥦' },
+      { id: 2, name: 'Bánh Mì Thịt Nướng Đặc Biệt', price: 25000, category: 'all', seller: 'Tiệm Bánh Mì Cô Ba', rating: 4.8, image: '🥖' },
+      { id: 3, name: 'Trái Cây Miệt Vườn (Cam Toàn Phụng)', price: 45000, category: 'all', seller: 'Vườn Trái Cây Đô Thị', rating: 5.0, image: '🍊' }
+    ];
+
+    const COMMISSION_RATE = 0.025; // Hoa hồng 2.5%
+
+    function renderProducts(items) {
+      const listEl = document.getElementById('product-list');
+      listEl.innerHTML = '';
+      
+      items.forEach(p => {
+        const itemHtml = `
+          <div class="bg-white p-3 rounded-xl shadow flex justify-between items-center border border-gray-100">
+            <div class="flex items-center space-x-3">
+              <span class="text-3xl">${p.image}</span>
+              <div>
+                <h4 class="font-semibold text-sm">${p.name}</h4>
+                <p class="text-xs text-gray-500">Bán bởi: ${p.seller} • ⭐ ${p.rating}</p>
+                <p class="text-emerald-600 font-bold text-sm">${p.price.toLocaleString('vi-VN')} đ</p>
+              </div>
+            </div>
+            <button onclick="placeOrder('${p.name}', ${p.price})" class="bg-emerald-600 text-white text-xs px-3 py-2 rounded-lg font-medium hover:bg-emerald-700">
+              Đặt Ngay
+            </button>
+          </div>
+        `;
+        listEl.innerHTML += itemHtml;
+      });
+    }
+
+    function placeOrder(name, price) {
+      const commission = Math.round(price * COMMISSION_RATE);
+      const sellerReceive = price - commission;
+
+      const summaryEl = document.getElementById('order-summary');
+      summaryEl.innerHTML = `
+        <div class="bg-emerald-50 p-2 rounded border border-emerald-200 mb-2">
+          <p class="font-bold text-emerald-800">✅ Đã Đặt Đơn Thành Công!</p>
+          <p>Mặt hàng: <b>${name}</b></p>
+        </div>
+        <p>• Giá khách trả: <b>${price.toLocaleString('vi-VN')} đ</b></p>
+        <p>• Chiết khấu App (2.5%): <b class="text-red-500">${commission.toLocaleString('vi-VN')} đ</b></p>
+        <p>• Người bán nhận: <b class="text-green-600">${sellerReceive.toLocaleString('vi-VN')} đ</b></p>
+        <p class="text-xs text-gray-400 mt-2">Trạng thái: Đang tìm tài xế giao hàng tại Phong Điền...</p>
+      `;
+    }
+
+    function filterCategory(cat) {
+      if (cat === 'all') {
+        renderProducts(products);
+      } else {
+        renderProducts(products.filter(p => p.category === cat));
+      }
+    }
+
+    // Khởi chạy ban đầu
+    renderProducts(products);
+  </script>
+</body>
+</html>
