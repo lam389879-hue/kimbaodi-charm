@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Phố Chợ Đêm & Chợ Nổi Miền Tây - Mô Hình 150 Quầy</title>
+    <title>Phố Chợ Đêm 3D Isometric - Mô Hình Rừng Sông Núi Đất Liền</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Canvas Confetti for Fireworks -->
@@ -23,18 +23,18 @@
     <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
     <!-- MAIN HEADER -->
-    <header class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 px-4 py-3 text-white flex justify-between items-center shadow-lg border-b border-orange-500/35 z-30">
+    <header class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 px-4 py-2.5 text-white flex justify-between items-center shadow-lg border-b border-orange-500/35 z-30">
         <div class="flex items-center space-x-2.5">
             <span class="text-3xl animate-bounce">🏮</span>
             <div>
-                <h1 class="text-sm md:text-xl font-black tracking-wide uppercase leading-tight">Phố Chợ Đêm & Chợ Nổi Miền Tây</h1>
-                <p class="text-[10px] md:text-[11px] text-amber-100/90 font-medium">Mô Hình Rừng • Sông • Núi (150 Quầy) • Tự Do Dựng Quầy</p>
+                <h1 class="text-sm md:text-xl font-black tracking-wide uppercase leading-tight">Phố Chợ Đêm Mô Hình 3D</h1>
+                <p class="text-[10px] md:text-[11px] text-amber-100/90 font-medium">Rừng Gỗ • Núi Tuyết • Sông Thuyền • Đất Liền • Tự Do Đặt Quầy</p>
             </div>
         </div>
 
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2.5">
             <div id="player-profile-badge" class="hidden flex items-center bg-black/40 px-3 py-1.5 rounded-2xl border border-amber-400/40 backdrop-blur-md">
-                <span id="badge-user-avatar" class="text-lg mr-2"></span>
+                <span id="badge-user-avatar" class="text-lg mr-1.5"></span>
                 <div class="text-left">
                     <div id="badge-user-name" class="text-xs font-bold text-amber-300"></div>
                     <div class="text-[10px] text-emerald-400 font-semibold">Ví: <span id="badge-user-balance">500,000</span>đ</div>
@@ -53,8 +53,8 @@
                 🏮
             </div>
             <div>
-                <h2 class="text-xl md:text-2xl font-black text-amber-400">Tham Gia Phiên Chợ Mô Hình</h2>
-                <p class="text-xs text-slate-400 mt-1">Chọn nhân vật để đi dạo mô hình Rừng - Sông - Núi, mua sắm và kinh doanh tự do!</p>
+                <h2 class="text-xl md:text-2xl font-black text-amber-400">Tham Gia Chợ Đêm 3D</h2>
+                <p class="text-xs text-slate-400 mt-1">Chọn nhân vật để đi dạo mô hình Rừng, Núi Tuyết, Sông Thuyền & Đất Liền!</p>
             </div>
 
             <div class="space-y-4 text-left">
@@ -77,42 +77,47 @@
             </div>
 
             <button onclick="saveUserProfile()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-black py-3 rounded-xl shadow-lg shadow-orange-600/30 transition transform active:scale-95 text-sm uppercase tracking-wider">
-                Vào Chợ Ngay 🚀
+                Vào Bản Đồ Chợ Ngay 🚀
             </button>
         </div>
     </div>
 
-    <!-- SCREEN 2: MAIN GAME & MAP CANVAS -->
+    <!-- SCREEN 2: MAIN GAMEPLAY CANVAS -->
     <div id="screen-game" class="flex-1 hidden flex flex-col md:flex-row relative overflow-hidden">
-        <!-- CANVAS CONTAINER -->
+        <!-- CANVAS MAP CONTAINER -->
         <div class="flex-1 relative bg-slate-900 flex items-center justify-center overflow-hidden">
             <canvas id="marketCanvas" class="shadow-2xl cursor-crosshair w-full h-full"></canvas>
 
-            <!-- JOYPAD CONTROLS (Góc phải dưới, tránh che quầy) -->
-            <div class="absolute bottom-6 right-6 flex gap-2 z-20">
-                <div class="grid grid-cols-3 gap-1.5 w-36 h-36 bg-black/60 p-2.5 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
+            <!-- JOYPAD CONTROLS (Góc phải dưới - Tránh che quầy) -->
+            <div class="absolute bottom-5 right-5 flex gap-2 z-20">
+                <div class="grid grid-cols-3 gap-1.5 w-32 h-32 bg-slate-950/70 p-2 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
                     <div></div>
-                    <button ontouchstart="setTouchMove(0,-1)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(0,-1)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/90 hover:bg-amber-600 rounded-2xl flex items-center justify-center text-white text-base active:scale-95 transition">⬆️</button>
+                    <button ontouchstart="setTouchMove(0,-1)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(0,-1)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/80 hover:bg-amber-600 rounded-xl flex items-center justify-center text-white text-sm active:scale-95 transition">⬆️</button>
                     <div></div>
-                    <button ontouchstart="setTouchMove(-1,0)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(-1,0)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/90 hover:bg-amber-600 rounded-2xl flex items-center justify-center text-white text-base active:scale-95 transition">⬅️</button>
-                    <button ontouchstart="setTouchMove(0,1)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(0,1)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/90 hover:bg-amber-600 rounded-2xl flex items-center justify-center text-white text-base active:scale-95 transition">⬇️</button>
-                    <button ontouchstart="setTouchMove(1,0)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(1,0)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/90 hover:bg-amber-600 rounded-2xl flex items-center justify-center text-white text-base active:scale-95 transition">➡️</button>
+                    <button ontouchstart="setTouchMove(-1,0)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(-1,0)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/80 hover:bg-amber-600 rounded-xl flex items-center justify-center text-white text-sm active:scale-95 transition">⬅️</button>
+                    <button ontouchstart="setTouchMove(0,1)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(0,1)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/80 hover:bg-amber-600 rounded-xl flex items-center justify-center text-white text-sm active:scale-95 transition">⬇️</button>
+                    <button ontouchstart="setTouchMove(1,0)" ontouchend="setTouchMove(0,0)" onmousedown="setTouchMove(1,0)" onmouseup="setTouchMove(0,0)" class="bg-slate-800/80 hover:bg-amber-600 rounded-xl flex items-center justify-center text-white text-sm active:scale-95 transition">➡️</button>
                 </div>
             </div>
 
-            <!-- HƯỚNG DẪN NỔI -->
-            <div class="absolute top-3 left-3 bg-slate-950/85 backdrop-blur-md px-3 py-2 rounded-2xl border border-slate-800 text-[11px] pointer-events-none space-y-0.5 z-10 shadow-lg">
-                <div class="text-amber-400 font-bold">🏮 Mô Hình Chợ Đêm:</div>
-                <div>• Dùng phím <b>W A S D</b> hoặc <b>Nút ảo góc phải</b> để di chuyển.</div>
-                <div>• Ghé sát các quầy mô hình (Rừng, Sông, Núi) để mở quầy!</div>
+            <!-- CHÚ THÍCH ĐỊA HÌNH -->
+            <div class="absolute top-3 left-3 bg-slate-950/85 backdrop-blur-md px-3.5 py-2.5 rounded-2xl border border-slate-800 text-[11px] pointer-events-none space-y-1 z-10 shadow-lg">
+                <div class="text-amber-400 font-bold">🗺️ Mô Hình 4 Địa Hình Thực Tế:</div>
+                <div class="flex gap-2 text-[10px]">
+                    <span class="text-emerald-400">🌲 Rừng Gỗ</span> • 
+                    <span class="text-cyan-300">⛰️ Núi Tuyết</span> • 
+                    <span class="text-sky-400">🌊 Sông Thuyền</span> • 
+                    <span class="text-amber-300">🎪 Đất Liền</span>
+                </div>
+                <div class="text-[10px] text-slate-400">• Dùng phím <b>WASD / Mũi tên</b> hoặc <b>Joypad góc phải</b> để đi dạo.</div>
             </div>
         </div>
 
-        <!-- RIGHT SIDEBAR: STALL DRAWER -->
+        <!-- RIGHT SIDEBAR: STALL DRAWER & TABS -->
         <div id="stall-drawer" class="w-full md:w-96 bg-slate-950 border-t md:border-t-0 md:border-l border-slate-800 flex flex-col p-4 h-72 md:h-full z-20 shadow-2xl">
             <div id="stall-empty-state" class="flex-1 flex flex-col items-center justify-center text-center text-slate-500 space-y-3 p-6">
                 <span class="text-4xl animate-pulse">🛒</span>
-                <p class="text-xs font-medium">Di chuyển nhân vật đến gần bất kỳ mô hình quầy nào trên Rừng, Sông hoặc Núi để xem món và đặt hàng!</p>
+                <p class="text-xs font-medium">Di chuyển nhân vật đến gần bất kỳ mô hình quầy nào trên Rừng, Núi Tuyết, Sông Thuyền hoặc Đất Liền để xem quầy!</p>
             </div>
 
             <div id="stall-content-state" class="hidden flex-1 flex flex-col space-y-3">
@@ -128,10 +133,10 @@
                 </div>
 
                 <div class="flex border-b border-slate-800 text-xs font-bold">
-                    <button id="tab-menu-btn" onclick="switchStallTab('menu')" class="flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition">🛍️ Sản Phẩm</button>
+                    <button id="tab-menu-btn" onclick="switchStallTab('menu')" class="flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition">🛍️ Món Hàng</button>
                     <button id="tab-orders-btn" onclick="switchStallTab('orders')" class="flex-1 py-2 text-slate-400 transition">📋 Đơn (<span id="orders-count-badge">0</span>)</button>
-                    <button id="tab-visitors-btn" onclick="switchStallTab('visitors')" class="flex-1 py-2 text-slate-400 transition">👥 Ghé Thăm</button>
-                    <button id="tab-chat-btn" onclick="switchStallTab('chat')" class="flex-1 py-2 text-slate-400 transition">💬 Nhắn Tin</button>
+                    <button id="tab-visitors-btn" onclick="switchStallTab('visitors')" class="flex-1 py-2 text-slate-400 transition">📢 Ra Rao</button>
+                    <button id="tab-chat-btn" onclick="switchStallTab('chat')" class="flex-1 py-2 text-slate-400 transition">💬 Chat Sốp</button>
                 </div>
 
                 <!-- TAB 1: MENU -->
@@ -140,13 +145,21 @@
                 <!-- TAB 2: ORDERS -->
                 <div id="stall-tab-orders" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1"></div>
 
-                <!-- TAB 3: VISITORS -->
-                <div id="stall-tab-visitors" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1"></div>
+                <!-- TAB 3: CUSTOM SHOUT MESSAGE (RA ROA CHÀO MỜI KHÁCH TỰ NHẬP) -->
+                <div id="stall-tab-visitors" class="flex-1 hidden flex flex-col space-y-3">
+                    <div class="bg-slate-900 p-3 rounded-2xl border border-slate-800 text-xs space-y-2">
+                        <label class="block font-bold text-amber-300">📢 Nhập Lời Chào Mời Tự Chọn Hiển Thị Trực Tiếp Trên Quầy:</label>
+                        <input type="text" id="custom-shout-input" placeholder="Ví dụ: Giảm giá 30% hôm nay! Đồ ngon ghé xem chị ơi!" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500 text-xs">
+                        <button onclick="submitCustomShout()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-black py-2 rounded-xl shadow text-xs transition">
+                            🚀 Hiển Thị Lời Chào Trên Mô Hình Quầy
+                        </button>
+                    </div>
+                </div>
 
-                <!-- TAB 4: CHAT -->
+                <!-- TAB 4: CHAT WITH SELLER -->
                 <div id="stall-tab-chat" class="flex-1 hidden flex flex-col border border-slate-800 rounded-2xl p-3 bg-slate-900/50">
                     <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 text-xs mb-2 p-1">
-                        <div class="text-slate-500 text-[10px] text-center">--- Trò chuyện trực tiếp cùng chủ quầy ---</div>
+                        <div class="text-slate-500 text-[10px] text-center">--- Trò chuyện trực tiếp cùng chủ sốp ---</div>
                     </div>
                     <div class="flex gap-2">
                         <input type="text" id="chat-input-text" placeholder="Nhập tin nhắn..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" onkeypress="if(event.key==='Enter') sendStallChatMessage()">
@@ -157,7 +170,7 @@
         </div>
     </div>
 
-    <!-- MODAL: CREATE STALL -->
+    <!-- MODAL: CREATE STALL (DỰNG MÔ HÌNH VẬT LÝ THEO ĐỊA HÌNH) -->
     <div id="modal-create-stall" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
@@ -167,42 +180,43 @@
 
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-amber-300 mb-1">Tên Quầy Hàng:</label>
+                    <label class="block font-bold text-amber-300 mb-1">Tên Quầy Hàng / Tiệm:</label>
                     <input type="text" id="new-stall-name" placeholder="Ví dụ: Tiệm Bạc Kim Bảo Di" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div>
-                    <label class="block font-bold text-amber-300 mb-1">Slogan / Lời Giới Thiệu:</label>
-                    <input type="text" id="new-stall-slogan" placeholder="Ví dụ: Trang sức tinh xảo • Độc quyền miền Tây" maxlength="45" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+                    <label class="block font-bold text-amber-300 mb-1">Slogan / Câu Giới Thiệu:</label>
+                    <input type="text" id="new-stall-slogan" placeholder="Ví dụ: Trang sức bạc cao cấp • Mua 1 tặng 1!" maxlength="45" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-amber-300 mb-1">Biểu tượng Quầy:</label>
+                        <label class="block font-bold text-amber-300 mb-1">Biểu tượng Sản Phẩm:</label>
                         <select id="new-stall-icon" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
-                            <option value="💍">💍 Trang sức bạc / Vàng</option>
-                            <option value="🍉">🍉 Trái cây tươi</option>
+                            <option value="💍">💍 Trang sức Bạc / Vàng</option>
+                            <option value="🍉">🍉 Trái cây tươi Miền Tây</option>
                             <option value="🧋">🧋 Trà sữa / Đồ uống</option>
                             <option value="🍜">🍜 Phở / Hủ tiếu</option>
-                            <option value="🌸">🌸 Hoa tươi / Quà tặng</option>
-                            <option value="🪵">🪵 Đồ gỗ / Thủ công</option>
+                            <option value="🌸">🌸 Hoa tươi / Quà lưu niệm</option>
+                            <option value="🪵">🪵 Đồ gỗ thủ công</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-amber-300 mb-1">Địa Hình Dựng Mô Hình:</label>
+                        <label class="block font-bold text-amber-300 mb-1">Chọn Mô Hình Địa Hình:</label>
                         <select id="new-stall-zone" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
-                            <option value="forest">🌲 Mô Hình Vùng Rừng</option>
-                            <option value="river">🌊 Mô Hình Chợ Nổi Sông Nước</option>
-                            <option value="mountain">⛰️ Mô Hình Vùng Núi</option>
+                            <option value="land">🎪 Đất Liền (Lều Đỏ Trống Chiêng)</option>
+                            <option value="forest">🌲 Vùng Rừng (Quầy Gỗ Sồi Ngọc Bích)</option>
+                            <option value="mountain">⛰️ Vùng Núi (Quầy Đá Phủ Tuyết Trắng)</option>
+                            <option value="river">🌊 Chợ Nổi (Ghe Xuồng Ba Lá Trên Sông)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="border-t border-slate-800 pt-3 space-y-2">
-                    <div class="font-bold text-amber-400">🛍️ Sản Phẩm Khởi Đầu:</div>
+                    <div class="font-bold text-amber-400">🛍️ Món Hàng Đầu Tiên Tại Quầy:</div>
                     <div class="grid grid-cols-2 gap-2">
                         <input type="text" id="new-item-name" placeholder="Tên sản phẩm" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
-                        <input type="number" id="new-item-price" placeholder="Giá (VNĐ)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
+                        <input type="number" id="new-item-price" placeholder="Giá tiền (VNĐ)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                     </div>
                     <input type="text" id="new-item-desc" placeholder="Mô tả sản phẩm" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
@@ -210,16 +224,16 @@
 
             <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
                 <button onclick="closeCreateStallModal()" class="bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-xl text-xs font-bold text-white transition">Hủy</button>
-                <button onclick="submitNewStallCreation()" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-black px-5 py-2 rounded-xl text-xs shadow-lg transition">Xác Nhận Dựng Mô Hình 🚀</button>
+                <button onclick="submitNewStallCreation()" class="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-black px-5 py-2 rounded-xl text-xs shadow-lg transition">Xác Nhận Dựng Quầy 🚀</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: CHECKOUT WITH BILL INFO -->
+    <!-- MODAL: CHECKOUT & CREATE BILL -->
     <div id="modal-checkout" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-extrabold text-sm text-amber-400">📦 Nhập Thông Tin Tạo Hóa Đơn</h3>
+                <h3 class="font-extrabold text-sm text-amber-400">📦 Đặt Hàng & Xuất Hóa Đơn</h3>
                 <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
             </div>
 
@@ -227,7 +241,7 @@
 
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-amber-300 mb-1">Họ và Tên Người Mua:</label>
+                    <label class="block font-bold text-amber-300 mb-1">Tên Người Mua / Nhận Hàng:</label>
                     <input type="text" id="checkout-name" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
                 <div>
@@ -236,12 +250,12 @@
                 </div>
                 <div>
                     <label class="block font-bold text-amber-300 mb-1">Địa Chỉ Nhận Hàng:</label>
-                    <input type="text" id="checkout-address" value="Giao tại Phố Chợ Đêm" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
+                    <input type="text" id="checkout-address" value="Giao tại Phố Chợ Đêm 3D" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
             </div>
 
             <button onclick="submitOrderCheckout()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-600/30 text-xs transition uppercase">
-                Xác Nhận Đặt Hàng 🎆
+                Tạo Hóa Đơn & Bắn Pháo Hoa 🎆
             </button>
         </div>
     </div>
@@ -250,8 +264,8 @@
     <div id="modal-bill" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 font-mono">
             <div class="text-center border-b border-dashed border-slate-300 pb-3">
-                <h3 class="font-black text-base uppercase text-orange-600">🏮 HÓA ĐƠN CHỢ ĐÊM 🏮</h3>
-                <p class="text-[10px] text-slate-500">Đơn hàng mới • Chờ chủ shop xác nhận!</p>
+                <h3 class="font-black text-base uppercase text-orange-600">🏮 HÓA ĐƠN CHỢ ĐÊM 3D 🏮</h3>
+                <p class="text-[10px] text-slate-500">Đặt hàng thành công • Đang chờ chủ sốp xác nhận!</p>
             </div>
             <div id="bill-details" class="text-xs space-y-1.5"></div>
             <button onclick="closePrintableBill()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-xl text-xs transition font-sans">
@@ -260,49 +274,52 @@
         </div>
     </div>
 
-    <!-- SCRIPT LOGIC -->
+    <!-- SCRIPT LOGIC MAIN GAME ENGINE -->
     <script>
         let currentUser = JSON.parse(localStorage.getItem('nightmarket_user')) || null;
         let userBalance = parseInt(localStorage.getItem('nightmarket_balance')) || 500000;
         let selectedAvatarIcon = '👩‍🍳';
 
-        // 150 Stalls distributed across Forest, River, Mountain models
-        let stallsList = JSON.parse(localStorage.getItem('nightmarket_stalls_model')) || generateDefaultStalls();
+        // 150 Stalls across Land, Forest, Mountain Snow, and River Boats
+        let stallsList = JSON.parse(localStorage.getItem('nightmarket_stalls_3d_v2')) || generate150Stalls();
 
-        function generateDefaultStalls() {
+        function generate150Stalls() {
             let list = [];
             let icons = ['💍', '🍉', '🧋', '🍜', '🌸', '🪵', '☕', '👗', '🥟'];
             let owners = ['Chị Ba', 'Anh Hai', 'Cô Tư', 'Chú Sáu', 'Bé Bảy', 'Kim Bảo', 'Hân Hân', 'Miu Miu'];
-            let zones = ['forest', 'river', 'mountain'];
+            let zones = ['land', 'forest', 'mountain', 'river'];
 
             for (let i = 1; i <= 150; i++) {
                 let zone = zones[Math.floor(Math.random() * zones.length)];
                 let x, y;
-                if (zone === 'forest') {
-                    x = 100 + Math.random() * 350;
-                    y = 80 + Math.random() * 600;
-                } else if (zone === 'river') {
-                    x = 520 + Math.random() * 450;
-                    y = 120 + Math.random() * 600;
-                } else {
-                    x = 1050 + Math.random() * 450;
-                    y = 80 + Math.random() * 600;
+                if (zone === 'land') {
+                    x = 80 + Math.random() * 380;
+                    y = 80 + Math.random() * 680;
+                } else if (zone === 'forest') {
+                    x = 520 + Math.random() * 380;
+                    y = 80 + Math.random() * 680;
+                } else if (zone === 'mountain') {
+                    x = 950 + Math.random() * 380;
+                    y = 80 + Math.random() * 680;
+                } else { // River
+                    x = 1380 + Math.random() * 380;
+                    y = 80 + Math.random() * 680;
                 }
 
                 list.push({
                     id: i,
                     ownerName: owners[Math.floor(Math.random() * owners.length)],
-                    stallName: `Mô Hình Quầy #${i}`,
+                    stallName: `Quầy Mô Hình #${i}`,
                     slogan: 'Hàng chất lượng giá tốt nhất!',
                     icon: icons[Math.floor(Math.random() * icons.length)],
                     zone: zone,
                     x: x,
                     y: y,
                     lastSaleTime: Date.now(),
-                    shoutMessage: '', // Bấm chào mời khách
+                    shoutMessage: '', // Lời rao chào mời khách
                     orders: [],
                     items: [
-                        { id: i*10, name: `Sản phẩm #${i}`, price: 35000 + (i%5)*10000, desc: 'Tươi ngon chuẩn vị miền Tây', img: '' }
+                        { id: i*10, name: `Sản phẩm #${i}`, price: 35000 + (i%5)*10000, desc: 'Sản phẩm tươi ngon chuẩn vị', img: '' }
                     ]
                 });
             }
@@ -311,10 +328,9 @@
 
         let activeStall = null;
         let pendingCheckoutItem = null;
-        let pendingOrderObj = null;
 
         let canvas, ctx;
-        let playerPos = { x: 600, y: 350, speed: 5 };
+        let playerPos = { x: 280, y: 350, speed: 5 };
         let touchDir = { x: 0, y: 0 };
         let keysPressed = {};
         let animationFrameId = null;
@@ -389,7 +405,7 @@
                 }
                 return true;
             });
-            if (changed) localStorage.setItem('nightmarket_stalls_model', JSON.stringify(stallsList));
+            if (changed) localStorage.setItem('nightmarket_stalls_3d_v2', JSON.stringify(stallsList));
         }
 
         // Game Loop
@@ -417,15 +433,15 @@
                 playerPos.y += dy * playerPos.speed;
             }
 
-            playerPos.x = Math.max(30, Math.min(1600, playerPos.x));
-            playerPos.y = Math.max(30, Math.min(900, playerPos.y));
+            playerPos.x = Math.max(30, Math.min(1850, playerPos.x));
+            playerPos.y = Math.max(30, Math.min(850, playerPos.y));
 
             checkProximity();
         }
 
         function checkProximity() {
             let nearest = null;
-            let minDist = 50;
+            let minDist = 55;
             stallsList.forEach(s => {
                 let dist = Math.hypot(playerPos.x - s.x, playerPos.y - s.y);
                 if (dist < minDist) nearest = s;
@@ -443,79 +459,104 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
             ctx.save();
-            // Camera follow player smoothly
+            // Camera follow player
             let camX = canvas.width / 2 - playerPos.x;
             let camY = canvas.height / 2 - playerPos.y;
             ctx.translate(camX, camY);
 
-            // Draw Terrain Models (Forest, River, Mountain backgrounds)
-            // Forest Zone (Left)
+            // Draw 4 Terrain Zones
+            // 1. Đất Liền (Trung tâm chợ đêm)
+            ctx.fillStyle = '#1e1b4b';
+            ctx.fillRect(0, 0, 480, 900);
+            ctx.fillStyle = 'rgba(255,255,255,0.06)';
+            ctx.font = 'bold 20px Nunito';
+            ctx.fillText('🎪 ĐẤT LIỀN TRUNG TÂM', 100, 50);
+
+            // 2. Vùng Rừng (Gỗ)
             ctx.fillStyle = '#064e3b';
-            ctx.fillRect(0, 0, 500, 900);
-            ctx.fillStyle = 'rgba(255,255,255,0.05)';
-            ctx.font = 'bold 24px Nunito';
-            ctx.fillText('🌲 MÔ HÌNH VÙNG RỪNG MÁT MẺ', 50, 100);
+            ctx.fillRect(480, 0, 440, 900);
+            ctx.fillStyle = 'rgba(255,255,255,0.06)';
+            ctx.fillText('🌲 VÙNG RỪNG GỖ SỒI', 580, 50);
 
-            // River Zone (Center)
-            ctx.fillStyle = '#0e7490';
-            ctx.fillRect(500, 0, 600, 900);
-            ctx.fillStyle = 'rgba(255,255,255,0.05)';
-            ctx.fillText('🌊 MÔ HÌNH CHỢ NỔI SÔNG NƯỚC', 550, 100);
+            // 3. Vùng Núi Tuyết
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(920, 0, 440, 900);
+            ctx.fillStyle = 'rgba(255,255,255,0.06)';
+            ctx.fillText('⛰️ VÙNG NÚI TUYẾT TRẮNG', 1000, 50);
 
-            // Mountain Zone (Right)
-            ctx.fillStyle = '#334155';
-            ctx.fillRect(1100, 0, 600, 900);
-            ctx.fillStyle = 'rgba(255,255,255,0.05)';
-            ctx.fillText('⛰️ MÔ HÌNH VÙNG NÚI CAO', 1150, 100);
+            // 4. Vùng Sông Nước
+            ctx.fillStyle = '#0c4a6e';
+            ctx.fillRect(1360, 0, 500, 900);
+            ctx.fillStyle = 'rgba(255,255,255,0.06)';
+            ctx.fillText('🌊 CHỢ NỔI THUYỀN RỒNG', 1450, 50);
 
-            // Draw Stalls Models
+            // Draw 150 Stalls Models (Isometric Design)
             stallsList.forEach(s => {
                 let isSelected = activeStall && activeStall.id === s.id;
-                
-                // Stall Base Model Box
-                ctx.fillStyle = s.zone === 'river' ? '#0284c7' : (s.zone === 'mountain' ? '#475569' : '#047857');
-                ctx.beginPath();
-                ctx.roundRect(s.x - 30, s.y - 25, 60, 50, 10);
-                ctx.fill();
-                ctx.lineWidth = isSelected ? 3 : 1.5;
+
+                ctx.save();
+                ctx.translate(s.x, s.y);
+
+                if (s.zone === 'forest') {
+                    // Mô hình Gỗ Sồi
+                    ctx.fillStyle = '#78350f';
+                    ctx.beginPath(); ctx.roundRect(-28, -20, 56, 40, 8); ctx.fill();
+                    ctx.fillStyle = '#065f46';
+                    ctx.beginPath(); ctx.moveTo(-32, -20); ctx.lineTo(0, -38); ctx.lineTo(32, -20); ctx.closePath(); ctx.fill();
+                } else if (s.zone === 'mountain') {
+                    // Mô hình Đá Phủ Tuyết
+                    ctx.fillStyle = '#475569';
+                    ctx.beginPath(); ctx.roundRect(-28, -20, 56, 40, 6); ctx.fill();
+                    ctx.fillStyle = '#f8fafc'; // Tuyết trắng
+                    ctx.beginPath(); ctx.roundRect(-28, -22, 56, 10, [6, 6, 0, 0]); ctx.fill();
+                } else if (s.zone === 'river') {
+                    // Mô hình Thuyền / Ghe Xuồng
+                    ctx.fillStyle = '#b45309';
+                    ctx.beginPath(); ctx.ellipse(0, 0, 32, 16, 0, 0, Math.PI * 2); ctx.fill();
+                    ctx.fillStyle = '#f59e0b';
+                    ctx.fillRect(-12, -16, 24, 16);
+                } else {
+                    // Mô hình Lều Đất Liền
+                    ctx.fillStyle = '#334155';
+                    ctx.beginPath(); ctx.roundRect(-28, -20, 56, 40, 8); ctx.fill();
+                    ctx.fillStyle = '#dc2626'; // Mái đỏ
+                    ctx.beginPath(); ctx.moveTo(-32, -20); ctx.lineTo(0, -36); ctx.lineTo(32, -20); ctx.closePath(); ctx.fill();
+                }
+
+                ctx.lineWidth = isSelected ? 3 : 1;
                 ctx.strokeStyle = isSelected ? '#f59e0b' : '#ffffff';
                 ctx.stroke();
 
-                // Stall Icon
-                ctx.font = '22px sans-serif';
+                // Icon
+                ctx.font = '20px sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText(s.icon, s.x, s.y - 4);
+                ctx.fillText(s.icon, 0, -2);
 
                 // Stall Name
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 10px Nunito';
-                ctx.fillText(s.stallName.substring(0, 14), s.x, s.y + 20);
+                ctx.font = 'bold 9px Nunito';
+                ctx.fillText(s.stallName.substring(0, 12), 0, 22);
 
-                // Shout Bubble (Chào mời khách)
+                // Speech Bubble (Tự Nhập Rao Chào Khách)
                 if (s.shoutMessage) {
                     ctx.fillStyle = '#f59e0b';
-                    ctx.beginPath();
-                    ctx.roundRect(s.x - 60, s.y - 55, 120, 24, 8);
-                    ctx.fill();
+                    ctx.beginPath(); ctx.roundRect(-65, -55, 130, 24, 8); ctx.fill();
                     ctx.fillStyle = '#0f172a';
-                    ctx.font = 'bold 10px Nunito';
-                    ctx.fillText(s.shoutMessage, s.x, s.y - 43);
+                    ctx.font = 'bold 9px Nunito';
+                    ctx.fillText(s.shoutMessage.substring(0, 24), 0, -43);
                 }
+
+                ctx.restore();
             });
 
-            // Draw Player
+            // Draw Player Character
             ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            ctx.arc(playerPos.x, playerPos.y, 20, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.lineWidth = 3;
-            ctx.strokeStyle = '#ffffff';
-            ctx.stroke();
+            ctx.beginPath(); ctx.arc(playerPos.x, playerPos.y, 20, 0, Math.PI * 2); ctx.fill();
+            ctx.lineWidth = 3; ctx.strokeStyle = '#ffffff'; ctx.stroke();
 
             ctx.font = '18px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.fillText(currentUser ? currentUser.avatarIcon : '👩‍🍳', playerPos.x, playerPos.y);
 
             ctx.restore();
@@ -534,7 +575,6 @@
             document.getElementById('orders-count-badge').innerText = (stall.orders || []).length;
             renderMenuTab();
             renderOrdersTab();
-            renderVisitorsTab();
         }
 
         function closeStallDrawer() {
@@ -579,27 +619,18 @@
                         </div>
                         <div class="text-[10px] text-slate-400">Khách: ${o.name} • SĐT: ${o.phone}</div>
                         <div class="text-[10px] text-slate-500">Trạng thái: <b>${o.status || 'Chờ xác nhận'}</b></div>
-                        ${!o.confirmed ? `<button onclick="confirmOrder(${idx})" class="mt-1 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-lg text-[10px]">✅ Chủ sốp bấm xác nhận & Gửi cảm ơn</button>` : ''}
+                        ${!o.confirmed ? `<button onclick="confirmOrder(${idx})" class="mt-1 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-1 rounded-lg text-[10px]">✅ Chủ sốp bấm xác nhận & Tự động cảm ơn</button>` : ''}
                     </div>
                 `).join('');
         }
 
-        function renderVisitorsTab() {
-            document.getElementById('stall-tab-visitors').innerHTML = `
-                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="text-xl">${currentUser.avatarIcon}</span>
-                        <div><div class="font-bold">${currentUser.name}</div><div class="text-[10px] text-emerald-400">Đang ghé thăm quầy</div></div>
-                    </div>
-                    <button onclick="shoutInvite()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-3 py-1.5 rounded-xl text-[10px]">📢 Chào Mời Khách</button>
-                </div>
-            `;
-        }
-
-        function shoutInvite() {
-            activeStall.shoutMessage = "🔥 Mời ghé quầy mua sắm ạ!";
-            showToastNotification(`📢 Quầy "${activeStall.stallName}" đã phát loa chào mời!`);
-            setTimeout(() => { activeStall.shoutMessage = ''; }, 5000);
+        function submitCustomShout() {
+            const txt = document.getElementById('custom-shout-input').value.trim();
+            if (!txt) return alert("Vui lòng nhập lời rao chào mời!");
+            activeStall.shoutMessage = txt;
+            showToastNotification(`📢 Đã hiển thị lời chào mời trên quầy "${activeStall.stallName}"!`);
+            document.getElementById('custom-shout-input').value = '';
+            setTimeout(() => { activeStall.shoutMessage = ''; }, 7000);
         }
 
         function sendStallChatMessage() {
@@ -609,7 +640,7 @@
             chatBox.innerHTML += `<div class="text-right"><span class="bg-amber-600 text-white px-2.5 py-1 rounded-xl inline-block">${input.value}</span></div>`;
             input.value = '';
             setTimeout(() => {
-                chatBox.innerHTML += `<div><span class="bg-slate-800 text-amber-300 px-2.5 py-1 rounded-xl inline-block">${activeStall.ownerName}: Dạ, em nghe anh chị ơi! Cảm ơn anh chị đã nhắn tin giao lưu ạ! ❤️</span></div>`;
+                chatBox.innerHTML += `<div><span class="bg-slate-800 text-amber-300 px-2.5 py-1 rounded-xl inline-block">${activeStall.ownerName}: Dạ, em nghe anh chị ơi! Cảm ơn anh chị đã nhắn tin ạ! ❤️</span></div>`;
                 chatBox.scrollTop = chatBox.scrollHeight;
             }, 800);
         }
@@ -637,7 +668,7 @@
             localStorage.setItem('nightmarket_balance', userBalance);
             updateBadgeUI();
 
-            pendingOrderObj = {
+            let orderObj = {
                 item: pendingCheckoutItem.name,
                 price: pendingCheckoutItem.price,
                 name, phone, address,
@@ -647,51 +678,49 @@
             };
 
             if(!activeStall.orders) activeStall.orders = [];
-            activeStall.orders.unshift(pendingOrderObj);
+            activeStall.orders.unshift(orderObj);
             activeStall.lastSaleTime = Date.now();
 
-            localStorage.setItem('nightmarket_stalls_model', JSON.stringify(stallsList));
+            localStorage.setItem('nightmarket_stalls_3d_v2', JSON.stringify(stallsList));
             closeCheckoutModal();
             renderOrdersTab();
             document.getElementById('orders-count-badge').innerText = activeStall.orders.length;
 
-            confetti({ particleCount: 120, spread: 90, origin: { y: 0.5 } });
-            showToastNotification(`📦 Tạo hóa đơn thành công tại ${activeStall.stallName}!`);
+            confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
+            showToastNotification(`🎆 Tạo hóa đơn thành công tại quầy ${activeStall.stallName}!`);
 
             // Show Printable Bill
             document.getElementById('bill-details').innerHTML = `
                 <div><b>Quầy:</b> ${activeStall.stallName}</div>
                 <div><b>Chủ sốp:</b> ${activeStall.ownerName}</div>
                 <hr class="my-1 border-slate-300">
-                <div><b>Sản phẩm:</b> ${pendingOrderObj.item}</div>
-                <div><b>Thành tiền:</b> ${pendingOrderObj.price.toLocaleString()} VNĐ</div>
+                <div><b>Sản phẩm:</b> ${orderObj.item}</div>
+                <div><b>Thành tiền:</b> ${orderObj.price.toLocaleString()} VNĐ</div>
                 <hr class="my-1 border-slate-300">
-                <div><b>Người mua:</b> ${pendingOrderObj.name}</div>
-                <div><b>Số điện thoại:</b> ${pendingOrderObj.phone}</div>
-                <div><b>Địa chỉ:</b> ${pendingOrderObj.address}</div>
-                <div><b>Thời gian:</b> ${pendingOrderObj.time}</div>
+                <div><b>Người mua:</b> ${orderObj.name}</div>
+                <div><b>Số điện thoại:</b> ${orderObj.phone}</div>
+                <div><b>Địa chỉ:</b> ${orderObj.address}</div>
+                <div><b>Thời gian:</b> ${orderObj.time}</div>
             `;
             document.getElementById('modal-bill').classList.remove('hidden');
         }
 
-        function closePrintableBill() {
-            document.getElementById('modal-bill').classList.add('hidden');
-        }
+        function closePrintableBill() { document.getElementById('modal-bill').classList.add('hidden'); }
 
         function confirmOrder(idx) {
             let order = activeStall.orders[idx];
             order.confirmed = true;
             order.status = 'Đã xác nhận & Cảm ơn';
-            localStorage.setItem('nightmarket_stalls_model', JSON.stringify(stallsList));
+            localStorage.setItem('nightmarket_stalls_3d_v2', JSON.stringify(stallsList));
             renderOrdersTab();
 
-            // Tự động gửi tin nhắn cảm ơn vào chat
+            // Auto-send thank you message
             const chatBox = document.getElementById('chat-messages');
-            chatBox.innerHTML += `<div><span class="bg-emerald-800 text-emerald-200 px-2.5 py-1 rounded-xl inline-block">💌 Chủ sốp (${activeStall.ownerName}): Cảm ơn quý khách ${order.name} đã ủng hộ ${order.item}! Chúc anh chị một ngày tuyệt vời! ❤️</span></div>`;
+            chatBox.innerHTML += `<div><span class="bg-emerald-800 text-emerald-200 px-2.5 py-1 rounded-xl inline-block">💌 Chủ sốp (${activeStall.ownerName}): Cảm ơn ${order.name} đã mua ${order.item}! Đơn của bạn đã được xác nhận thành công! ❤️</span></div>`;
             chatBox.scrollTop = chatBox.scrollHeight;
 
             confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
-            showToastNotification(`✅ Đã xác nhận đơn và gửi tin nhắn cảm ơn người mua!`);
+            showToastNotification(`✅ Đã xác nhận đơn hàng và tự động gửi tin nhắn cảm ơn!`);
         }
 
         function openCreateStallModal() { document.getElementById('modal-create-stall').classList.remove('hidden'); }
@@ -708,9 +737,10 @@
             if(!name || !itemName) return alert("Vui lòng điền đầy đủ tên quầy và sản phẩm!");
 
             let x, y;
-            if (zone === 'forest') { x = 150 + Math.random()*250; y = 150 + Math.random()*500; }
-            else if (zone === 'river') { x = 600 + Math.random()*300; y = 150 + Math.random()*500; }
-            else { x = 1200 + Math.random()*300; y = 150 + Math.random()*500; }
+            if (zone === 'land') { x = 150 + Math.random()*200; y = 150 + Math.random()*500; }
+            else if (zone === 'forest') { x = 600 + Math.random()*200; y = 150 + Math.random()*500; }
+            else if (zone === 'mountain') { x = 1050 + Math.random()*200; y = 150 + Math.random()*500; }
+            else { x = 1500 + Math.random()*200; y = 150 + Math.random()*500; }
 
             const newStall = {
                 id: Date.now(),
@@ -728,7 +758,7 @@
             };
 
             stallsList.push(newStall);
-            localStorage.setItem('nightmarket_stalls_model', JSON.stringify(stallsList));
+            localStorage.setItem('nightmarket_stalls_3d_v2', JSON.stringify(stallsList));
             closeCreateStallModal();
 
             confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
