@@ -2,8 +2,8 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phố Chợ Đêm & Chợ Nổi 2D - Bản Đồ 1,000 Quầy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Phố Chợ Đêm & Chợ Nổi 2D - Bản Đồ 150 Quầy</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Canvas Confetti for Fireworks & Celebrations -->
@@ -11,57 +11,56 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Nunito', sans-serif; user-select: none; }
+        body { font-family: 'Nunito', sans-serif; user-select: none; -webkit-user-select: none; touch-action: manipulation; }
         .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(245, 158, 11, 0.4); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(245, 158, 11, 0.7); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-screen overflow-hidden flex flex-col">
+<body class="bg-slate-950 text-slate-100 h-screen overflow-hidden flex flex-col" onload="initApp()">
 
     <!-- TOAST NOTIFICATION CONTAINER -->
     <div id="toast-container" class="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 flex flex-col items-center space-y-2 pointer-events-none"></div>
 
     <!-- MAIN HEADER -->
-    <header class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 px-4 py-2.5 text-white flex justify-between items-center shadow-lg border-b border-orange-500/30">
+    <header class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 px-4 py-2.5 text-white flex justify-between items-center shadow-lg border-b border-orange-500/30 z-20">
         <div class="flex items-center space-x-2.5">
             <span class="text-3xl animate-bounce">🏮</span>
             <div>
-                <h1 class="text-base md:text-xl font-black tracking-wide uppercase leading-tight">Phố Chợ Đêm & Chợ Nổi 2D</h1>
-                <p class="text-[11px] text-amber-100/90 font-medium">Bản Đồ 1,000 Quầy • Tự Do Dựng Quầy Trên Sông / Cây • Pháo Hoa Báo Đơn</p>
+                <h1 class="text-sm md:text-xl font-black tracking-wide uppercase leading-tight">Phố Chợ Đêm Miền Tây</h1>
+                <p class="text-[10px] md:text-[11px] text-amber-100/90 font-medium">Bản đồ Rừng • Sông • Núi (150 Quầy) • Chạm Để Di Chuyển</p>
             </div>
         </div>
 
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-2.5">
             <div id="player-profile-badge" class="hidden flex items-center bg-black/40 px-3 py-1.5 rounded-2xl border border-amber-400/40 backdrop-blur-md">
-                <span id="badge-user-avatar" class="text-xl mr-2"></span>
+                <span id="badge-user-avatar" class="text-lg mr-1.5"></span>
                 <div class="text-left">
                     <div id="badge-user-name" class="text-xs font-bold text-amber-300"></div>
                     <div class="text-[10px] text-emerald-400 font-semibold">Ví: <span id="badge-user-balance">500,000</span>đ</div>
                 </div>
             </div>
-            <button onclick="openCreateStallModal()" class="bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-black px-3.5 py-2 rounded-xl text-xs shadow-md transition transform active:scale-95 flex items-center gap-1.5">
-                <span>➕</span> Dựng Quầy Mới
+            <button onclick="openCreateStallModal()" class="bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-xs shadow-md transition transform active:scale-95 flex items-center gap-1.5">
+                <span>➕</span> Dựng Quầy
             </button>
         </div>
     </header>
 
-    <!-- SCREEN 1: CHARACTER SETUP (IF NO USER) -->
-    <div id="screen-setup" class="flex-1 flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
-        <div class="bg-slate-900/90 border border-amber-500/30 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl backdrop-blur-md text-center space-y-5">
+    <!-- SCREEN 1: CHARACTER SETUP -->
+    <div id="screen-setup" class="flex-1 flex items-center justify-center p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black z-30">
+        <div class="bg-slate-900/95 border border-amber-500/40 rounded-3xl p-6 md:p-8 max-w-md w-full shadow-2xl backdrop-blur-md text-center space-y-5">
             <div class="w-16 h-16 bg-gradient-to-tr from-amber-500 to-orange-500 rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg shadow-orange-500/30 animate-pulse">
                 🏮
             </div>
             <div>
-                <h2 class="text-xl md:text-2xl font-black text-amber-400">Tham Gia Phố Chợ Đêm</h2>
-                <p class="text-xs text-slate-400 mt-1">Chọn nhân vật để đi dạo, mua sắm hoặc tự tay mở quầy kinh doanh trên cạn hoặc ghe xuồng sông nước!</p>
+                <h2 class="text-xl md:text-2xl font-black text-amber-400">Vào Chợ Đêm & Chợ Nổi</h2>
+                <p class="text-xs text-slate-400 mt-1">Khám phá địa hình Rừng - Sông - Núi, mua sắm hoặc tự tay dựng quầy kinh doanh riêng!</p>
             </div>
 
             <div class="space-y-4 text-left">
                 <div>
                     <label class="block text-xs font-bold text-amber-300 mb-1">Tên Hiển Thị / Chủ Quầy:</label>
-                    <input type="text" id="setup-name" placeholder="Ví dụ: Chị Ba Bánh Tráng" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
+                    <input type="text" id="setup-name" value="Diễm Hằng" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div>
@@ -77,48 +76,36 @@
                 </div>
             </div>
 
-            <button onclick="saveUserProfile()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black py-3 rounded-xl shadow-lg shadow-orange-600/30 transition transform active:scale-95 text-sm uppercase tracking-wider">
+            <button onclick="saveUserProfile()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 text-slate-950 font-black py-3 rounded-xl shadow-lg shadow-orange-600/30 transition transform active:scale-95 text-sm uppercase tracking-wider">
                 Vào Chợ Ngay 🚀
             </button>
         </div>
     </div>
 
-    <!-- SCREEN 2: MAIN GAME & MAP CANVAS -->
+    <!-- SCREEN 2: GAMEPLAY CANVAS & DRAWER -->
     <div id="screen-game" class="flex-1 hidden flex flex-col md:flex-row relative overflow-hidden">
         <!-- CANVAS CONTAINER -->
         <div class="flex-1 relative bg-slate-900 flex items-center justify-center overflow-hidden">
-            <canvas id="marketCanvas" class="shadow-2xl cursor-crosshair"></canvas>
+            <canvas id="marketCanvas" class="shadow-2xl cursor-pointer w-full h-full"></canvas>
 
-            <!-- CONTROLS OVERLAY (MOBILE & JOYPAD) -->
-            <div class="absolute bottom-4 left-4 flex gap-2 md:hidden">
-                <div class="grid grid-cols-3 gap-1 w-32 h-32 bg-black/40 p-2 rounded-2xl backdrop-blur-md border border-white/10">
-                    <div></div>
-                    <button ontouchstart="setTouchMove(0,-1)" touchend="setTouchMove(0,0)" class="bg-slate-800/80 rounded-xl flex items-center justify-center text-white active:bg-amber-600">⬆️</button>
-                    <div></div>
-                    <button ontouchstart="setTouchMove(-1,0)" touchend="setTouchMove(0,0)" class="bg-slate-800/80 rounded-xl flex items-center justify-center text-white active:bg-amber-600">⬅️</button>
-                    <button ontouchstart="setTouchMove(0,1)" touchend="setTouchMove(0,0)" class="bg-slate-800/80 rounded-xl flex items-center justify-center text-white active:bg-amber-600">⬇️</button>
-                    <button ontouchstart="setTouchMove(1,0)" touchend="setTouchMove(0,0)" class="bg-slate-800/80 rounded-xl flex items-center justify-center text-white active:bg-amber-600">➡️</button>
-                </div>
-            </div>
-
-            <div class="absolute top-4 left-4 bg-slate-950/80 backdrop-blur-md px-3 py-2 rounded-2xl border border-slate-800 text-[11px] pointer-events-none space-y-0.5">
-                <div class="text-amber-400 font-bold">💡 Hướng dẫn:</div>
-                <div>• Dùng phím <b>W A S D</b> hoặc <b>Mũi tên</b> để di chuyển.</div>
-                <div>• Ghé sát các quầy hàng (trên cạn hoặc ghe xuồng dưới sông) để mở quầy!</div>
-                <div>• Quầy không có đơn trong <b>4 ngày</b> sẽ tự động bị thu hồi!</div>
+            <!-- HƯỚNG DẪN NỔI -->
+            <div class="absolute top-3 left-3 bg-slate-950/85 backdrop-blur-md px-3 py-2 rounded-2xl border border-slate-800 text-[11px] pointer-events-none space-y-0.5 z-10 shadow-lg">
+                <div class="text-amber-400 font-bold">🌲 Hướng dẫn di chuyển:</div>
+                <div>• <b>Chạm / Click trực tiếp</b> vào bản đồ để nhân vật đi đến đó.</div>
+                <div>• Hoặc dùng phím <b>W A S D / Mũi tên</b>.</div>
+                <div>• Vùng Xanh lá: Rừng • Xanh dương: Sông • Xám: Núi.</div>
             </div>
         </div>
 
-        <!-- RIGHT SIDEBAR: STALL INFO / TABS -->
-        <div id="stall-drawer" class="w-full md:w-96 bg-slate-950 border-t md:border-t-0 md:border-l border-slate-800 flex flex-col p-4 h-72 md:h-full">
+        <!-- RIGHT SIDEBAR: STALL DRAWER -->
+        <div id="stall-drawer" class="w-full md:w-96 bg-slate-950 border-t md:border-t-0 md:border-l border-slate-800 flex flex-col p-4 h-72 md:h-full z-20 shadow-2xl">
             <div id="stall-empty-state" class="flex-1 flex flex-col items-center justify-center text-center text-slate-500 space-y-3 p-6">
-                <span class="text-4xl">🛒</span>
-                <p class="text-xs">Di chuyển nhân vật đến gần bất kỳ quầy hàng nào trên bản đồ để xem món, đặt hàng, nhắn tin hoặc quản lý!</p>
+                <span class="text-4xl animate-pulse">🛒</span>
+                <p class="text-xs font-medium">Chạm hoặc di chuyển nhân vật đến gần bất kỳ quầy hàng nào trên Rừng, Sông hoặc Núi để xem món và đặt hàng!</p>
             </div>
 
             <div id="stall-content-state" class="hidden flex-1 flex flex-col space-y-3">
-                <!-- STALL HEADER INFO -->
-                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex justify-between items-center">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex justify-between items-center shadow-inner">
                     <div class="flex items-center space-x-2.5">
                         <span id="active-stall-icon" class="text-3xl">🍉</span>
                         <div>
@@ -126,39 +113,32 @@
                             <p id="active-stall-owner" class="text-[10px] text-slate-400">Chủ quầy: --</p>
                         </div>
                     </div>
-                    <button onclick="closeStallDrawer()" class="text-slate-500 hover:text-white text-xs bg-slate-800 px-2.5 py-1 rounded-xl">✕ Đóng</button>
+                    <button onclick="closeStallDrawer()" class="text-slate-400 hover:text-white text-xs bg-slate-800 px-2.5 py-1.5 rounded-xl">✕ Đóng</button>
                 </div>
 
-                <!-- TAB CONTROLS -->
                 <div class="flex border-b border-slate-800 text-xs font-bold">
-                    <button id="tab-menu-btn" onclick="switchStallTab('menu')" class="flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition">🛍️ Món Hàng</button>
-                    <button id="tab-orders-btn" onclick="switchStallTab('orders')" class="flex-1 py-2 text-slate-400 transition">📋 Đơn Hàng (<span id="orders-count-badge">0</span>)</button>
-                    <button id="tab-visitors-btn" onclick="switchStallTab('visitors')" class="flex-1 py-2 text-slate-400 transition">👥 Khách (<span id="visitors-count-badge">0</span>)</button>
+                    <button id="tab-menu-btn" onclick="switchStallTab('menu')" class="flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition">🛍️ Sản Phẩm</button>
+                    <button id="tab-orders-btn" onclick="switchStallTab('orders')" class="flex-1 py-2 text-slate-400 transition">📋 Đơn (<span id="orders-count-badge">0</span>)</button>
+                    <button id="tab-visitors-btn" onclick="switchStallTab('visitors')" class="flex-1 py-2 text-slate-400 transition">👥 Ghé Thăm</button>
                     <button id="tab-chat-btn" onclick="switchStallTab('chat')" class="flex-1 py-2 text-slate-400 transition">💬 Nhắn Tin</button>
                 </div>
 
-                <!-- TAB 1: MENU ITEMS -->
-                <div id="stall-tab-menu" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-1">
-                    <!-- Dynamic items -->
-                </div>
+                <!-- TAB 1: MENU -->
+                <div id="stall-tab-menu" class="flex-1 overflow-y-auto custom-scrollbar space-y-2.5 pr-1"></div>
 
                 <!-- TAB 2: ORDERS -->
-                <div id="stall-tab-orders" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1">
-                    <!-- Dynamic orders -->
-                </div>
+                <div id="stall-tab-orders" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1"></div>
 
-                <!-- TAB 3: VISITORS & ENTICING -->
-                <div id="stall-tab-visitors" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1">
-                    <!-- Visitors list -->
-                </div>
+                <!-- TAB 3: VISITORS -->
+                <div id="stall-tab-visitors" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1"></div>
 
-                <!-- TAB 4: CHAT WITH SELLER -->
-                <div id="stall-tab-chat" class="flex-1 hidden flex flex-col h-72 border border-slate-800 rounded-2xl p-3 bg-slate-900/50">
+                <!-- TAB 4: CHAT -->
+                <div id="stall-tab-chat" class="flex-1 hidden flex flex-col border border-slate-800 rounded-2xl p-3 bg-slate-900/50">
                     <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 text-xs mb-2 p-1">
                         <div class="text-slate-500 text-[10px] text-center">--- Trò chuyện trực tiếp cùng chủ quầy ---</div>
                     </div>
                     <div class="flex gap-2">
-                        <input type="text" id="chat-input-text" placeholder="Nhập tin nhắn..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                        <input type="text" id="chat-input-text" placeholder="Nhập tin nhắn..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500" onkeypress="if(event.key==='Enter') sendStallChatMessage()">
                         <button onclick="sendStallChatMessage()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition">Gửi</button>
                     </div>
                 </div>
@@ -166,54 +146,54 @@
         </div>
     </div>
 
-    <!-- MODAL: CREATE STALL (DỰNG QUẦY MỚI) -->
-    <div id="modal-create-stall" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- MODAL: CREATE STALL -->
+    <div id="modal-create-stall" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto custom-scrollbar">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-extrabold text-base text-amber-400 flex items-center gap-2"><span>🏮</span> Dựng Quầy Hàng Mới (1,000 Slots)</h3>
+                <h3 class="font-extrabold text-base text-amber-400 flex items-center gap-2"><span>🏮</span> Dựng Quầy Mới (Rừng / Sông / Núi)</h3>
                 <button onclick="closeCreateStallModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
             </div>
 
             <div class="space-y-3 text-xs">
                 <div>
                     <label class="block font-bold text-amber-300 mb-1">Tên Quầy Hàng:</label>
-                    <input type="text" id="new-stall-name" placeholder="Ví dụ: Quầy Trà Sữa & Bánh Ngọt" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="new-stall-name" placeholder="Ví dụ: Tiệm Bạc Kim Bảo Di" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div>
-                    <label class="block font-bold text-amber-300 mb-1">Slogan / Câu Giới Thiệu Thu Hút Khách:</label>
-                    <input type="text" id="new-stall-slogan" placeholder="Ví dụ: Ngon khó cưỡng • Giảm 10% hôm nay!" maxlength="40" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block font-bold text-amber-300 mb-1">Slogan / Lời Giới Thiệu:</label>
+                    <input type="text" id="new-stall-slogan" placeholder="Ví dụ: Trang sức tinh xảo • Độc quyền miền Tây" maxlength="45" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <label class="block font-bold text-amber-300 mb-1">Biểu tượng Quầy (Emoji):</label>
-                        <select id="new-stall-icon" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
-                            <option value="🍉">🍉 Trái cây / Dưa hấu</option>
-                            <option value="🧋">🧋 Trà sữa / Đồ uống</option>
-                            <option value="🍜">🍜 Phở / Hủ tiếu / Mì</option>
-                            <option value="🥞">🥞 Bánh xèo / Bánh khọt</option>
+                        <label class="block font-bold text-amber-300 mb-1">Biểu tượng Quầy:</label>
+                        <select id="new-stall-icon" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
                             <option value="💍">💍 Trang sức bạc / Vàng</option>
-                            <option value="🌸">🌸 Hoa tươi / Quà lưu niệm</option>
+                            <option value="🍉">🍉 Trái cây tươi</option>
+                            <option value="🧋">🧋 Trà sữa / Đồ uống</option>
+                            <option value="🍜">🍜 Phở / Hủ tiếu</option>
+                            <option value="🌸">🌸 Hoa tươi / Quà tặng</option>
+                            <option value="🪵">🪵 Đồ gỗ / Thủ công</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block font-bold text-amber-300 mb-1">QR Chuyển Khoản (VietQR):</label>
-                        <input type="file" id="new-stall-qr-file" accept="image/*" onchange="previewStallQR(event)" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-[10px] file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-500 cursor-pointer">
+                        <label class="block font-bold text-amber-300 mb-1">Khu Vực Đặt Quầy:</label>
+                        <select id="new-stall-zone" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+                            <option value="forest">🌲 Vùng Rừng (Cây cối mát mẻ)</option>
+                            <option value="river">🌊 Vùng Sông (Chợ nổi ghe xuồng)</option>
+                            <option value="mountain">⛰️ Vùng Núi (Cao nguyên / Đá)</option>
+                        </select>
                     </div>
                 </div>
 
                 <div class="border-t border-slate-800 pt-3 space-y-2">
-                    <div class="font-bold text-amber-400">🛍️ Sản Phẩm Đầu Tiên Tại Quầy:</div>
+                    <div class="font-bold text-amber-400">🛍️ Sản Phẩm Khởi Đầu:</div>
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="new-item-name" placeholder="Tên món (VD: Trà sữa trân châu)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
-                        <input type="number" id="new-item-price" placeholder="Giá tiền (VNĐ)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                        <input type="text" id="new-item-name" placeholder="Tên món/sản phẩm" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
+                        <input type="number" id="new-item-price" placeholder="Giá (VNĐ)" class="bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                     </div>
-                    <input type="text" id="new-item-desc" placeholder="Mô tả ngắn món ăn / sản phẩm" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
-                    <div>
-                        <label class="block text-slate-400 text-[10px] mb-1">Hình ảnh sản phẩm (Tùy chọn):</label>
-                        <input type="file" id="new-item-img-file" accept="image/*" onchange="previewProductImg(event)" class="w-full text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded-xl file:border-0 file:text-[10px] file:font-semibold file:bg-slate-800 file:text-amber-400 hover:file:bg-slate-700 cursor-pointer">
-                    </div>
+                    <input type="text" id="new-item-desc" placeholder="Mô tả sản phẩm" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
             </div>
 
@@ -224,183 +204,118 @@
         </div>
     </div>
 
-    <!-- MODAL: CHECKOUT & ORDER PLACEMENT -->
-    <div id="modal-checkout" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <!-- MODAL: CHECKOUT -->
+    <div id="modal-checkout" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-amber-500/40 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4">
             <div class="flex justify-between items-center border-b border-slate-800 pb-3">
-                <h3 class="font-extrabold text-sm text-amber-400">📦 Đặt Hàng / Thanh Toán</h3>
+                <h3 class="font-extrabold text-sm text-amber-400">📦 Đặt Hàng & Bắn Pháo Hoa</h3>
                 <button onclick="closeCheckoutModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
             </div>
 
-            <div id="checkout-item-summary" class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-xs space-y-1">
-                <!-- Item info -->
-            </div>
+            <div id="checkout-item-summary" class="bg-slate-950 p-3 rounded-2xl border border-slate-800 text-xs space-y-1"></div>
 
             <div class="space-y-3 text-xs">
                 <div>
-                    <label class="block font-bold text-amber-300 mb-1">Họ và Tên Người Nhận:</label>
-                    <input type="text" id="checkout-name" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+                    <label class="block font-bold text-amber-300 mb-1">Tên Người Nhận:</label>
+                    <input type="text" id="checkout-name" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
                 <div>
                     <label class="block font-bold text-amber-300 mb-1">Số Điện Thoại:</label>
-                    <input type="text" id="checkout-phone" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
+                    <input type="text" id="checkout-phone" placeholder="Ví dụ: 0909xxxxxx" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
                 <div>
-                    <label class="block font-bold text-amber-300 mb-1">Địa Chỉ Nhận Hàng (Hoặc vị trí tại chợ):</label>
-                    <input type="text" id="checkout-address" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-amber-500">
-                </div>
-                <div>
-                    <label class="block font-bold text-amber-300 mb-1">Phương Thức Thanh Toán:</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label class="flex items-center gap-2 bg-slate-950 border border-slate-700 p-2.5 rounded-xl cursor-pointer">
-                            <input type="radio" name="payment_type" value="wallet" checked class="text-amber-500">
-                            <span>Trừ Tiền Ví</span>
-                        </label>
-                        <label class="flex items-center gap-2 bg-slate-950 border border-slate-700 p-2.5 rounded-xl cursor-pointer">
-                            <input type="radio" name="payment_type" value="qr" class="text-amber-500">
-                            <span>Quét Mã QR</span>
-                        </label>
-                    </div>
+                    <label class="block font-bold text-amber-300 mb-1">Địa Chỉ Nhận:</label>
+                    <input type="text" id="checkout-address" value="Giao tại Phố Chợ Đêm" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none">
                 </div>
             </div>
 
             <button onclick="submitOrderCheckout()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-black py-2.5 rounded-xl shadow-lg shadow-emerald-600/30 text-xs transition uppercase">
-                Xác Nhận Đặt Đơn Ngay 🎆
+                Xác Nhận & Bắn Pháo Hoa 🎆
             </button>
         </div>
     </div>
 
-    <!-- MODAL: PRINTABLE BILL (HOÁ ĐƠN THANH TOÁN) -->
-    <div id="modal-bill" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white text-slate-900 rounded-3xl p-6 max-w-sm w-full shadow-2xl space-y-4 font-mono">
-            <div class="text-center border-b border-dashed border-slate-300 pb-3">
-                <h3 class="font-black text-base uppercase text-orange-600">🏮 HÓA ĐƠN CHỢ ĐÊM 🏮</h3>
-                <p class="text-[10px] text-slate-500">Xác nhận đơn hàng thành công • Bắn pháo hoa báo quầy!</p>
-            </div>
-            <div id="bill-details" class="text-xs space-y-1.5">
-                <!-- Bill content -->
-            </div>
-            <div class="border-t border-dashed border-slate-300 pt-3 text-center text-[10px] text-slate-500">
-                Cảm ơn quý khách đã ủng hộ phiên chợ miền Tây! ❤️
-            </div>
-            <button onclick="closePrintableBill()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-2 rounded-xl text-xs transition font-sans">
-                Đóng Hoá Đơn
-            </button>
-        </div>
-    </div>
-
+    <!-- SCRIPT LOGIC -->
     <script>
-        // --- LOCAL STORAGE & APP STATE ---
         let currentUser = JSON.parse(localStorage.getItem('nightmarket_user')) || null;
         let userBalance = parseInt(localStorage.getItem('nightmarket_balance')) || 500000;
         let selectedAvatarIcon = '👩‍🍳';
-        let uploadedStallQRBase64 = '';
-        let uploadedProductBase64 = '';
 
-        // Default Market Stalls (Supporting up to 1,000 stalls)
-        let stallsList = JSON.parse(localStorage.getItem('nightmarket_stalls')) || [
-            {
-                id: 1,
-                ownerName: 'Bác Ba Nông Dân',
-                ownerAvatar: '👨‍🌾',
-                stallName: 'Quầy Trái Cây Miền Tây',
-                slogan: '🍉 Dưa ngọt lịm mọng nước đây!',
-                icon: '🍉',
-                qrCode: 'https://img.vietqr.io/image/MB-06399669996699-compact2.png?accountName=LAM%20DIEM%20HANG',
-                x: 220,
-                y: 220,
-                lastSaleTime: Date.now(),
-                orders: [],
-                items: [
-                    { id: 101, name: 'Dưa Hấu Ngọt Ruột Đỏ', price: 40000, desc: 'Mọng nước ruột đỏ tươi', img: 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?w=200' },
-                    { id: 102, name: 'Xoài Cát Hòa Lộc', price: 65000, desc: 'Xoài Cát Hòa Lộc thơm lừng', img: '' }
-                ]
-            },
-            {
-                id: 2,
-                ownerName: 'Tiệm Trà Miu Miu',
-                ownerAvatar: '👩‍🍳',
-                stallName: 'Góc Trà Sữa Thuyền Rồng',
-                slogan: '🧋 Đậm vị trà, béo vị sữa!',
-                icon: '🧋',
-                qrCode: '',
-                x: 520,
-                y: 320,
-                lastSaleTime: Date.now(),
-                orders: [],
-                items: [
-                    { id: 201, name: 'Trà Sữa Matcha Trân Châu', price: 35000, desc: 'Béo ngậy đậm vị trà', img: '' },
-                    { id: 202, name: 'Bánh Tráng Trộn Trứng Cút', price: 25000, desc: 'Chua cay mặn ngọt chuẩn vị', img: '' }
-                ]
-            }
-        ];
+        // 150 Stalls distributed across Forest, River, and Mountain
+        let stallsList = JSON.parse(localStorage.getItem('nightmarket_stalls_150')) || generateDefaultStalls();
 
-        // CHECK 4 DAYS EXPIRATION (96 HOURS = 345600000 ms)
-        function checkAndConfiscateExpiredStalls() {
-            const FOUR_DAYS_MS = 4 * 24 * 60 * 60 * 1000;
-            const now = Date.now();
-            let hasChanges = false;
+        function generateDefaultStalls() {
+            let list = [];
+            let icons = ['💍', '🍉', '🧋', '🍜', '🌸', '🪵', '☕', '👗', '🥟'];
+            let owners = ['Chị Ba', 'Anh Hai', 'Cô Tư', 'Chú Sáu', 'Bé Bảy', 'Tiệm Kim Bảo', 'Hân Hân', 'Miu Miu'];
+            let zones = ['forest', 'river', 'mountain'];
 
-            stallsList = stallsList.filter(stall => {
-                const timeDiff = now - (stall.lastSaleTime || stall.id);
-                if (timeDiff > FOUR_DAYS_MS) {
-                    hasChanges = true;
-                    showToastNotification(`⚠️ Quầy "${stall.stallName}" của ${stall.ownerName} bị thu hồi do 4 ngày không ra đơn!`);
-                    return false;
+            for (let i = 1; i <= 150; i++) {
+                let zone = zones[Math.floor(Math.random() * zones.length)];
+                let x, y;
+                if (zone === 'forest') {
+                    x = 80 + Math.random() * 300;
+                    y = 80 + Math.random() * 500;
+                } else if (zone === 'river') {
+                    x = 400 + Math.random() * 400;
+                    y = 150 + Math.random() * 400;
+                } else {
+                    x = 850 + Math.random() * 350;
+                    y = 80 + Math.random() * 500;
                 }
-                return true;
-            });
 
-            if (hasChanges) {
-                localStorage.setItem('nightmarket_stalls', JSON.stringify(stallsList));
+                list.push({
+                    id: i,
+                    ownerName: owners[Math.floor(Math.random() * owners.length)],
+                    stallName: `Quầy #${i} Miền Tây`,
+                    slogan: 'Hàng chất lượng giá tốt nhất!',
+                    icon: icons[Math.floor(Math.random() * icons.length)],
+                    zone: zone,
+                    x: x,
+                    y: y,
+                    lastSaleTime: Date.now(),
+                    orders: [],
+                    items: [
+                        { id: i*10, name: `Đặc sản #${i}`, price: 35000 + (i%5)*10000, desc: 'Tươi ngon chuẩn vị miền Tây', img: '' }
+                    ]
+                });
             }
+            return list;
         }
 
         let activeStall = null;
         let pendingCheckoutItem = null;
 
-        // Canvas Game Variables
         let canvas, ctx;
-        let playerPos = { x: 380, y: 420, vx: 0, vy: 0, speed: 4.5 };
+        let playerPos = { x: 600, y: 350, speed: 5 };
+        let targetPos = { x: 600, y: 350 };
+        let isMoving = false;
         let keysPressed = {};
-        let touchDir = { x: 0, y: 0 };
         let animationFrameId = null;
 
-        // --- APP CONTROLLER ---
         function initApp() {
             checkAndConfiscateExpiredStalls();
             updateBadgeUI();
             if (!currentUser) {
-                renderCharacterSelectScreen();
+                document.getElementById('screen-setup').classList.remove('hidden');
+                document.getElementById('screen-game').classList.add('hidden');
             } else {
-                renderGameCanvasScreen();
+                renderGameScreen();
             }
         }
 
-        function renderCharacterSelectScreen() {
-            document.getElementById('screen-setup').classList.remove('hidden');
-            document.getElementById('screen-game').classList.add('hidden');
-            document.getElementById('player-profile-badge').classList.add('hidden');
-        }
-
-        function selectAvatar(icon, btnElement) {
+        function selectAvatar(icon, btn) {
             selectedAvatarIcon = icon;
             document.querySelectorAll('.avatar-btn').forEach(b => b.classList.replace('border-amber-500', 'border-slate-700'));
-            btnElement.classList.replace('border-slate-700', 'border-amber-500');
+            btn.classList.replace('border-slate-700', 'border-amber-500');
         }
 
         function saveUserProfile() {
-            const nameInput = document.getElementById('setup-name').value.trim();
-            if (!nameInput) return alert("Vui lòng nhập tên hiển thị của bạn!");
-
-            currentUser = {
-                name: nameInput,
-                avatarIcon: selectedAvatarIcon,
-                color: '#f59e0b'
-            };
-
+            const name = document.getElementById('setup-name').value.trim();
+            if (!name) return alert("Vui lòng nhập tên của bạn!");
+            currentUser = { name, avatarIcon: selectedAvatarIcon };
             localStorage.setItem('nightmarket_user', JSON.stringify(currentUser));
-            renderGameCanvasScreen();
+            renderGameScreen();
         }
 
         function updateBadgeUI() {
@@ -411,7 +326,7 @@
             document.getElementById('badge-user-balance').innerText = userBalance.toLocaleString('vi-VN');
         }
 
-        function renderGameCanvasScreen() {
+        function renderGameScreen() {
             document.getElementById('screen-setup').classList.add('hidden');
             document.getElementById('screen-game').classList.remove('hidden');
             updateBadgeUI();
@@ -421,54 +336,316 @@
             resizeCanvas();
             window.addEventListener('resize', resizeCanvas);
 
-            // Setup Controls
+            // Controls: Keyboard
             window.addEventListener('keydown', e => keysPressed[e.key.toLowerCase()] = true);
             window.addEventListener('keyup', e => keysPressed[e.key.toLowerCase()] = false);
 
-            if (!animationFrameId) {
-                gameLoop();
-            }
+            // Controls: Click / Tap to move
+            canvas.addEventListener('pointerdown', e => {
+                const rect = canvas.getBoundingClientRect();
+                targetPos.x = e.clientX - rect.left;
+                targetPos.y = e.clientY - rect.top;
+                isMoving = true;
+            });
+
+            if (!animationFrameId) gameLoop();
         }
 
         function resizeCanvas() {
-            const container = canvas.parentElement;
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
         }
 
-        function setTouchMove(dx, dy) {
-            touchDir = { x: dx, y: dy };
+        function checkAndConfiscateExpiredStalls() {
+            const FOUR_DAYS = 4 * 24 * 3600 * 1000;
+            const now = Date.now();
+            let changed = false;
+            stallsList = stallsList.filter(s => {
+                if (now - (s.lastSaleTime || s.id) > FOUR_DAYS) {
+                    changed = true;
+                    showToastNotification(`⚠️ Quầy "${s.stallName}" bị thu hồi do 4 ngày không có đơn!`);
+                    return false;
+                }
+                return true;
+            });
+            if (changed) localStorage.setItem('nightmarket_stalls_150', JSON.stringify(stallsList));
         }
 
-        // --- GAME LOOP & PHYSICS ---
-        function updatePlayerPosition() {
+        // Game Loop
+        function gameLoop() {
+            updatePlayer();
+            drawScene();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function updatePlayer() {
             let dx = 0, dy = 0;
             if (keysPressed['w'] || keysPressed['arrowup']) dy -= 1;
             if (keysPressed['s'] || keysPressed['arrowdown']) dy += 1;
             if (keysPressed['a'] || keysPressed['arrowleft']) dx -= 1;
             if (keysPressed['d'] || keysPressed['arrowright']) dx += 1;
 
-            if (touchDir.x !== 0 || touchDir.y !== 0) {
-                dx = touchDir.x;
-                dy = touchDir.y;
+            if (dx !== 0 || dy !== 0) {
+                isMoving = false;
+                if (dx !== 0 && dy !== 0) { dx *= 0.707; dy *= 0.707; }
+                playerPos.x += dx * playerPos.speed;
+                playerPos.y += dy * playerPos.speed;
+            } else if (isMoving) {
+                let angle = Math.atan2(targetPos.y - playerPos.y, targetPos.x - playerPos.x);
+                let dist = Math.hypot(targetPos.x - playerPos.x, targetPos.y - playerPos.y);
+                if (dist > 4) {
+                    playerPos.x += Math.cos(angle) * playerPos.speed;
+                    playerPos.y += Math.sin(angle) * playerPos.speed;
+                } else {
+                    isMoving = false;
+                }
             }
 
-            if (dx !== 0 && dy !== 0) {
-                dx *= 0.7071;
-                dy *= 0.7071;
-            }
+            playerPos.x = Math.max(25, Math.min(canvas.width - 25, playerPos.x));
+            playerPos.y = Math.max(25, Math.min(canvas.height - 25, playerPos.y));
 
-            playerPos.x += dx * playerPos.speed;
-            playerPos.y += dy * playerPos.speed;
-
-            // Boundary constraints
-            playerPos.x = Math.max(30, Math.min(canvas.width - 30, playerPos.x));
-            playerPos.y = Math.max(30, Math.min(canvas.height - 30, playerPos.y));
-
-            // Proximity Check to Stalls
-            checkStallProximity();
+            checkProximity();
         }
 
-        function checkStallProximity() {
-            let nearestStall = null;
-            let minDist = 55; //
+        function checkProximity() {
+            let nearest = null;
+            let minDist = 45;
+            stallsList.forEach(s => {
+                let dist = Math.hypot(playerPos.x - s.x, playerPos.y - s.y);
+                if (dist < minDist) nearest = s;
+            });
+
+            if (nearest) {
+                if (!activeStall || activeStall.id !== nearest.id) {
+                    activeStall = nearest;
+                    openStallDrawer(activeStall);
+                }
+            }
+        }
+
+        function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Zones background (Forest, River, Mountain)
+            let w = canvas.width, h = canvas.height;
+            
+            // Forest Zone (Left)
+            ctx.fillStyle = '#064e3b';
+            ctx.fillRect(0, 0, w * 0.35, h);
+            
+            // River Zone (Center)
+            ctx.fillStyle = '#0e7490';
+            ctx.fillRect(w * 0.35, 0, w * 0.35, h);
+
+            // Mountain Zone (Right)
+            ctx.fillStyle = '#334155';
+            ctx.fillRect(w * 0.70, 0, w * 0.30, h);
+
+            // Draw Zone Labels
+            ctx.fillStyle = 'rgba(255,255,255,0.15)'.'rgba(255,255,255,0.15)';
+            ctx.font = 'bold 16px Nunito';
+            ctx.textAlign = 'center';
+            ctx.fillText('🌲 VÙNG RỪNG', w * 0.18, 40);
+            ctx.fillText('🌊 CHỢ NỔI SÔNG NƯỚC', w * 0.525, 40);
+            ctx.fillText('⛰️ VÙNG NÚI', w * 0.85, 40);
+
+            // Draw 150 Stalls
+            stallsList.forEach(s => {
+                let isSelected = activeStall && activeStall.id === s.id;
+                ctx.fillStyle = isSelected ? '#f59e0b' : (s.zone === 'river' ? '#0284c7' : (s.zone === 'mountain' ? '#475569' : '#047857'));
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, 16, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.lineWidth = isSelected ? 3 : 1.5;
+                ctx.strokeStyle = '#ffffff';
+                ctx.stroke();
+
+                ctx.font = '14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(s.icon, s.x, s.y);
+            });
+
+            // Draw Player
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(playerPos.x, playerPos.y, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#ffffff';
+            ctx.stroke();
+
+            ctx.font = '18px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(currentUser ? currentUser.avatarIcon : '👩‍🍳', playerPos.x, playerPos.y);
+        }
+
+        // Drawer & Tabs
+        function openStallDrawer(stall) {
+            activeStall = stall;
+            document.getElementById('stall-empty-state').classList.add('hidden');
+            document.getElementById('stall-content-state').classList.remove('hidden');
+
+            document.getElementById('active-stall-icon').innerText = stall.icon;
+            document.getElementById('active-stall-name').innerText = stall.stallName;
+            document.getElementById('active-stall-owner').innerText = `Chủ: ${stall.ownerName} • ${stall.slogan}`;
+
+            document.getElementById('orders-count-badge').innerText = (stall.orders || []).length;
+            renderMenuTab();
+            renderOrdersTab();
+            renderVisitorsTab();
+        }
+
+        function closeStallDrawer() {
+            activeStall = null;
+            document.getElementById('stall-empty-state').classList.remove('hidden');
+            document.getElementById('stall-content-state').classList.add('hidden');
+        }
+
+        function switchStallTab(tab) {
+            ['menu', 'orders', 'visitors', 'chat'].forEach(t => {
+                document.getElementById(`stall-tab-${t}`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).classList.replace('text-amber-400', 'text-slate-400');
+                document.getElementById(`tab-${t}-btn`).classList.remove('border-b-2', 'border-amber-400');
+            });
+            document.getElementById(`stall-tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}-btn`).classList.replace('text-slate-400', 'text-amber-400');
+            document.getElementById(`tab-${tab}-btn`).classList.add('border-b-2', 'border-amber-400');
+        }
+
+        function renderMenuTab() {
+            const c = document.getElementById('stall-tab-menu');
+            c.innerHTML = activeStall.items.map(i => `
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 flex justify-between items-center">
+                    <div>
+                        <div class="font-bold text-xs text-white">${i.name}</div>
+                        <div class="text-[10px] text-slate-400">${i.desc}</div>
+                        <div class="text-xs font-black text-amber-400 mt-0.5">${i.price.toLocaleString('vi-VN')}đ</div>
+                    </div>
+                    <button onclick="openCheckout(${i.id})" class="bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 font-black px-3 py-2 rounded-xl text-xs shadow">Mua</button>
+                </div>
+            `).join('');
+        }
+
+        function renderOrdersTab() {
+            const c = document.getElementById('stall-tab-orders');
+            c.innerHTML = (activeStall.orders || []).length === 0 ? '<div class="text-center text-slate-500 text-xs py-6">Chưa có đơn hàng.</div>' :
+                activeStall.orders.map((o, idx) => `
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-2 text-xs">
+                        <div class="font-bold text-amber-400">#${idx+1} - ${o.item} (${o.price.toLocaleString()}đ)</div>
+                        <div class="text-[10px] text-slate-400">Khách: ${o.name} • ${o.phone}</div>
+                    </div>
+                `).join('');
+        }
+
+        function renderVisitorsTab() {
+            document.getElementById('stall-tab-visitors').innerHTML = `
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">${currentUser.avatarIcon}</span>
+                        <div><div class="font-bold">${currentUser.name}</div><div class="text-[10px] text-emerald-400">Đang ghé thăm quầy</div></div>
+                    </div>
+                    <button onclick="showToastNotification('✨ Đã vẫy chào chủ quầy!')" class="bg-amber-600 text-white font-bold px-3 py-1.5 rounded-xl text-[10px]">Vẫy Chào 👋</button>
+                </div>
+            `;
+        }
+
+        function sendStallChatMessage() {
+            const input = document.getElementById('chat-input-text');
+            if(!input.value.trim()) return;
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML += `<div class="text-right"><span class="bg-amber-600 text-white px-2.5 py-1 rounded-xl inline-block">${input.value}</span></div>`;
+            input.value = '';
+            setTimeout(() => {
+                chatBox.innerHTML += `<div><span class="bg-slate-800 text-amber-300 px-2.5 py-1 rounded-xl inline-block">${activeStall.ownerName}: Dạ, em nghe anh chị ơi! ❤️</span></div>`;
+            }, 800);
+        }
+
+        function openCheckout(itemId) {
+            pendingCheckoutItem = activeStall.items.find(i => i.id === itemId);
+            document.getElementById('checkout-item-summary').innerHTML = `
+                <div class="font-bold text-amber-400">${pendingCheckoutItem.name}</div>
+                <div class="font-black text-white">${pendingCheckoutItem.price.toLocaleString('vi-VN')} VNĐ</div>
+            `;
+            document.getElementById('checkout-name').value = currentUser.name;
+            document.getElementById('modal-checkout').classList.remove('hidden');
+        }
+
+        function closeCheckoutModal() { document.getElementById('modal-checkout').classList.add('hidden'); }
+
+        function submitOrderCheckout() {
+            const name = document.getElementById('checkout-name').value.trim();
+            const phone = document.getElementById('checkout-phone').value.trim();
+            if(!name || !phone) return alert("Vui lòng điền tên và số điện thoại!");
+
+            if(userBalance < pendingCheckoutItem.price) return alert("Số dư ví không đủ!");
+            userBalance -= pendingCheckoutItem.price;
+            localStorage.setItem('nightmarket_balance', userBalance);
+            updateBadgeUI();
+
+            if(!activeStall.orders) activeStall.orders = [];
+            activeStall.orders.unshift({ item: pendingCheckoutItem.name, price: pendingCheckoutItem.price, name, phone });
+            activeStall.lastSaleTime = Date.now();
+
+            localStorage.setItem('nightmarket_stalls_150', JSON.stringify(stallsList));
+            closeCheckoutModal();
+            renderOrdersTab();
+            document.getElementById('orders-count-badge').innerText = activeStall.orders.length;
+
+            confetti({ particleCount: 130, spread: 100, origin: { y: 0.5 } });
+            showToastNotification(`🎆 Đặt đơn thành công tại ${activeStall.stallName}! Pháo hoa đã nổ!`);
+        }
+
+        function openCreateStallModal() { document.getElementById('modal-create-stall').classList.remove('hidden'); }
+        function closeCreateStallModal() { document.getElementById('modal-create-stall').classList.add('hidden'); }
+
+        function submitNewStallCreation() {
+            const name = document.getElementById('new-stall-name').value.trim();
+            const slogan = document.getElementById('new-stall-slogan').value.trim();
+            const icon = document.getElementById('new-stall-icon').value;
+            const zone = document.getElementById('new-stall-zone').value;
+            const itemName = document.getElementById('new-item-name').value.trim();
+            const price = parseInt(document.getElementById('new-item-price').value) || 40000;
+
+            if(!name || !itemName) return alert("Vui lòng điền đầy đủ tên quầy và sản phẩm!");
+
+            let x, y;
+            if (zone === 'forest') { x = 100 + Math.random()*250; y = 100 + Math.random()*400; }
+            else if (zone === 'river') { x = 450 + Math.random()*300; y = 150 + Math.random()*350; }
+            else { x = 900 + Math.random()*250; y = 100 + Math.random()*400; }
+
+            const newStall = {
+                id: Date.now(),
+                ownerName: currentUser.name,
+                stallName: name,
+                slogan: slogan || 'Chuyên sản phẩm uy tín',
+                icon: icon,
+                zone: zone,
+                x: x,
+                y: y,
+                lastSaleTime: Date.now(),
+                orders: [],
+                items: [{ id: Date.now()+1, name: itemName, price: price, desc: 'Mới ra mắt', img: '' }]
+            };
+
+            stallsList.push(newStall);
+            localStorage.setItem('nightmarket_stalls_150', JSON.stringify(stallsList));
+            closeCreateStallModal();
+
+            confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 } });
+            showToastNotification(`🏮 Dựng quầy thành công tại khu vực ${zone.toUpperCase()}!`);
+            playerPos.x = x + 30; playerPos.y = y;
+        }
+
+        function showToastNotification(msg) {
+            const container = document.getElementById('toast-container');
+            const t = document.createElement('div');
+            t.className = 'bg-slate-900 border border-amber-500 text-amber-300 px-4 py-2.5 rounded-2xl shadow-2xl text-xs font-bold animate-bounce';
+            t.innerText = msg;
+            container.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+    </script>
+</body>
+</html>
