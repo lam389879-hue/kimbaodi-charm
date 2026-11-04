@@ -1,0 +1,510 @@
+<!-- ... existing code ... -->
+        <header class="bg-gradient-to-r from-amber-600 via-orange-600 to-red-600 px-4 py-2.5 text-white flex justify-between items-center shadow-lg border-b border-orange-500/30">
+            <div class="flex items-center space-x-2.5">
+                <span class="text-3xl animate-bounce">🏮</span>
+                <div>
+                    <h1 class="text-base md:text-xl font-black tracking-wide uppercase leading-tight">Phố Chợ Đêm & Chợ Nổi 2D</h1>
+                    <p class="text-[11px] text-amber-100/90 font-medium">Bản Đồ 1,000 Quầy • Tự Do Dựng Quầy Trên Sông / Cây • Pháo Hoa Báo Đơn</p>
+                </div>
+            </div>
+
+            <div id="player-profile-badge" class="hidden flex items-center bg-black/40 px-3 py-1.5 rounded-2xl border border-amber-400/40 backdrop-blur-md">
+<!-- ... existing code ... -->
+            <!-- TAB CONTROLS -->
+            <div class="flex border-b border-slate-800 text-xs font-bold">
+                <button id="tab-menu-btn" onclick="switchStallTab('menu')" class="flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition">🛍️ Món Hàng Đang Bán</button>
+                <button id="tab-orders-btn" onclick="switchStallTab('orders')" class="flex-1 py-2 text-slate-400 transition">📋 Đơn Hàng (<span id="orders-count-badge">0</span>)</button>
+                <button id="tab-visitors-btn" onclick="switchStallTab('visitors')" class="flex-1 py-2 text-slate-400 transition">👥 Khách Ghé Xem (<span id="visitors-count-badge">0</span>)</button>
+                <button id="tab-chat-btn" onclick="switchStallTab('chat')" class="flex-1 py-2 text-slate-400 transition">💬 Nhắn Tin Shop</button>
+            </div>
+
+            <!-- TAB 1: SHOWCASE ITEMS -->
+            <div id="stall-tab-menu" class="flex-1 overflow-y-auto custom-scrollbar space-y-3 pr-1">
+                <!-- Item list populated via JS -->
+            </div>
+
+            <!-- TAB 2: ORDERS LIST (FOR SHOP OWNER & BUYERS) -->
+            <div id="stall-tab-orders" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1">
+                <!-- Orders populated via JS -->
+            </div>
+
+            <!-- TAB 3: VISITORS LIST & ENTICING ACTIONS -->
+            <div id="stall-tab-visitors" class="flex-1 hidden overflow-y-auto custom-scrollbar space-y-2 pr-1">
+                <!-- Visitors populated via JS -->
+            </div>
+
+            <!-- TAB 4: DIRECT CHAT WITH SELLER -->
+            <div id="stall-tab-chat" class="flex-1 hidden flex flex-col h-72 border border-slate-800 rounded-2xl p-3 bg-slate-950/80">
+                <div id="chat-messages" class="flex-1 overflow-y-auto custom-scrollbar space-y-2 text-xs mb-2 p-1">
+                    <div class="text-slate-500 text-[10px] text-center">--- Trò chuyện trực tiếp cùng chủ quầy ---</div>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="chat-input-text" placeholder="Nhập tin nhắn..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500">
+                    <button onclick="sendStallChatMessage()" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition">Gửi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- ... existing code ... -->
+            <div class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-bold text-amber-300 mb-1">Tên Quầy Hàng:</label>
+                    <input type="text" id="new-stall-name" placeholder="Ví dụ: Quầy Trà Sữa & Bánh Ngọt" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-amber-300 mb-1">Slogan / Câu Giới Thiệu Thu Hút Khách:</label>
+                    <input type="text" id="new-stall-slogan" placeholder="Ví dụ: Ngon khó cưỡng • Giảm 10% hôm nay!" maxlength="40" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div>
+                    <label class="block font-bold text-amber-300 mb-1">Biểu tượng Quầy (Emoji):</label>
+<!-- ... existing code ... -->
+        // Default Market Stalls
+        let stallsList = JSON.parse(localStorage.getItem('nightmarket_stalls')) || [
+            {
+                id: 1,
+                ownerName: 'Bác Ba Nông Dân',
+                ownerAvatar: '👨‍🌾',
+                stallName: 'Quầy Trái Cây Miền Tây',
+                slogan: '🍉 Dưa ngọt lịm mọng nước đây!',
+                icon: '🍉',
+                qrCode: 'https://img.vietqr.io/image/MB-06399669996699-compact2.png?accountName=LAM%20DIEM%20HANG',
+                x: 220,
+                y: 220,
+                lastSaleTime: Date.now(),
+                orders: [],
+                items: [
+                    { id: 101, name: 'Dưa Hấu Ngọt Ruột Đỏ', price: 40000, desc: 'Mọng nước ruột đỏ tươi', img: 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?w=200' },
+                    { id: 102, name: 'Xoài Cát Hòa Lộc', price: 65000, desc: 'Xoài Cát Hòa Lộc thơm lừng', img: '' }
+                ]
+            },
+            {
+                id: 2,
+                ownerName: 'Tiệm Trà Miu Miu',
+                ownerAvatar: '👩‍🍳',
+                stallName: 'Góc Trà Sữa Thuyền Rồng',
+                slogan: '🧋 Đậm vị trà, béo vị sữa!',
+                icon: '🧋',
+                qrCode: '',
+                x: 520,
+                y: 320,
+                lastSaleTime: Date.now(),
+                orders: [],
+                items: [
+                    { id: 201, name: 'Trà Sữa Matcha Trân Châu', price: 35000, desc: 'Béo ngậy đậm vị trà', img: '' },
+                    { id: 202, name: 'Bánh Tráng Trộn Trứng Cút', price: 25000, desc: 'Chua cay mặn ngọt chuẩn vị', img: '' }
+                ]
+            }
+        ];
+
+        // CHECK 4 DAYS EXPIRATION (96 HOURS = 345600000 ms)
+        function checkAndConfiscateExpiredStalls() {
+            const FOUR_DAYS_MS = 4 * 24 * 60 * 60 * 1000;
+            const now = Date.now();
+            let hasChanges = false;
+
+            stallsList = stallsList.filter(stall => {
+                const timeDiff = now - (stall.lastSaleTime || stall.id);
+                if (timeDiff > FOUR_DAYS_MS) {
+                    hasChanges = true;
+                    showToastNotification(`⚠️ Quầy "${stall.stallName}" của ${stall.ownerName} bị thu hồi do 4 ngày không ra đơn!`);
+                    return false;
+                }
+                return true;
+            });
+
+            if (hasChanges) {
+                localStorage.setItem('nightmarket_stalls', JSON.stringify(stallsList));
+            }
+        }
+
+        let activeStall = null;
+        let pendingCheckoutItem = null;
+
+        // Canvas Game Variables
+        let canvas, ctx;
+        let playerPos = { x: 380, y: 420, vx: 0, vy: 0, speed: 4.5 };
+        let keysPressed = {};
+        let touchDir = { x: 0, y: 0 };
+        let animationFrameId = null;
+
+        // --- APP CONTROLLER ---
+        function initApp() {
+            checkAndConfiscateExpiredStalls();
+            updateBadgeUI();
+            if (!currentUser) {
+                renderCharacterSelectScreen();
+            } else {
+                renderGameCanvasScreen();
+            }
+        }
+<!-- ... existing code ... -->
+        // STALL MODEL DRAWING (SUPPORTING RIVER TERRAIN & UNLIMITED LOCATIONS)
+        function drawStallModel(stall) {
+            const x = stall.x;
+            const y = stall.y;
+
+            // Terrain Detection (Is stall placed in River Zone?)
+            const isRiverZone = y > 260 && y < 400 && x > 100 && x < 650;
+
+            if (isRiverZone) {
+                // Wooden Boat / Raft Base for Floating Market
+                ctx.fillStyle = '#451a03';
+                ctx.beginPath();
+                ctx.ellipse(x, y + 16, 38, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#78350f';
+                ctx.stroke();
+            } else {
+                // Base Ground Shadow
+                ctx.fillStyle = '#334155';
+                ctx.beginPath();
+                ctx.ellipse(x, y + 16, 32, 12, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Glowing Lantern Aura
+            const glowGrad = ctx.createRadialGradient(x, y - 10, 5, x, y - 10, 45);
+            glowGrad.addColorStop(0, 'rgba(251, 191, 36, 0.35)');
+            glowGrad.addColorStop(1, 'rgba(251, 191, 36, 0)');
+            ctx.fillStyle = glowGrad;
+            ctx.beginPath();
+            ctx.arc(x, y - 10, 45, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Wooden Counter Body
+            ctx.fillStyle = '#78350f';
+            ctx.fillRect(x - 26, y - 4, 52, 22);
+            ctx.strokeStyle = '#451a03';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x - 26, y - 4, 52, 22);
+
+            // Awning Roof Stripes
+            const stripeColors = ['#dc2626', '#ffffff', '#dc2626', '#ffffff', '#dc2626'];
+            const stripeWidth = 10;
+            const startX = x - 25;
+            stripeColors.forEach((color, i) => {
+                ctx.fillStyle = color;
+                ctx.fillRect(startX + (i * stripeWidth), y - 28, stripeWidth, 14);
+            });
+
+            // Roof Support Poles
+            ctx.fillStyle = '#d97706';
+            ctx.fillRect(x - 24, y - 14, 3, 10);
+            ctx.fillRect(x + 21, y - 14, 3, 10);
+
+            // Stall Emoji Icon Center Display
+            ctx.font = '20px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(stall.icon, x, y - 14);
+
+            // SLOGAN BANNER ABOVE STALL
+            if (stall.slogan) {
+                ctx.font = 'bold 10px Nunito';
+                ctx.fillStyle = '#fef08a';
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(x - 45, y - 45, 90, 14);
+                ctx.fillStyle = '#000000';
+                ctx.fillText(stall.slogan.substring(0, 18), x, y - 37);
+            }
+
+            // Stall Banner Label below
+            ctx.font = 'extrabold 11px Nunito';
+            ctx.fillStyle = '#fef08a';
+            ctx.shadowColor = '#000000';
+            ctx.shadowBlur = 4;
+            ctx.fillText(stall.stallName, x, y + 36);
+            ctx.shadowBlur = 0;
+        }
+
+        function drawGameScene() {
+            if (!ctx) return;
+
+            // Background Ground
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // River Water Feature (Floating Market Zone)
+            ctx.fillStyle = '#0284c7';
+            ctx.fillRect(100, 270, 550, 120);
+            ctx.fillStyle = '#0369a1';
+            ctx.fillRect(100, 270, 550, 10);
+            ctx.fillRect(100, 380, 550, 10);
+
+            // Water Ripple Lines
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(140, 310); ctx.lineTo(190, 310); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(340, 350); ctx.lineTo(410, 350); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(500, 300); ctx.lineTo(570, 300); ctx.stroke();
+
+            // Cobblestone Market Grid Tiles
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+            for (let x = 0; x < canvas.width; x += 35) {
+                ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+            }
+            for (let y = 0; y < canvas.height; y += 35) {
+                ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+            }
+
+            // Draw Decorative Lantern Poles & Trees
+            const lightPoles = [{x: 40, y: 40}, {x: 710, y: 40}, {x: 40, y: 460}, {x: 710, y: 460}];
+            lightPoles.forEach(p => {
+                ctx.fillStyle = '#f59e0b';
+                ctx.beginPath(); ctx.arc(p.x, p.y, 6, 0, Math.PI * 2); ctx.fill();
+            });
+
+            // Draw Market Stalls (Up to 1000)
+            stallsList.forEach(stall => {
+                drawStallModel(stall);
+            });
+
+            // Draw Player Character
+            ctx.fillStyle = currentUser.color || '#3b82f6';
+            ctx.beginPath();
+            ctx.arc(playerPos.x, playerPos.y, 15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Player Avatar Icon
+            ctx.font = '15px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(currentUser.avatarIcon, playerPos.x, playerPos.y);
+
+            // Player Name Label
+            ctx.font = 'extrabold 11px Nunito';
+            ctx.fillStyle = '#38bdf8';
+            ctx.shadowColor = '#000000';
+            ctx.shadowBlur = 3;
+            ctx.fillText(currentUser.name, playerPos.x, playerPos.y - 22);
+            ctx.shadowBlur = 0;
+        }
+
+        function submitNewStallCreation() {
+            if (stallsList.length >= 1000) {
+                return alert("Khu chợ đã đạt giới hạn tối đa 1.000 quầy!");
+            }
+
+            const stallName = document.getElementById('new-stall-name').value.trim();
+            const slogan = document.getElementById('new-stall-slogan').value.trim();
+            const icon = document.getElementById('new-stall-icon').value;
+            const itemName = document.getElementById('new-item-name').value.trim();
+            const itemPrice = parseInt(document.getElementById('new-item-price').value);
+            const itemDesc = document.getElementById('new-item-desc').value.trim();
+
+            if (!stallName || !itemName || isNaN(itemPrice) || itemPrice <= 0) {
+                return alert("Vui lòng điền đầy đủ tên quầy, tên món và giá bán hợp lệ!");
+            }
+
+            const newStall = {
+                id: Date.now(),
+                ownerName: currentUser.name,
+                ownerAvatar: currentUser.avatarIcon,
+                stallName: stallName,
+                slogan: slogan || '🔥 Đồ ngon ngập tràn, ghé ngay!',
+                icon: icon,
+                qrCode: uploadedStallQRBase64 || '',
+                x: Math.round(playerPos.x),
+                y: Math.round(playerPos.y),
+                lastSaleTime: Date.now(),
+                orders: [],
+                items: [
+                    {
+                        id: Date.now() + 1,
+                        name: itemName,
+                        price: itemPrice,
+                        desc: itemDesc || 'Món mới độc quyền tại quầy',
+                        img: uploadedProductBase64
+                    }
+                ]
+            };
+
+            stallsList.push(newStall);
+            localStorage.setItem('nightmarket_stalls', JSON.stringify(stallsList));
+
+            closeCreateStallModal();
+            confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+            showToastNotification(`🎉 Đã dựng quầy "${stallName}" thành công!`);
+        }
+
+        // --- VISITORS & ENTICING INTERACTION TAB ---
+        function renderStallVisitorsList() {
+            const container = document.getElementById('stall-tab-visitors');
+            const isOwner = activeStall.ownerName === currentUser.name;
+
+            // Mock Active Visitors around stall
+            const visitors = [
+                { name: currentUser.name, avatar: currentUser.avatarIcon, isYou: true },
+                { name: 'Anh Hai Sài Gòn', avatar: '👨‍💼', isYou: false },
+                { name: 'Chị Đẹp Phố', avatar: '👧', isYou: false }
+            ];
+
+            document.getElementById('visitors-count-badge').innerText = visitors.length;
+
+            container.innerHTML = visitors.map(v => `
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="text-xl">${v.avatar}</span>
+                        <div>
+                            <div class="font-bold text-white">${v.name} ${v.isYou ? '<span class="text-[9px] text-amber-400 font-normal">(Bạn)</span>' : ''}</div>
+                            <div class="text-[10px] text-emerald-400">Đang đi dạo quanh quầy</div>
+                        </div>
+                    </div>
+                    ${isOwner && !v.isYou ? `<button onclick="enticeCustomer('${v.name}')" class="bg-amber-600 hover:bg-amber-500 text-white font-bold px-2.5 py-1.5 rounded-xl text-[10px] transition">📣 Chào Hỏi & Lôi Kéo</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function enticeCustomer(customerName) {
+            switchStallTab('chat');
+            const chatBox = document.getElementById('chat-messages');
+            chatBox.innerHTML += `
+                <div class="text-left">
+                    <span class="inline-block bg-amber-600 text-white px-3 py-1.5 rounded-2xl rounded-tl-none text-xs"><b>${activeStall.ownerName}:</b> 📣 Dạ em chào anh/chị ${customerName} ạ! Quầy em có "${activeStall.items[0]?.name || 'món ngon'}" hấp dẫn lắm, ghé ủng hộ em nha! ❤️</span>
+                </div>
+            `;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        // RENDER ORDERS & CONFIRMATION WITH FIREWORKS
+        function renderStallOrdersList() {
+            const container = document.getElementById('stall-tab-orders');
+            if (!activeStall.orders || activeStall.orders.length === 0) {
+                container.innerHTML = `<div class="text-slate-500 text-xs text-center py-6">Chưa có đơn hàng nào được đặt tại quầy này.</div>`;
+                return;
+            }
+
+            const isOwner = activeStall.ownerName === currentUser.name;
+
+            container.innerHTML = activeStall.orders.map(ord => `
+                <div class="bg-slate-950 border border-slate-800 rounded-2xl p-3 space-y-1.5 text-xs">
+                    <div class="flex justify-between font-bold">
+                        <span class="text-orange-400">#${ord.id} - ${ord.buyerName}</span>
+                        <span class="text-emerald-400">${ord.total.toLocaleString()}đ</span>
+                    </div>
+                    <div class="text-[11px] text-slate-300">📦 Món: <b>${ord.itemName}</b></div>
+                    <div class="text-[10px] text-slate-400">📞 SĐT: ${ord.buyerPhone} | 🏠 ${ord.buyerAddress}</div>
+                    <div class="flex justify-between items-center border-t border-slate-800 pt-1.5">
+                        <span class="text-[10px] text-amber-200/80">Trạng thái: <b>${ord.confirmed ? '✅ Đã xác nhận' : '⏳ Chờ duyệt'}</b></span>
+                        ${isOwner && !ord.confirmed ? `<button onclick="confirmOrderAndThank('${ord.id}')" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 text-white font-bold px-3 py-1 rounded-xl text-[10px]">✔ Xác Nhận Đơn & Cảm Ơn 🎆</button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function confirmOrderAndThank(orderId) {
+            const ord = activeStall.orders.find(o => o.id == orderId);
+            if (ord) {
+                ord.confirmed = true;
+                localStorage.setItem('nightmarket_stalls', JSON.stringify(stallsList));
+
+                // FIREWORKS FOR SELLER CONFIRMATION
+                confetti({ particleCount: 180, spread: 90, origin: { y: 0.5 } });
+
+                // AUTOMATIC THANK YOU CHAT MESSAGE
+                switchStallTab('chat');
+                const chatBox = document.getElementById('chat-messages');
+                chatBox.innerHTML += `
+                    <div class="text-left">
+                        <span class="inline-block bg-emerald-700 text-white px-3 py-1.5 rounded-2xl rounded-tl-none text-xs"><b>${activeStall.ownerName}:</b> 🎆 Shop đã xác nhận đơn #${ord.id} của bạn (${ord.buyerName})! Cảm ơn bạn rất nhiều, shop đang chuẩn bị hàng giao ngay ạ! ❤️</span>
+                    </div>
+                `;
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                renderStallOrdersList();
+                showToastNotification(`✅ Đã xác nhận đơn #${ord.id}! Pháo hoa nổ chúc mừng!`);
+            }
+        }
+
+        function submitOrderCheckout() {
+            const name = document.getElementById('checkout-name').value.trim();
+            const phone = document.getElementById('checkout-phone').value.trim();
+            const address = document.getElementById('checkout-address').value.trim();
+            const payType = document.querySelector('input[name="payment_type"]:checked').value;
+
+            if (!name || !phone || !address) {
+                return alert("Vui lòng nhập đầy đủ Họ tên, Số điện thoại và Địa chỉ giao hàng để tạo Bill!");
+            }
+
+            if (userBalance < pendingCheckoutItem.price) {
+                return alert("Ví của bạn không đủ tiền!");
+            }
+
+            userBalance -= pendingCheckoutItem.price;
+            localStorage.setItem('nightmarket_balance', userBalance);
+            updateBadgeUI();
+
+            const orderObj = {
+                id: Math.floor(100000 + Math.random() * 900000),
+                buyerName: name,
+                buyerPhone: phone,
+                buyerAddress: address,
+                itemName: pendingCheckoutItem.name,
+                total: pendingCheckoutItem.price,
+                paymentType: payType,
+                confirmed: false,
+                date: new Date().toLocaleString('vi-VN')
+            };
+
+            if (!activeStall.orders) activeStall.orders = [];
+            activeStall.orders.unshift(orderObj);
+
+            // RESET LAST SALE TIMESTAMP (Preventing 4-day confiscation)
+            activeStall.lastSaleTime = Date.now();
+            localStorage.setItem('nightmarket_stalls', JSON.stringify(stallsList));
+
+            closeCheckoutModal();
+
+            // FIREWORKS EFFECT FOR BUYER UPON BILL CONFIRMATION
+            confetti({ particleCount: 160, spread: 80, origin: { y: 0.6 } });
+
+            // DISPLAY BILL MODAL
+            showPrintableBill(orderObj);
+
+            // REAL-TIME FIREWORKS TOAST NOTIFICATION
+            showToastNotification(`🎆 Ting Ting! Đơn hàng #${orderObj.id} vừa được đặt! Bắn pháo hoa báo quầy!`);
+        }
+
+        function switchStallTab(tab) {
+            const menuTab = document.getElementById('stall-tab-menu');
+            const ordersTab = document.getElementById('stall-tab-orders');
+            const visitorsTab = document.getElementById('stall-tab-visitors');
+            const chatTab = document.getElementById('stall-tab-chat');
+
+            const menuBtn = document.getElementById('tab-menu-btn');
+            const ordersBtn = document.getElementById('tab-orders-btn');
+            const visitorsBtn = document.getElementById('tab-visitors-btn');
+            const chatBtn = document.getElementById('tab-chat-btn');
+
+            menuTab.classList.add('hidden');
+            ordersTab.classList.add('hidden');
+            visitorsTab.classList.add('hidden');
+            chatTab.classList.add('hidden');
+
+            menuBtn.className = 'flex-1 py-2 text-slate-400 transition';
+            ordersBtn.className = 'flex-1 py-2 text-slate-400 transition';
+            visitorsBtn.className = 'flex-1 py-2 text-slate-400 transition';
+            chatBtn.className = 'flex-1 py-2 text-slate-400 transition';
+
+            if (tab === 'menu') {
+                menuTab.classList.remove('hidden');
+                menuBtn.className = 'flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition';
+            } else if (tab === 'orders') {
+                ordersTab.classList.remove('hidden');
+                ordersBtn.className = 'flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition'; im
+            } else if (tab === 'visitors') {
+                visitorsTab.classList.remove('hidden');
+                visitorsBtn.className = 'flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition';
+                renderStallVisitorsList();
+            } else {
+                chatTab.classList.remove('hidden');
+                chatBtn.className = 'flex-1 py-2 text-amber-400 border-b-2 border-amber-400 transition';
+            }
+        }
+<!-- ... existing code ... -->
